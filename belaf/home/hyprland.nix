@@ -99,19 +99,24 @@
         screenshot = "${getExe "grim"} -g \"$(${getExe "slurp"} -d)\" -";
       in
         [
+          # Software
           "$mainMod, Q, exec, ghostty"
           "$mainMod SHIFT, Q, exec, [float] ghostty --background-opacity=0.85"
+          "$mainMod, R, exec, $menu"
+          "$mainMod SHIFT, L, exec, $powermenu"
+
+          # Generic
           "$mainMod, C, killactive"
           "$mainMod, M, exit"
           "$mainMod, V, togglefloating"
-          "$mainMod, R, exec, $menu"
-          "$mainMod, L, exec, $powermenu"
           "$mainMod, P, pseudo"
-          "$mainMod, J, togglesplit"
-          "$mainMod, left, movefocus, l"
-          "$mainMod, right, movefocus, r"
-          "$mainMod, up, movefocus, u"
-          "$mainMod, down, movefocus, d"
+          "$mainMod, S, togglesplit"
+
+          # Focus
+          "$mainMod, h, movefocus, l"
+          "$mainMod, l, movefocus, r"
+          "$mainMod, k, movefocus, u"
+          "$mainMod, j, movefocus, d"
 
           # Screenshot
           "$mainMod, S, exec, ${screenshot} | wl-copy"
@@ -122,10 +127,6 @@
           "$mainMod, mouse_up, workspace, e-1"
 
           # Move workspace to another screen
-          "$mainMod CTRL, left, movecurrentworkspacetomonitor, l"
-          "$mainMod CTRL, right, movecurrentworkspacetomonitor, r"
-          "$mainMod CTRL, up, movecurrentworkspacetomonitor, u"
-          "$mainMod CTRL, down, movecurrentworkspacetomonitor, d"
           "$mainMod CTRL, h, movecurrentworkspacetomonitor, l"
           "$mainMod CTRL, l, movecurrentworkspacetomonitor, r"
           "$mainMod CTRL, k, movecurrentworkspacetomonitor, u"
