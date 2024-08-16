@@ -4,6 +4,10 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     catppuccin.url = "github:catppuccin/nix";
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.4.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     ghostty = {
       url = "git+ssh://git@github.com/ghostty-org/ghostty";
       inputs.nixpkgs-stable.follows = "nixpkgs";
@@ -24,6 +28,7 @@
     hyprland,
     ssh-keys,
     knixpkgs,
+    lanzaboote,
     catppuccin,
     ...
   } @ inputs: rec {
@@ -60,6 +65,7 @@
           hyprland = hyprland;
           knixpkgs = knixpkgs;
           catppuccin = catppuccin;
+          lanzaboote = lanzaboote;
         };
 
         modules = [

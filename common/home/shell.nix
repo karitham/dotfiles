@@ -14,6 +14,12 @@
       };
     };
 
+    atuin.enable = true;
+    atuin.settings = {
+      enter_accept = false;
+      style = "compact";
+    };
+
     starship.enable = true;
     starship.settings = {
       kubernetes = {
