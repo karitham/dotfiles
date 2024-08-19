@@ -40,19 +40,6 @@
       "x86_64-darwin"
     ];
 
-    defaultPackage."x86_64-linux" = home-manager.defaultPackage."x86_64-linux";
-    homeConfigurations = {
-      kar = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {system = "x86_64-linux";};
-        specialArgs = {
-          inherit inputs;
-          home-manager = home-manager;
-          catppuccin = catppuccin;
-        };
-        modules = [./belaf/home.nix];
-      };
-    };
-
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#'
     nixosConfigurations = {

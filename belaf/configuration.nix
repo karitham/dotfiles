@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  ghostty,
   ...
 }: {
   nix.settings = {
@@ -116,11 +115,9 @@
     shells = [zsh];
 
     systemPackages = [
-      ghostty.packages."${system}".default
       armcord
       vscode
       spotify
-      spicetify-cli
       tailscale
       helix
       fzf
@@ -135,6 +132,7 @@
       ripgrep
       jq
       eza
+      sd
       alejandra
       mpv
       moreutils

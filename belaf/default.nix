@@ -6,6 +6,7 @@
   knixpkgs,
   catppuccin,
   lanzaboote,
+  ghostty,
   ...
 }: {
   nix.registry = {
@@ -36,6 +37,9 @@
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
+      home-manager.extraSpecialArgs = {
+        ghostty = ghostty;
+      };
       home-manager.users.kar = {
         imports = [./home catppuccin.homeManagerModules.catppuccin];
         catppuccin.enable = true;

@@ -36,13 +36,12 @@
     ./hyprland.nix
     ./waybar.nix
     ./rofi.nix
+    ./ghostty.nix
     ../../common/home/git.nix
     ../../common/home/shell.nix
     ../../common/home/helix.nix
+    ../../common/home/modules/ghostty.nix
   ];
 
   services.dunst.enable = true;
-  xdg.configFile = {
-    "ghostty/config".source = ./dotfiles/ghostty;
-  };
 }
