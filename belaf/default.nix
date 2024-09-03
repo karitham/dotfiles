@@ -41,7 +41,7 @@
         ghostty = ghostty;
       };
       home-manager.users.kar = {
-        imports = [./home catppuccin.homeManagerModules.catppuccin];
+        imports = [./home catppuccin.homeManagerModules.catppuccin ./fonts.nix];
         catppuccin.enable = true;
         catppuccin.flavor = "macchiato";
       };
@@ -49,5 +49,6 @@
     hyprland.nixosModules.default
     {programs.hyprland.enable = true;}
     ./greetd.nix
+    ./fonts.nix
   ];
 }

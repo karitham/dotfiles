@@ -1,4 +1,4 @@
-{pkgs, ...}: let
+{config, pkgs, ...}: let
   getExe = name: "${pkgs.${name}}/bin/${name}";
 in {
   programs.waybar = {
@@ -8,7 +8,7 @@ in {
     settings.mainBar = let
       hctl = "${pkgs.hyprland}/bin/hyprctl";
     in {
-      font = "VictorMono NFP SemiBold";
+      font = config.fonts.mono;
       height = 50;
       layer = "top";
       position = "top";
@@ -51,7 +51,7 @@ in {
       in {
         device = "eDP-1";
         max-length = "4";
-        format = "{icon} {percent}%";
+        format = "{icon}  {percent}%";
         format-icons = ["" "" "" "" "" "" "" "" ""];
         on-scroll-up = pkgs.writeShellScript "brightness.sh" ''
           MIN_BRIGHTNESS=5
@@ -70,10 +70,10 @@ in {
       };
 
       pulseaudio = {
-        format = "{icon}  {volume}%";
-        format-bluetooth = "{icon} {volume}% {format_source}";
-        format-bluetooth-muted = " {icon} {format_source}";
-        format-muted = "婢";
+        format = "{icon}   {volume}%";
+        format-bluetooth = "{icon}  {volume}%  {format_source}";
+        format-bluetooth-muted = "󰂲  {icon}  {format_source}";
+        format-muted = "";
         format-icons = {
           headphone = "";
           hands-free = "";
@@ -87,9 +87,9 @@ in {
       };
 
       network = {
-        format-wifi = "直 {signalStrength}%";
-        format-ethernet = " wired";
-        format-disconnected = "睊 ";
+        format-wifi = "  {signalStrength}%";
+        format-ethernet = "󰈀 ";
+        format-disconnected = "󰖪 ";
       };
 
       battery = {
@@ -101,19 +101,19 @@ in {
           critical = 15;
         };
         max-length = 20;
-        format = "{icon} {capacity}%";
-        format-warning = "{icon} {capacity}%";
-        format-critical = "{icon} {capacity}%";
+        format = "{icon}  {capacity}%";
+        format-warning = "{icon}  {capacity}%";
+        format-critical = "{icon}  {capacity}%";
         format-charging = "  {capacity}%";
         format-plugged = "  {capacity}%";
-        format-alt = "{icon} {time}";
+        format-alt = "{icon}  {time}";
         format-full = "  {capacity}%";
-        format-icons = [" " " " " " " " " "];
+        format-icons = ["" "" "" "" ""];
       };
 
       clock = {
         tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-        format = "  {:%H:%M:%S}";
+        format = "󰥔  {:%H:%M:%S}";
       };
 
       "custom/powermenu" = {
@@ -162,7 +162,6 @@ in {
       /* Spacing inside the element */
 
       * {
-        font-family: "JetBrainsMonoNL NFM Bold";
         font-size: 17px;
       }
 

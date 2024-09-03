@@ -1,4 +1,5 @@
 {
+  config,
   ghostty,
   pkgs,
   ...
@@ -7,7 +8,7 @@
     enable = true;
     package = ghostty.packages."${pkgs.system}".default;
     settings = {
-      font-family = "VictorMono NFP SemiBold";
+      font-family = config.fonts.mono;
 
       window-decoration = true;
       gtk-titlebar = false;

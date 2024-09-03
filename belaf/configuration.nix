@@ -21,9 +21,7 @@
 
   fonts.packages = with pkgs; [
     victor-mono
-    input-fonts
     nerdfonts
-    meslo-lgs-nf
   ];
 
   # Bootloader.
