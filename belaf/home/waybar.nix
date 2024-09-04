@@ -1,4 +1,8 @@
-{config, pkgs, ...}: let
+{
+  config,
+  pkgs,
+  ...
+}: let
   getExe = name: "${pkgs.${name}}/bin/${name}";
 in {
   programs.waybar = {

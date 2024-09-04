@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{lib, ...}: {
   options.fonts = {
     mono = lib.mkOption {
       type = lib.types.str;

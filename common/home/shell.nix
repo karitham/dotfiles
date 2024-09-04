@@ -13,6 +13,7 @@
         kall = "kubectl get $(kubectl api-resources --namespaced=true --no-headers -o name | egrep -v 'events|nodes' | paste -s -d, - ) --no-headers";
       };
     };
+    eza.enable = true;
 
     atuin.enable = true;
     atuin.flags = [
