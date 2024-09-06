@@ -28,5 +28,6 @@
     jq
     wget
     zoxide
+    fzf
   ];
 }
