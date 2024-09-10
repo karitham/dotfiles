@@ -23,8 +23,13 @@
         gs = "git status";
         nixupdate = "sudo nixos-rebuild switch --accept-flake-config --flake";
         k = "kubectl";
-        kall = "kubectl get (kubectl api-resources --namespaced=true --no-headers -o name | grep -v 'events|nodes' | str join ',') --no-headers";
+        kall = "kubectl get (kubectl api-resources --namespaced=true --no-headers -o name | split row --regex '\s+' | where $it not-in ['node', 'events'] | str join ',') --no-headers";
       };
+      configFile.text = ''
+      $env.config = {
+        show_banner: false,
+      }
+      '';
     };
     zoxide.enable = true;
 
