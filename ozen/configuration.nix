@@ -1,13 +1,9 @@
-{pkgs, ...}: {
+{config, pkgs, ...}: {
+  shell.name = "nu";
+  shell.pkg = pkgs.nushell;
+
   users.users.nixos.extraGroups = ["docker"];
-  users.defaultUserShell = pkgs.zsh;
-  programs.zsh = {
-    enable = true;
-    ohMyZsh = {
-      enable = true;
-      plugins = ["sudo" "zsh-navigation-tools" "zoxide"];
-    };
-  };
+  users.defaultUserShell = config.shell.pkg;
   virtualisation.docker.enable = true;
 
   services.openssh.enable = true;

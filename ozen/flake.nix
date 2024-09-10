@@ -36,6 +36,8 @@
           home-manager.nixosModules.home-manager
           ./hm.nix
           ./configuration.nix
+          ../common/fonts.nix
+          ../common/shell.nix
         ];
       };
     };
