@@ -55,9 +55,7 @@
           lanzaboote = lanzaboote;
         };
 
-        modules = [
-          ./belaf
-        ];
+        modules = [./belaf];
       };
 
       reg = nixpkgs.lib.nixosSystem {

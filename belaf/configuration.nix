@@ -87,7 +87,7 @@
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users = {
-    defaultUserShell = pkgs.zsh;
+    defaultUserShell = config.shell.pkg;
     users.kar = {
       isNormalUser = true;
       description = "kar";
@@ -96,22 +96,11 @@
     };
   };
 
-  # shell setup
-  programs.zsh = {
-    enable = true;
-    shellInit = "export PATH=${config.users.users.kar.home}/go/bin:$PATH";
-    ohMyZsh = {
-      enable = true;
-      plugins = ["sudo" "zsh-navigation-tools" "zoxide"];
-    };
-  };
-
   programs.ssh.startAgent = true;
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = with pkgs; {
-    shells = [zsh];
-
+    shells = ["/run/current-system/sw/bin/${config.shell.name}" "${config.shell.pkg}/bin/${config.shell.name}"];
     systemPackages = [
       armcord
       vscode
@@ -122,8 +111,6 @@
       difftastic
       firefox
       chromium
-      zsh
-      zoxide
       vim
       curl
       wget

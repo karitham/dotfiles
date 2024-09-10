@@ -33,6 +33,9 @@
   };
 
   imports = [
+    ../../common/fonts.nix
+    ../../common/shell.nix
+
     ./hyprland.nix
     ./waybar.nix
     ./rofi.nix

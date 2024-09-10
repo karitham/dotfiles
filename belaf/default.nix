@@ -14,6 +14,9 @@
   };
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
+  shell.name = "nu";
+  shell.pkg = pkgs.nushell;
+
   system = {stateVersion = "24.05";};
 
   environment.systemPackages = [
@@ -27,6 +30,9 @@
   };
 
   imports = [
+    ../common/fonts.nix
+    ../common/shell.nix
+
     lanzaboote.nixosModules.lanzaboote
     ./hardware.nix
     ./desktop.nix
@@ -41,14 +47,15 @@
         ghostty = ghostty;
       };
       home-manager.users.kar = {
-        imports = [./home catppuccin.homeManagerModules.catppuccin ../common/fonts.nix];
+        shell.name = "nu";
+        shell.pkg = pkgs.nushell;
         catppuccin.enable = true;
         catppuccin.flavor = "macchiato";
+        imports = [./home catppuccin.homeManagerModules.catppuccin];
       };
     }
     hyprland.nixosModules.default
     {programs.hyprland.enable = true;}
     ./greetd.nix
-    ../common/fonts.nix
   ];
 }

@@ -1,6 +1,10 @@
-{...}: {
-  programs = {
-    zsh = {
+{
+  config,
+  lib,
+  ...
+}: {
+  config.programs = {
+    zsh = lib.mkIf (config.shell.name == "zsh") {
       enable = true;
       enableCompletion = true;
       autosuggestion.enable = true;
@@ -8,12 +12,21 @@
       shellAliases = {
         gs = "git status";
         ls = "eza --git";
-        update = "sudo nixos-rebuild switch --accept-flake-config --flake";
+        nixupdate = "sudo nixos-rebuild switch --accept-flake-config --flake";
         k = "kubectl";
         kall = "kubectl get $(kubectl api-resources --namespaced=true --no-headers -o name | egrep -v 'events|nodes' | paste -s -d, - ) --no-headers";
       };
     };
-    eza.enable = true;
+    nushell = lib.mkIf (config.shell.name == "nu") {
+      enable = true;
+      shellAliases = {
+        gs = "git status";
+        nixupdate = "sudo nixos-rebuild switch --accept-flake-config --flake";
+        k = "kubectl";
+        kall = "kubectl get (kubectl api-resources --namespaced=true --no-headers -o name | grep -v 'events|nodes' | str join ',') --no-headers";
+      };
+    };
+    zoxide.enable = true;
 
     atuin.enable = true;
     atuin.flags = [
@@ -25,11 +38,7 @@
     };
 
     starship.enable = true;
-    starship.settings = {
-      kubernetes = {
-        disabled = false;
-      };
-    };
+    starship.settings.kubernetes.disabled = false;
 
     direnv = {
       enable = true;
