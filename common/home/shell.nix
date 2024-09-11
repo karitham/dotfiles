@@ -1,8 +1,13 @@
 {
+  pkgs,
   config,
   lib,
   ...
-}: {
+}: let
+  nuPluginQuery = pkgs.callPackage ./nu_plugin_query.nix {};
+in {
+  config.home.packages = lib.mkIf (config.shell.name == "nu") [nuPluginQuery];
+
   config.programs = {
     zsh = lib.mkIf (config.shell.name == "zsh") {
       enable = true;
@@ -25,11 +30,16 @@
         k = "kubectl";
         kall = "kubectl get (kubectl api-resources --namespaced=true --no-headers -o name | split row --regex '\s+' | where $it not-in ['node', 'events'] | str join ',') --no-headers";
       };
-      configFile.text = ''
-      $env.config = {
-        show_banner: false,
-      }
-      '';
+      configFile.text = lib.concatStrings [
+        ''
+          $env.config = {
+            show_banner: false,
+          }
+        ''
+        (lib.concatStrings (map (plugin: "plugin add ${plugin}\n") [
+          "${nuPluginQuery}/bin/nu_plugin_query"
+        ]))
+      ];
     };
     zoxide.enable = true;
 

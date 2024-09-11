@@ -1,4 +1,8 @@
-{config, pkgs, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   shell.name = "nu";
   shell.pkg = pkgs.nushell;
 
