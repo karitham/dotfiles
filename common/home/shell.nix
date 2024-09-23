@@ -22,17 +22,25 @@
       enable = true;
       shellAliases = {
         gs = "git status";
+        gp = "git push";
+        gc = "git commit";
+        ga = "git add";
         nixupdate = "sudo nixos-rebuild switch --accept-flake-config --flake";
         k = "kubectl";
-        kall = "kubectl get (kubectl api-resources --namespaced=true --no-headers -o name | split row --regex '\s+' | where $it not-in ['node', 'events'] | str join ',') --no-headers";
+        kall = "kubectl get (kubectl api-resources --namespaced=true --no-headers -o name | split row --regex '\\s+' | where $it not-in ['node', 'events'] | str join ',') --no-headers";
       };
       configFile.text = ''
         $env.config = {
           show_banner: false,
         }
+
+        def from_logfmt [line: string] {
+             parse --regex '(?<key>\w+)\s?=\s?(?<value>"(?:[^(\\")]*)"|(?:[^\s]*))\s*' | transpose -r
+        }
       '';
     };
     zoxide.enable = true;
+    carapace.enable = true;
 
     atuin.enable = true;
     atuin.flags = [

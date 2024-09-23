@@ -55,6 +55,10 @@
   hardware.bluetooth.powerOnBoot =
     true; # powers up the default Bluetooth controller on boot
 
+  services.pcscd.enable = true;
+  programs.gnupg.agent = {
+    enable = true;
+  };
   services = {
     # sound
     pipewire = {
@@ -101,6 +105,9 @@
   # $ nix search wget
   environment = with pkgs; {
     shells = ["/run/current-system/sw/bin/${config.shell.name}" "${config.shell.pkg}/bin/${config.shell.name}"];
+    variables = {
+      EDITOR = "hx";
+    };
     systemPackages = [
       armcord
       vscode

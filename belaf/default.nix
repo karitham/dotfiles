@@ -7,6 +7,7 @@
   catppuccin,
   lanzaboote,
   ghostty,
+  zen-browser,
   ...
 }: {
   nix.registry = {
@@ -22,6 +23,7 @@
   environment.systemPackages = [
     # For debugging and troubleshooting Secure Boot.
     pkgs.sbctl
+    zen-browser.packages."${pkgs.system}".specific
   ];
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.lanzaboote = {

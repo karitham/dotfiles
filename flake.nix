@@ -4,6 +4,8 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     catppuccin.url = "github:catppuccin/nix";
+    zen-browser.url = "github:ch4og/zen-browser-flake";
+    zen-browser.inputs.nixpkgs.follows = "nixpkgs";
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v0.4.1";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -30,6 +32,7 @@
     knixpkgs,
     lanzaboote,
     catppuccin,
+    zen-browser,
     ...
   } @ inputs: rec {
     forAllSystems = nixpkgs.lib.genAttrs [
@@ -53,6 +56,7 @@
           knixpkgs = knixpkgs;
           catppuccin = catppuccin;
           lanzaboote = lanzaboote;
+          zen-browser = zen-browser;
         };
 
         modules = [./belaf];

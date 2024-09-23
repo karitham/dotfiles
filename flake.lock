@@ -500,7 +500,8 @@
         "knixpkgs": "knixpkgs",
         "lanzaboote": "lanzaboote",
         "nixpkgs": "nixpkgs_2",
-        "ssh-keys": "ssh-keys"
+        "ssh-keys": "ssh-keys",
+        "zen-browser": "zen-browser"
       }
     },
     "rust-overlay": {
@@ -612,6 +613,26 @@
       "original": {
         "owner": "hyprwm",
         "repo": "xdg-desktop-portal-hyprland",
+        "type": "github"
+      }
+    },
+    "zen-browser": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1726645912,
+        "narHash": "sha256-2Xdji52Rc+X1iWu9t3aP9THueJ+XSBLd1mXvFZtam/A=",
+        "owner": "ch4og",
+        "repo": "zen-browser-flake",
+        "rev": "b94921efd26954a255862ae9d81146de0c64e071",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ch4og",
+        "repo": "zen-browser-flake",
         "type": "github"
       }
     },
