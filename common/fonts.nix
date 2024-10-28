@@ -2,7 +2,7 @@
   options.fonts = {
     mono = lib.mkOption {
       type = lib.types.str;
-      default = "Hurmit Nerd Font";
+      default = "MartianMono Nerd Font";
       description = "Global mono font";
     };
   };

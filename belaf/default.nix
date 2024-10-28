@@ -1,6 +1,5 @@
 {
   lib,
-  hyprland,
   home-manager,
   pkgs,
   knixpkgs,
@@ -31,6 +30,7 @@
     pkiBundle = "/etc/secureboot";
   };
 
+  programs.hyprland.enable = true;
   imports = [
     ../common/fonts.nix
     ../common/shell.nix
@@ -56,8 +56,6 @@
         imports = [./home catppuccin.homeManagerModules.catppuccin];
       };
     }
-    hyprland.nixosModules.default
-    {programs.hyprland.enable = true;}
     ./greetd.nix
   ];
 }

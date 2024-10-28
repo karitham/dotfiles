@@ -109,7 +109,8 @@
       EDITOR = "hx";
     };
     systemPackages = [
-      armcord
+      legcord
+      jujutsu
       vscode
       spotify
       tailscale

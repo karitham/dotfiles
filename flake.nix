@@ -15,7 +15,6 @@
       inputs.nixpkgs-stable.follows = "nixpkgs";
       inputs.nixpkgs-unstable.follows = "nixpkgs";
     };
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     knixpkgs.url = "https://flakehub.com/f/karitham/knixpkgs/0.1.*.tar.gz";
     knixpkgs.inputs.nixpkgs.follows = "nixpkgs";
     ssh-keys = {
@@ -27,7 +26,6 @@
     nixpkgs,
     home-manager,
     ghostty,
-    hyprland,
     ssh-keys,
     knixpkgs,
     lanzaboote,
@@ -52,7 +50,6 @@
           inherit inputs;
           home-manager = home-manager;
           ghostty = ghostty;
-          hyprland = hyprland;
           knixpkgs = knixpkgs;
           catppuccin = catppuccin;
           lanzaboote = lanzaboote;
@@ -86,8 +83,8 @@
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
   };
   nixConfig = {
-    extra-substituters = ["https://hyprland.cachix.org" "https://ghostty.cachix.org"];
-    extra-trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="];
+    extra-substituters = ["https://ghostty.cachix.org"];
+    extra-trusted-public-keys = ["ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="];
     extra-experimental-features = ["nix-command" "flakes"];
   };
 }
