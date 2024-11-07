@@ -110,7 +110,7 @@
           "$mainMod, M, exit"
           "$mainMod, V, togglefloating"
           "$mainMod, P, pseudo"
-          "$mainMod, S, togglesplit"
+          "$mainMod, B, togglesplit"
 
           # Focus
           "$mainMod, h, movefocus, l"

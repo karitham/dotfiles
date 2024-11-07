@@ -34,14 +34,20 @@
           show_banner: false,
         }
 
-        def from_logfmt [line: string] {
-             parse --regex '(?<key>\w+)\s?=\s?(?<value>"(?:[^(\\")]*)"|(?:[^\s]*))\s*' | transpose -r
+        def "from logfmt" [] {
+          parse --regex '(?<key>\w+)\s?=\s?(?<value>"(?:[^(\\")]*)"|(?:[^\s]*))\s*' | transpose -r
         }
+
+        def "decode secret" [] {
+          update data {$in | transpose k v | each { {$in.k: ($in.v | decode base64 | decode)} | transpose -d} | transpose -r | get 0}
+        }
+        
+        source ${./navi.plugin.nu}
       '';
     };
     zoxide.enable = true;
     carapace.enable = true;
-
+    navi.enable = true;
     atuin.enable = true;
     atuin.flags = [
       "--disable-up-arrow"
