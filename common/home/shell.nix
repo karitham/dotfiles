@@ -1,5 +1,4 @@
 {
-  pkgs,
   config,
   lib,
   ...
@@ -41,13 +40,23 @@
         def "decode secret" [] {
           update data {$in | transpose k v | each { {$in.k: ($in.v | decode base64 | decode)} | transpose -d} | transpose -r | get 0}
         }
-        
+
         source ${./navi.plugin.nu}
       '';
     };
     zoxide.enable = true;
     carapace.enable = true;
+
     navi.enable = true;
+    navi.settings = {
+      cheats = {
+        paths = [
+          ./navi
+          "~/.local/share/navi/cheats"
+        ];
+      };
+    };
+
     atuin.enable = true;
     atuin.flags = [
       "--disable-up-arrow"

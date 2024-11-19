@@ -25,7 +25,7 @@
   ];
 
   # Bootloader.
-  boot.supportedFilesystems = ["bcachefs"];
+  boot.supportedFilesystems = ["bcachefs" "ntfs"];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.loader.systemd-boot.enable = true;
