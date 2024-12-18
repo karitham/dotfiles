@@ -21,11 +21,12 @@
 
   fonts.packages = with pkgs; [
     victor-mono
-    nerdfonts
+    nerd-fonts.martian-mono
+    nerd-fonts.jetbrains-mono
   ];
 
   # Bootloader.
-  boot.supportedFilesystems = ["bcachefs" "ntfs"];
+  boot.supportedFilesystems = ["bcachefs"];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.loader.systemd-boot.enable = true;
@@ -110,7 +111,6 @@
     };
     systemPackages = [
       legcord
-      jujutsu
       vscode
       spotify
       tailscale
@@ -128,9 +128,10 @@
       sd
       alejandra
       mpv
+      busybox
       moreutils
       age
-      nix-output-monitor
+      wireguard-tools
     ];
     etc = {
       "xdg/gtk-3.0/settings.ini".text = ''

@@ -34,12 +34,12 @@
   imports = [
     ../common/fonts.nix
     ../common/shell.nix
+    ../common/nixos/ipcam.nix
 
     lanzaboote.nixosModules.lanzaboote
     ./hardware.nix
     ./desktop.nix
     ./configuration.nix
-    ./fabric.nix
     catppuccin.nixosModules.catppuccin
     home-manager.nixosModules.home-manager
     {
