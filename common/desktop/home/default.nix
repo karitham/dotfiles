@@ -4,16 +4,16 @@
   home.homeDirectory = "/home/kar";
   home.stateVersion = "24.05";
   imports = [
-    ../../common/fonts.nix
-    ../../common/shell.nix
+    ../../fonts.nix
+    ../../shell.nix
 
     ./hyprland.nix
     ./waybar.nix
     ./rofi.nix
     ./ghostty.nix
-    ../../common/home/git.nix
-    ../../common/home/shell.nix
-    ../../common/home/helix.nix
+    ../../home/git.nix
+    ../../home/shell.nix
+    ../../home/helix.nix
   ];
 
   services.dunst.enable = true;
