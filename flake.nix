@@ -59,6 +59,21 @@
         modules = [./belaf];
       };
 
+      kiwi = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          home-manager = home-manager;
+          ghostty = ghostty;
+          knixpkgs = knixpkgs;
+          catppuccin = catppuccin;
+          lanzaboote = lanzaboote;
+          zen-browser = zen-browser;
+        };
+
+        modules = [./kiwi];
+      };
+      
       reg = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
