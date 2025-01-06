@@ -30,6 +30,10 @@
       diff.tool = "difftastic";
       difftool.prompt = false;
       difftool.difftastic.cmd = "${pkgs.difftastic}/bin/difft --color auto --background light --display side-by-side \"$LOCAL\" \"$REMOTE\"";
+      rerere = {
+        enabled = true;
+        autoUpdate = true;
+      };
     };
   };
 }

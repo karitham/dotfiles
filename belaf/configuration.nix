@@ -51,7 +51,6 @@
   };
 
   # disable pulse because pipewire handles it
-  hardware.pulseaudio.enable = false;
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot =
     true; # powers up the default Bluetooth controller on boot
@@ -62,6 +61,7 @@
   };
   services = {
     # sound
+    pulseaudio.enable = false;
     pipewire = {
       enable = true;
       alsa.enable = true;

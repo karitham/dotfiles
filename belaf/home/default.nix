@@ -14,7 +14,6 @@
     ../../common/home/git.nix
     ../../common/home/shell.nix
     ../../common/home/helix.nix
-    ../../common/home/modules/ghostty.nix
   ];
 
   services.dunst.enable = true;
