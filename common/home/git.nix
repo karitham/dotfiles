@@ -21,7 +21,7 @@
       init.defaultBranch = "main";
       pull.rebase = true;
       push.autoSetupRemote = true;
-      url."git@github.com:".insteadOf = "https://github.com/";
+      url."ssh://git@github.com/".insteadOf = "https://github.com/";
       gpg.format = "ssh";
       gpg.ssh.defaultKeyCommand = "ssh-add -L";
       core.excludesfile = "~/.gitignore";

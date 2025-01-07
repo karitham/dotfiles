@@ -22,7 +22,6 @@
     zen-browser.packages."${pkgs.system}"
   ];
 
-
   programs.hyprland.enable = true;
   imports = [
     ../common/fonts.nix
@@ -46,7 +45,7 @@
         shell.pkg = pkgs.nushell;
         catppuccin.enable = true;
         catppuccin.flavor = "macchiato";
-        imports = [../common/desktop/home catppuccin.homeManagerModules.catppuccin];
+        imports = [../common/desktop/home catppuccin.homeManagerModules.catppuccin ./home-upf.nix];
       };
     }
   ];

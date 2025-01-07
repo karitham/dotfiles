@@ -41,6 +41,10 @@
           update data {$in | transpose k v | each { {$in.k: ($in.v | decode base64 | decode)} | transpose -d} | transpose -r | get 0}
         }
 
+        if ("/home/kar/go/bin" | path exists) {
+          $env.PATH = $env.PATH | append "/home/kar/go/bin"
+        }
+
         source ${./navi.plugin.nu}
       '';
     };
