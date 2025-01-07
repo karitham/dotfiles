@@ -45,6 +45,7 @@
         shell.pkg = pkgs.nushell;
         catppuccin.enable = true;
         catppuccin.flavor = "macchiato";
+        programs.waybar.settings.mainBar.battery.bat = lib.mkForce "BAT0";
         imports = [../common/desktop/home catppuccin.homeManagerModules.catppuccin ./home-upf.nix];
       };
     }
