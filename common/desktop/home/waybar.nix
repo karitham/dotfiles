@@ -13,7 +13,7 @@ in {
       hctl = "${pkgs.hyprland}/bin/hyprctl";
     in {
       font = config.fonts.mono;
-      height = 50;
+      height = 40;
       layer = "top";
       position = "top";
       output = "eDP-1";
@@ -99,7 +99,7 @@ in {
       battery = {
         bat = "CMB0";
         adapter = "ADP0";
-        interval = 60;
+        interval = 30;
         states = {
           warning = 30;
           critical = 15;
@@ -118,6 +118,7 @@ in {
       clock = {
         tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
         format = "󰥔  {:%H:%M:%S}";
+        interval = 5;
       };
 
       "custom/powermenu" = {
@@ -166,7 +167,7 @@ in {
       /* Spacing inside the element */
 
       * {
-        font-size: 17px;
+        font-size: 16px;
       }
 
       window#waybar {
@@ -213,7 +214,7 @@ in {
       #pulseaudio,
       #custom-dunst,
       #custom-powermenu {
-        padding: 0px 20px;
+        padding: 0px 16px;
         margin: 7px 0px 10px 0px;
         border-radius: 8px;
         color: @crust;

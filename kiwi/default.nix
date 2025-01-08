@@ -22,7 +22,11 @@
     zen-browser.packages."${pkgs.system}"
   ];
 
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+    xwayland.enable = true;
+    withUWSM = true;
+  };
   imports = [
     ../common/fonts.nix
     ../common/shell.nix
