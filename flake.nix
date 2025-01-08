@@ -10,11 +10,6 @@
       url = "github:nix-community/lanzaboote/v0.4.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    ghostty = {
-      url = "git+ssh://git@github.com/ghostty-org/ghostty";
-      inputs.nixpkgs-stable.follows = "nixpkgs";
-      inputs.nixpkgs-unstable.follows = "nixpkgs";
-    };
     knixpkgs.url = "https://flakehub.com/f/karitham/knixpkgs/0.1.*.tar.gz";
     knixpkgs.inputs.nixpkgs.follows = "nixpkgs";
     ssh-keys = {
@@ -25,7 +20,6 @@
   outputs = {
     nixpkgs,
     home-manager,
-    ghostty,
     ssh-keys,
     knixpkgs,
     lanzaboote,
@@ -49,7 +43,6 @@
         specialArgs = {
           inherit inputs;
           home-manager = home-manager;
-          ghostty = ghostty;
           knixpkgs = knixpkgs;
           catppuccin = catppuccin;
           lanzaboote = lanzaboote;
@@ -64,10 +57,8 @@
         specialArgs = {
           inherit inputs;
           home-manager = home-manager;
-          ghostty = ghostty;
           knixpkgs = knixpkgs;
           catppuccin = catppuccin;
-          lanzaboote = lanzaboote;
           zen-browser = zen-browser;
         };
 
@@ -98,8 +89,6 @@
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
   };
   nixConfig = {
-    extra-substituters = ["https://ghostty.cachix.org"];
-    extra-trusted-public-keys = ["ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="];
     extra-experimental-features = ["nix-command" "flakes"];
   };
 }

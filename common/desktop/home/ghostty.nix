@@ -1,12 +1,6 @@
-{
-  config,
-  ghostty,
-  pkgs,
-  ...
-}: {
+{config, ...}: {
   programs.ghostty = {
     enable = true;
-    package = ghostty.packages."${pkgs.system}".default;
     settings = {
       font-family = config.fonts.mono;
 

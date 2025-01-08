@@ -8,7 +8,10 @@
       exec-once = [
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       ];
-      monitor = ",preferred,auto,auto";
+
+      monitor = [
+        ", preferred, auto, 1"
+      ];
 
       env = [
         "XCURSOR_SIZE,24"
@@ -32,25 +35,18 @@
       };
 
       general = {
-        gaps_in = "5";
-        gaps_out = "20";
-        border_size = "2";
+        gaps_in = "0";
+        gaps_out = "0";
+        border_size = "0";
         layout = "dwindle";
         allow_tearing = "false";
       };
 
       decoration = {
-        rounding = "10";
-
         blur = {
           enabled = "true";
           size = "3";
           passes = "1";
-        };
-
-        shadow = {
-          range = "4";
-          render_power = "3";
         };
       };
 

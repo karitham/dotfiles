@@ -5,7 +5,6 @@
   knixpkgs,
   catppuccin,
   lanzaboote,
-  ghostty,
   zen-browser,
   ...
 }: {
@@ -46,15 +45,12 @@
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
-      home-manager.extraSpecialArgs = {
-        ghostty = ghostty;
-      };
       home-manager.users.kar = {
         shell.name = "nu";
         shell.pkg = pkgs.nushell;
         catppuccin.enable = true;
         catppuccin.flavor = "macchiato";
-        imports = [../common/desktop/home catppuccin.homeManagerModules.catppuccin];
+        imports = [../common/desktop/home catppuccin.homeManagerModules.catppuccin ./desktop.nix];
       };
     }
   ];

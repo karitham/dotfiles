@@ -102,7 +102,7 @@
       EDITOR = "hx";
     };
     systemPackages = [
-      legcord
+      vesktop
       vscode
       spotify
       tailscale

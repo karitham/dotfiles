@@ -1,11 +1,8 @@
 {
-  lib,
   home-manager,
   pkgs,
   knixpkgs,
   catppuccin,
-  lanzaboote,
-  ghostty,
   zen-browser,
   ...
 }: {
@@ -41,16 +38,17 @@
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
-      home-manager.extraSpecialArgs = {
-        ghostty = ghostty;
-      };
       home-manager.users.kar = {
         shell.name = "nu";
         shell.pkg = pkgs.nushell;
         catppuccin.enable = true;
         catppuccin.flavor = "macchiato";
-        programs.waybar.settings.mainBar.battery.bat = lib.mkForce "BAT0";
-        imports = [../common/desktop/home catppuccin.homeManagerModules.catppuccin ./home-upf.nix];
+        imports = [
+          ../common/desktop/home
+          catppuccin.homeManagerModules.catppuccin
+          ./home-upf.nix
+          ./desktop.nix
+        ];
       };
     }
   ];
