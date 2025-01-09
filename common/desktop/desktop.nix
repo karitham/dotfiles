@@ -7,7 +7,6 @@
       wlroots
       dunst
       xdg-utils
-      xdg-desktop-portal-hyprland
       pavucontrol
       killall
       playerctl

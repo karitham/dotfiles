@@ -23,6 +23,7 @@
     enable = true;
     xwayland.enable = true;
     withUWSM = true;
+    portalPackage = pkgs.xdg-desktop-portal-wlr;
   };
   imports = [
     ../common/fonts.nix
