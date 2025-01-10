@@ -218,11 +218,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1736336279,
-        "narHash": "sha256-9Xp2X7ofKY4h39vUbd4coNambsG7Y/9axLFyTXaXOMU=",
+        "lastModified": 1736508663,
+        "narHash": "sha256-ZOaGwa+WnB7Zn3YXimqjmIugAnHePdXCmNu+AHkq808=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "45bcdbc910dc5131943bb6f7edb156617898fd1a",
+        "rev": "2532b500c3ed2b8940e831039dcec5a5ea093afc",
         "type": "github"
       },
       "original": {
@@ -355,11 +355,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1736012469,
-        "narHash": "sha256-/qlNWm/IEVVH7GfgAIyP6EsVZI6zjAx1cV5zNyrs+rI=",
+        "lastModified": 1736344531,
+        "narHash": "sha256-8YVQ9ZbSfuUk2bUf2KRj60NRraLPKPS0Q4QFTbc+c2c=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8f3e1f807051e32d8c95cd12b9b421623850a34d",
+        "rev": "bffc22eb12172e6db3c5dde9e3e5628f8e3e7912",
         "type": "github"
       },
       "original": {
@@ -504,15 +504,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1735253849,
-        "narHash": "sha256-MoM+pI6BW2uJPPXAS4qjlwNxq9erKidUki2Y0x9Xk9g=",
-        "owner": "bodenlosus",
+        "lastModified": 1736503245,
+        "narHash": "sha256-kK9LwjCVqC6BTcWGAjecoRwNa+C4PG6trBD259ZT28k=",
+        "owner": "youwen5",
         "repo": "zen-browser-flake",
-        "rev": "b927c1cfe5fe7e392bf7666ca3fa1dd980ae09af",
+        "rev": "86c7d90f6bfb7a78a68c1858324bd852a4645cf1",
         "type": "github"
       },
       "original": {
-        "owner": "bodenlosus",
+        "owner": "youwen5",
         "repo": "zen-browser-flake",
         "type": "github"
       }

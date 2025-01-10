@@ -21,7 +21,7 @@
   environment.systemPackages = [
     # For debugging and troubleshooting Secure Boot.
     pkgs.sbctl
-    zen-browser.packages."${pkgs.system}"
+    zen-browser.packages."${pkgs.system}".default
   ];
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.lanzaboote = {

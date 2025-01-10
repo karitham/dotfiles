@@ -16,14 +16,14 @@
 
   system = {stateVersion = "24.11";};
   environment.systemPackages = [
-    zen-browser.packages."${pkgs.system}"
+    zen-browser.packages."${pkgs.system}".default
   ];
 
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
     withUWSM = true;
-    portalPackage = pkgs.xdg-desktop-portal-wlr;
+    # portalPackage = pkgs.xdg-desktop-portal-wlr;
   };
   imports = [
     ../common/fonts.nix
