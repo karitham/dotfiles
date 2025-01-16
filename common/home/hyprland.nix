@@ -18,7 +18,7 @@
         "QT_QPA_PLATFORMTHEME,qt5ct" # change to qt6ct if you have that
       ];
 
-      "$powermenu" = "${./dotfiles/powermenu.sh}";
+      "$powermenu" = "${./scripts/powermenu.sh}";
       "$menu" = "${pkgs.rofi-wayland-unwrapped}/bin/rofi -show drun";
 
       input = {

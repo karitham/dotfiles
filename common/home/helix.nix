@@ -12,8 +12,6 @@
     ];
 
     settings = {
-      # theme = "base16_transparent";
-
       editor = {
         line-number = "relative";
         completion-trigger-len = 1;

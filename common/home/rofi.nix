@@ -5,6 +5,8 @@
 }: let
   inherit (config.lib.formats.rasi) mkLiteral;
 in {
+  services.dunst.enable = true;
+
   programs.rofi.enable = true;
   programs.rofi.package = pkgs.rofi-wayland-unwrapped;
   programs.rofi.theme = {

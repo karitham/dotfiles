@@ -20,20 +20,20 @@
     enable = true;
     xwayland.enable = true;
     withUWSM = true;
-    # portalPackage = pkgs.xdg-desktop-portal-wlr;
   };
 
   imports = [
     inputs.catppuccin.nixosModules.catppuccin
     inputs.home-manager.nixosModules.home-manager
+    ../common/home
+
     ../common/fonts.nix
     ../common/shell.nix
+    ../common/nixos/greetd.nix
     ../common/nixos/ipcam.nix
-    ../common/desktop/desktop.nix
-    ../common/desktop/greetd.nix
-
-    ./hm.nix
     ./hardware.nix
     ./configuration.nix
   ];
+
+  home-manager.users.kar.imports = [./home-upf.nix ./desktop.nix];
 }
