@@ -11,6 +11,7 @@
     ./waybar.nix
     ./rofi.nix
     ./ghostty.nix
+    ./spotify.nix
     ../../home/git.nix
     ../../home/shell.nix
     ../../home/helix.nix

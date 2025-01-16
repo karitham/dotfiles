@@ -12,21 +12,18 @@
     };
     knixpkgs.url = "https://flakehub.com/f/karitham/knixpkgs/0.1.*.tar.gz";
     knixpkgs.inputs.nixpkgs.follows = "nixpkgs";
+    spicetify-nix.url = "github:gerg-l/spicetify-nix";
+    spicetify-nix.inputs.nixpkgs.follows = "nixpkgs";
     ssh-keys = {
       url = "https://github.com/karitham.keys";
       flake = false;
     };
   };
-  outputs = {
+  outputs = inputs @ {
+    self,
     nixpkgs,
-    home-manager,
-    ssh-keys,
-    knixpkgs,
-    lanzaboote,
-    catppuccin,
-    zen-browser,
     ...
-  } @ inputs: rec {
+  }: rec {
     forAllSystems = nixpkgs.lib.genAttrs [
       "aarch64-linux"
       "i686-linux"
@@ -37,49 +34,40 @@
 
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#'
-    nixosConfigurations = {
+    nixosConfigurations = let
+      system = "x86_64-linux";
+    in {
       belaf = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         specialArgs = {
-          inherit inputs;
-          home-manager = home-manager;
-          knixpkgs = knixpkgs;
-          catppuccin = catppuccin;
-          lanzaboote = lanzaboote;
-          zen-browser = zen-browser;
+          inherit inputs self;
         };
 
         modules = [./belaf];
       };
 
       kiwi = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         specialArgs = {
-          inherit inputs;
-          home-manager = home-manager;
-          knixpkgs = knixpkgs;
-          catppuccin = catppuccin;
-          zen-browser = zen-browser;
+          inherit inputs self;
         };
 
         modules = [./kiwi];
       };
 
       reg = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         specialArgs = {
-          inherit inputs;
-          ssh-keys = ssh-keys;
+          inherit inputs self;
         };
 
         modules = [./reg];
       };
 
       faputa = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         specialArgs = {
-          inherit inputs;
-          ssh-keys = ssh-keys;
+          inherit inputs self;
         };
 
         modules = [./faputa];

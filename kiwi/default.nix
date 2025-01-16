@@ -1,13 +1,10 @@
 {
-  home-manager,
   pkgs,
-  knixpkgs,
-  catppuccin,
-  zen-browser,
+  inputs,
   ...
 }: {
   nix.registry = {
-    k.flake = knixpkgs;
+    k.flake = inputs.knixpkgs;
   };
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
@@ -16,7 +13,7 @@
 
   system = {stateVersion = "24.11";};
   environment.systemPackages = [
-    zen-browser.packages."${pkgs.system}".default
+    inputs.zen-browser.packages."${pkgs.system}".default
   ];
 
   programs.hyprland = {
@@ -25,32 +22,18 @@
     withUWSM = true;
     # portalPackage = pkgs.xdg-desktop-portal-wlr;
   };
+
   imports = [
+    inputs.catppuccin.nixosModules.catppuccin
+    inputs.home-manager.nixosModules.home-manager
     ../common/fonts.nix
     ../common/shell.nix
     ../common/nixos/ipcam.nix
     ../common/desktop/desktop.nix
     ../common/desktop/greetd.nix
 
+    ./hm.nix
     ./hardware.nix
     ./configuration.nix
-    catppuccin.nixosModules.catppuccin
-    home-manager.nixosModules.home-manager
-    {
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
-      home-manager.users.kar = {
-        shell.name = "nu";
-        shell.pkg = pkgs.nushell;
-        catppuccin.enable = true;
-        catppuccin.flavor = "macchiato";
-        imports = [
-          ../common/desktop/home
-          catppuccin.homeManagerModules.catppuccin
-          ./home-upf.nix
-          ./desktop.nix
-        ];
-      };
-    }
   ];
 }

@@ -56,6 +56,7 @@
   programs.gnupg.agent = {
     enable = true;
   };
+  programs.kdeconnect.enable = true;
   services = {
     # sound
     pulseaudio.enable = false;
@@ -104,24 +105,18 @@
     systemPackages = [
       vesktop
       vscode
-      spotify
       tailscale
       helix
       fzf
-      difftastic
       chromium
       vim
       curl
-      wget
       ripgrep
-      jq
-      eza
-      sd
       alejandra
       mpv
       busybox
       moreutils
-      age
+      gh
     ];
     etc = {
       "xdg/gtk-3.0/settings.ini".text = ''

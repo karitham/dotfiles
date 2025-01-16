@@ -11,7 +11,6 @@
     '';
 
     environment.systemPackages = [
-      pkgs.v4l-utils
       pkgs.ffmpeg
     ];
   };

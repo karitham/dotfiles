@@ -1,15 +1,11 @@
 {
-  lib,
-  home-manager,
   pkgs,
-  knixpkgs,
-  catppuccin,
-  lanzaboote,
-  zen-browser,
+  lib,
+  inputs,
   ...
 }: {
   nix.registry = {
-    k.flake = knixpkgs;
+    k.flake = inputs.knixpkgs;
   };
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
@@ -21,7 +17,7 @@
   environment.systemPackages = [
     # For debugging and troubleshooting Secure Boot.
     pkgs.sbctl
-    zen-browser.packages."${pkgs.system}".default
+    inputs.zen-browser.packages."${pkgs.system}".default
   ];
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.lanzaboote = {
@@ -30,6 +26,22 @@
   };
 
   programs.hyprland.enable = true;
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.kar = {
+      shell.name = "nu";
+      shell.pkg = pkgs.nushell;
+      catppuccin.enable = true;
+      catppuccin.flavor = "macchiato";
+      imports = [
+        ../common/desktop/home
+        (import ./desktop.nix {inherit inputs;})
+        inputs.catppuccin.homeManagerModules.catppuccin
+      ];
+    };
+  };
+
   imports = [
     ../common/fonts.nix
     ../common/shell.nix
@@ -37,21 +49,10 @@
     ../common/desktop/desktop.nix
     ../common/desktop/greetd.nix
 
-    lanzaboote.nixosModules.lanzaboote
+    inputs.lanzaboote.nixosModules.lanzaboote
     ./hardware.nix
     ./configuration.nix
-    catppuccin.nixosModules.catppuccin
-    home-manager.nixosModules.home-manager
-    {
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
-      home-manager.users.kar = {
-        shell.name = "nu";
-        shell.pkg = pkgs.nushell;
-        catppuccin.enable = true;
-        catppuccin.flavor = "macchiato";
-        imports = [../common/desktop/home catppuccin.homeManagerModules.catppuccin ./desktop.nix];
-      };
-    }
+    inputs.catppuccin.nixosModules.catppuccin
+    inputs.home-manager.nixosModules.home-manager
   ];
 }
