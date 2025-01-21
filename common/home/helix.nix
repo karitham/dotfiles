@@ -3,17 +3,27 @@
     enable = true;
     defaultEditor = true;
 
-    languages.auto-format = true;
-    languages.language = [
-      {
-        name = "nix";
-        formatter.command = "alejandra";
-      }
-    ];
+    languages = {
+      auto-format = true;
+      language = [
+        {
+          name = "nix";
+          formatter.command = "alejandra";
+          language-servers = ["nixd" "nil"];
+        }
+        {
+          name = "go";
+          formatter.command = "goimports";
+        }
+      ];
+      
+      language-server.nixd = {
+        command = "nixd";
+      };
+    };
 
     settings = {
       editor = {
-        line-number = "relative";
         completion-trigger-len = 1;
         bufferline = "multiple";
         color-modes = true;
