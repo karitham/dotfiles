@@ -2,7 +2,7 @@
   options.fonts = {
     mono = lib.mkOption {
       type = lib.types.str;
-      default = "MartianMono Nerd Font";
+      default = "TX-02 Medium";
       description = "Global mono font";
     };
   };

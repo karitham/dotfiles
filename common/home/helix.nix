@@ -4,29 +4,48 @@
     defaultEditor = true;
 
     languages = {
-      auto-format = true;
       language = [
         {
           name = "nix";
           formatter.command = "alejandra";
           language-servers = ["nixd" "nil"];
+          auto-format = true;
         }
         {
           name = "go";
           formatter.command = "goimports";
         }
+        {
+          name = "ruby";
+          language-servers = ["solargraph" "scls" "rust-analyzer"];
+          auto-format = true;
+          formatter = {
+            command = "rubocop";
+            args = ["--stdin" "foo.rb" "-a" "--stderr" "--fail-level" "fatal"];
+          };
+        }
       ];
-      
+
       language-server.nixd = {
         command = "nixd";
       };
     };
 
     settings = {
+      keys = {
+        normal = {
+          C-A-c = ":clipboard-yank";
+        };
+      };
       editor = {
         completion-trigger-len = 1;
         bufferline = "multiple";
         color-modes = true;
+        auto-format = true;
+        auto-save = true;
+        lsp = {
+          snippets = true;
+        };
         statusline = {
           left = [
             "mode"
@@ -44,6 +63,10 @@
             "selections"
             "position"
           ];
+        };
+        end-of-line-diagnostics = "hint";
+        inline-diagnostics = {
+          cursor-line = "warning"; # show warnings and errors on the cursorline inline
         };
         cursor-shape.insert = "bar";
         whitespace.render.tab = "all";

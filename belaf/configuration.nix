@@ -106,15 +106,11 @@
   # $ nix search wget
   environment = with pkgs; {
     shells = ["/run/current-system/sw/bin/${config.shell.name}" "${config.shell.pkg}/bin/${config.shell.name}"];
-    variables = {
-      EDITOR = "hx";
-    };
     systemPackages = [
       legcord
       vscode
       spotify
       tailscale
-      helix
       fzf
       difftastic
       firefox
