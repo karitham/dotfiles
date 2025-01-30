@@ -98,6 +98,9 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = with pkgs; {
+    sessionVariables = {
+      EDITOR = "hx";
+    };
     shells = ["/run/current-system/sw/bin/${config.shell.name}" "${config.shell.pkg}/bin/${config.shell.name}"];
     systemPackages = [
       vesktop
