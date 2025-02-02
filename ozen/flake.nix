@@ -4,13 +4,9 @@
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    catppuccin.url = "github:catppuccin/nix";
   };
-  outputs = {
-    nixpkgs,
-    home-manager,
-    nixos-wsl,
-    ...
-  } @ inputs: rec {
+  outputs = {nixpkgs, ...} @ inputs: rec {
     forAllSystems = nixpkgs.lib.genAttrs [
       "aarch64-linux"
       "i686-linux"
@@ -27,13 +23,14 @@
         };
 
         modules = [
-          nixos-wsl.nixosModules.default
+          inputs.catppuccin.nixosModules.catppuccin
+          inputs.nixos-wsl.nixosModules.default
           {
             system.stateVersion = "24.05";
             wsl.enable = true;
             wsl.defaultUser = "nixos";
           }
-          home-manager.nixosModules.home-manager
+          inputs.home-manager.nixosModules.home-manager
           ./hm.nix
           ./configuration.nix
           ../common/fonts.nix
