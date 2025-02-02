@@ -5,6 +5,8 @@
 }: {
   shell.name = "nu";
   shell.pkg = pkgs.nushell;
+  catppuccin.enable = true;
+  catppuccin.flavor = "macchiato";
 
   users.users.nixos.extraGroups = ["docker"];
   users.defaultUserShell = config.shell.pkg;
