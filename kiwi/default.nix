@@ -6,6 +6,15 @@
   nix.registry = {
     k.flake = inputs.knixpkgs;
   };
+  nix.settings = {
+    trusted-users = ["root" "kar"];
+    experimental-features = ["nix-command" "flakes"];
+    auto-optimise-store = true;
+  };
+  nixpkgs.config = {
+    allowUnfree = true;
+    input-fonts.acceptLicense = true;
+  };
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
   shell.name = "nu";
@@ -20,6 +29,13 @@
     enable = true;
     xwayland.enable = true;
     withUWSM = true;
+  };
+
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+    flake = "/home/kiwi/dotfiles";
   };
 
   imports = [
