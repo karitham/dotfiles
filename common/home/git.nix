@@ -60,7 +60,8 @@
       read -p "Continue with rebase? (y/n) " -n 1 -r
       echo
       if [[ $REPLY =~ ^[Yy]$ ]]; then
-          git rebase -i "origin/$target"
+          git checkout "$target"
+          git rebase "$current"
       else
           echo "Rebase cancelled"
       fi
