@@ -1,4 +1,10 @@
-{...}: {
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    gopls
+    rubocop
+    nixd
+    marksman
+  ];
   programs.helix = {
     enable = true;
     defaultEditor = true;

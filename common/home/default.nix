@@ -51,6 +51,7 @@
         ./git.nix
         ./shell.nix
         ./helix.nix
+        ./rnnoise.nix
       ];
     };
   };

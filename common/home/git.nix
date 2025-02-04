@@ -61,7 +61,7 @@
       echo
       if [[ $REPLY =~ ^[Yy]$ ]]; then
           git checkout "$target"
-          git rebase "$current"
+          git rebase "origin" "$current"
       else
           echo "Rebase cancelled"
       fi
