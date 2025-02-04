@@ -11,9 +11,14 @@
     experimental-features = ["nix-command" "flakes"];
     auto-optimise-store = true;
   };
-  nixpkgs.config = {
-    allowUnfree = true;
-    input-fonts.acceptLicense = true;
+  nixpkgs = {
+    overlays = [
+      (import ../overlays/gotools.nix {})
+    ];
+    config = {
+      allowUnfree = true;
+      input-fonts.acceptLicense = true;
+    };
   };
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
@@ -35,7 +40,7 @@
     enable = true;
     clean.enable = true;
     clean.extraArgs = "--keep-since 4d --keep 3";
-    flake = "/home/kiwi/dotfiles";
+    flake = "/home/kar/dotfiles";
   };
 
   imports = [

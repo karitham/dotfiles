@@ -24,16 +24,6 @@
     nixpkgs,
     ...
   }: rec {
-    forAllSystems = nixpkgs.lib.genAttrs [
-      "aarch64-linux"
-      "i686-linux"
-      "x86_64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-    ];
-
-    # NixOS configuration entrypoint
-    # Available through 'nixos-rebuild --flake .#'
     nixosConfigurations = let
       system = "x86_64-linux";
     in {
@@ -74,7 +64,10 @@
       };
     };
 
-    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+    homeConfigurations = {
+      "kar@kiwi".config = nixosConfigurations.kiwi.config.home-manager.users.kar;
+      "kar@belaf".config = nixosConfigurations.belaf.config.home-manager.users.kar;
+    };
   };
   nixConfig = {
     extra-experimental-features = ["nix-command" "flakes"];
