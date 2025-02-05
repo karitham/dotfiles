@@ -33,16 +33,8 @@
           show_banner: false,
         }
 
-        def "from logfmt" [] {
-          parse --regex '(?<key>\w+)\s?=\s?(?<value>"(?:[^(\\")]*)"|(?:[^\s]*))\s*' | transpose -r
-        }
-
-        def "decode secret" [] {
-          update data {$in | transpose k v | each { {$in.k: ($in.v | decode base64 | decode)} | transpose -d} | transpose -r | get 0}
-        }
-
-        if ("/home/kar/go/bin" | path exists) {
-          $env.PATH = $env.PATH | append "/home/kar/go/bin"
+        if ("~/.profile.nu" | path exists) {
+          source-env "~/.profile.nu"
         }
 
         source ${./navi.plugin.nu}
