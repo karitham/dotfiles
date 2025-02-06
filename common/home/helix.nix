@@ -17,6 +17,8 @@
       nodePackages.typescript-language-server
       vscode-langservers-extracted
       yaml-language-server
+      lsp-ai
+      typos-lsp
     ];
 
     settings = {
@@ -83,9 +85,230 @@
     };
 
     languages = {
-      language-server.biome = {
-        command = "biome";
-        args = ["lsp-proxy"];
+      language-server = {
+        biome = {
+          command = "biome";
+          args = ["lsp-proxy"];
+        };
+        typos = {
+          command = "typos-lsp";
+          config = {
+            diagnosticSeverity = "Warning";
+            # config = ./typos.toml;
+          };
+        };
+        lsp-ai = {
+          command = "lsp-ai";
+          config = {
+            memory.file_store = {};
+            models = {
+              main = {
+                type = "anthropic";
+                chat_endpoint = "https://api.anthropic.com/v1/messages";
+                model = "claude-3-5-sonnet-latest";
+                auth_token_env_var_name = "ANTHROPIC_API_KEY";
+              };
+              fast = {
+                type = "anthropic";
+                chat_endpoint = "https://api.anthropic.com/v1/messages";
+                model = "claude-3-5-haiku-latest";
+                auth_token_env_var_name = "ANTHROPIC_API_KEY";
+              };
+            };
+            completion = {
+              model = "fast";
+              parameters = {
+                max_tokens = 128;
+                max_context = 4096;
+              };
+            };
+            chat = [
+              {
+                trigger = "!C";
+                action_display_name = "Chat";
+                model = "main";
+                parameters = {
+                  max_tokens = 1024;
+                  max_context = 4096;
+                  system = "You are a code assistant chatbot. The user will ask you for assistance coding and you will do you best to answer succinctly and accurately";
+                };
+              }
+              {
+                trigger = "!CC";
+                action_display_name = "Chat with context";
+                model = "main";
+                parameters = {
+                  max_tokens = 1024;
+                  max_context = 4096;
+                  system = "You are a code assistant chatbot. The user will ask you for assistance coding and you will do you best to answer succinctly and accurately given the code context:\n\n{CONTEXT}";
+                };
+              }
+            ];
+            actions = [
+              {
+                action_display_name = "Refactor";
+                model = "main";
+                parameters = {
+                  max_context = 4096;
+                  max_tokens = 4096;
+                  system = ''
+                    You are an AI coding assistant specializing in code refactoring. Your task is to analyze the given code snippet and provide a refactored version. Follow these steps:
+
+                    1. Analyze the code context and structure.
+                    2. Identify areas for improvement, such as code efficiency, readability, or adherence to best practices.
+                    3. Provide your chain of thought reasoning, wrapped in <reasoning> tags. Include your analysis of the current code and explain your refactoring decisions.
+                    4. Rewrite the entire code snippet with your refactoring applied.
+                    5. Wrap your refactored code solution in <answer> tags.
+
+                    Your response should always include both the reasoning and the refactored code.
+
+                    <examples>
+                    <example>
+                    User input:
+                    def calculate_total(items):
+                        total = 0
+                        for item in items:
+                            total = total + item['price'] * item['quantity']
+                        return total
+
+
+                    Response:
+                    <reasoning>
+                    1. The function calculates the total cost of items based on price and quantity.
+                    2. We can improve readability and efficiency by:
+                       a. Using a more descriptive variable name for the total.
+                       b. Utilizing the sum() function with a generator expression.
+                       c. Using augmented assignment (+=) if we keep the for loop.
+                    3. We'll implement the sum() function approach for conciseness.
+                    4. We'll add a type hint for better code documentation.
+                    </reasoning>
+                    <answer>
+                    from typing import List, Dict
+
+                    def calculate_total(items: List[Dict[str, float]]) -> float:
+                        return sum(item['price'] * item['quantity'] for item in items)
+                    </answer>
+                    </example>
+
+                    <example>
+                    User input:
+                    def is_prime(n):
+                        if n < 2:
+                            return False
+                        for i in range(2, n):
+                            if n % i == 0:
+                                return False
+                        return True
+
+
+                    Response:
+                    <reasoning>
+                    1. This function checks if a number is prime, but it's not efficient for large numbers.
+                    2. We can improve it by:
+                       a. Adding an early return for 2, the only even prime number.
+                       b. Checking only odd numbers up to the square root of n.
+                       c. Using a more efficient range (start at 3, step by 2).
+                    3. We'll also add a type hint for better documentation.
+                    4. The refactored version will be more efficient for larger numbers.
+                    </reasoning>
+                    <answer>
+                    import math
+
+                    def is_prime(n: int) -> bool:
+                        if n < 2:
+                            return False
+                        if n == 2:
+                            return True
+                        if n % 2 == 0:
+                            return False
+
+                        for i in range(3, int(math.sqrt(n)) + 1, 2):
+                            if n % i == 0:
+                                return False
+                        return True
+                    </answer>
+                    </example>
+                    </examples>
+                  '';
+                  messages = [
+                    {
+                      role = "user";
+                      content = "{SELECTED_TEXT}";
+                    }
+                  ];
+                };
+                post_process = {
+                  extractor = "(?s)<answer>(.*?)</answer>";
+                };
+              }
+              {
+                action_display_name = "Reword";
+                model = "main";
+                parameters = {
+                  max_context = 4096;
+                  max_tokens = 4096;
+                  system = ''
+                    You are an expert code and technical writing refactoring assistant. Your task is to analyze the provided input and suggest improvements for readability, simplicity, and speed. The input can be either a code snippet or a piece of technical writing.
+
+                    Follow these steps to complete the task:
+
+                    1. Analyze the input to determine if it's code or technical writing.
+                    2. Identify areas for improvement, focusing on:
+                       - Readability
+                       - Simplicity
+                       - Efficiency/Speed
+                    3. If it's code:
+                       - Consider language-specific best practices
+                       - Add type hints where applicable
+                       - Optimize for performance
+                    4. If it's technical writing:
+                       - Improve clarity and conciseness
+                       - Enhance structure and flow
+                       - Ensure consistency in terminology and style
+                    5. Provide your reasoning in <reasoning> tags
+                    6. Present the refactored solution in <answer> tags
+
+                    Before providing your final answer, wrap your analysis in <detailed_analysis> tags. In this analysis:
+                    1. Clearly state whether the input is code or technical writing.
+                    2. List specific areas for improvement under each category (readability, simplicity, efficiency/speed).
+                    3. If it's code:
+                       - Note the programming language (if identifiable)
+                       - List language-specific best practices that could be applied
+                       - Identify potential performance optimizations
+                    4. If it's technical writing:
+                       - Note specific issues with clarity, structure, and consistency
+                       - Identify any terminology that needs to be standardized
+
+                    Your output should follow this structure:
+
+                    <detailed_analysis>
+                    [Your step-by-step analysis of the input and improvement areas]
+                    </detailed_analysis>
+
+                    <reasoning>
+                    [Concise explanation of the changes made and their benefits]
+                    </reasoning>
+
+                    <answer>
+                    [The refactored code or technical writing]
+                    </answer>
+
+                    Remember to keep your response brief and to the point while maintaining all necessary information.
+                  '';
+                  messages = [
+                    {
+                      role = "user";
+                      content = "{SELECTED_TEXT}";
+                    }
+                  ];
+                };
+                post_process = {
+                  extractor = "(?s)<answer>(.*?)</answer>";
+                };
+              }
+            ];
+          };
+        };
       };
 
       language = [
@@ -98,7 +321,7 @@
         }
         {
           name = "go";
-          language-servers = ["gopls" "golangci-lint-lsp"];
+          language-servers = ["gopls" "golangci-lint-lsp" "lsp-ai" "typos"];
           formatter = {
             command = "goimports";
           };
@@ -106,7 +329,7 @@
         }
         {
           name = "ruby";
-          language-servers = ["solargraph" "scls" "rust-analyzer"];
+          language-servers = ["solargraph" "lsp-ai"];
           auto-format = true;
           formatter = {
             command = "rubocop";
@@ -115,7 +338,7 @@
         }
         {
           name = "html";
-          language-servers = ["vscode-html-language-server"];
+          language-servers = ["vscode-html-language-server" "lsp-ai" "typos"];
           formatter = {
             command = "prettier";
             args = ["--stdin-filepath" "file.html"];
@@ -130,7 +353,8 @@
               except-features = ["format"];
             }
             "biome"
-            "gpt"
+            "lsp-ai"
+            "typos"
           ];
           auto-format = true;
         }
@@ -173,6 +397,7 @@
               except-features = ["format"];
             }
             "biome"
+            "typos"
           ];
           formatter = {
             command = "biome";
@@ -188,7 +413,8 @@
               except-features = ["format"];
             }
             "biome"
-            "gpt"
+            "lsp-ai"
+            "typos"
           ];
           formatter = {
             command = "biome";
@@ -207,7 +433,7 @@
         }
         {
           name = "markdown";
-          language-servers = ["marksman"];
+          language-servers = ["marksman" "lsp-ai" "typos"];
           formatter = {
             command = "prettier";
             args = ["--stdin-filepath" "file.md"];
@@ -216,6 +442,7 @@
         }
         {
           name = "sql";
+          language-servers = ["lsp-ai" "typos"];
           formatter = {
             command = "sql-formatter";
             args = ["-l" "postgresql" "-c" "{\"keywordCase\": \"lower\", \"dataTypeCase\": \"lower\", \"functionCase\": \"lower\", \"expressionWidth\": 120, \"tabWidth\": 4}"];
