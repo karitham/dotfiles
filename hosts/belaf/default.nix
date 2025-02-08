@@ -30,13 +30,13 @@
     inputs.lanzaboote.nixosModules.lanzaboote
     inputs.catppuccin.nixosModules.catppuccin
     inputs.home-manager.nixosModules.home-manager
-    ../common/home
+    ../../modules/home
 
-    ../common/fonts.nix
-    ../common/shell.nix
-    ../common/nixos/greetd.nix
-    ../common/nixos/ipcam.nix
-    ../common/nixos/nix.nix
+    ../../modules/fonts.nix
+    ../../modules/shell.nix
+    ../../modules/nixos/greetd.nix
+    ../../modules/nixos/ipcam.nix
+    ../../modules/nixos/nix.nix
     ./hardware.nix
     ./configuration.nix
   ];

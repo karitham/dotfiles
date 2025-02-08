@@ -37,9 +37,9 @@
   }: let
     # Common modules used across all systems
     commonModules = [
-      ./common/shell.nix
-      ./common/fonts.nix
-      ./common/nixos/shell.nix
+      ./modules/shell.nix
+      ./modules/fonts.nix
+      ./modules/nixos/shell.nix
     ];
 
     # Unified system configuration
@@ -86,7 +86,7 @@
         };
         modules =
           [
-            ./${hostname}
+            ./hosts/${hostname}
           ]
           ++ commonModules;
       };

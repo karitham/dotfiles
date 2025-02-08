@@ -13,9 +13,9 @@
     }
     inputs.home-manager.nixosModules.home-manager
     ./hm.nix
-    ../common/fonts.nix
-    ../common/shell.nix
-    ../common/nixos/nix.nix
+    ../../modules/fonts.nix
+    ../../modules/shell.nix
+    ../../modules/nixos/nix.nix
   ];
 
   shell = {
