@@ -2,32 +2,24 @@
   config,
   lib,
   ...
-}: {
+}: let
+  aliases = {
+    gs = "git status";
+    nixupdate = "sudo nixos-rebuild switch --accept-flake-config --flake";
+    k = "kubectl";
+  };
+in {
   config.programs = {
     zsh = lib.mkIf (config.shell.name == "zsh") {
       enable = true;
       enableCompletion = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
-      shellAliases = {
-        gs = "git status";
-        ls = "eza --git";
-        nixupdate = "sudo nixos-rebuild switch --accept-flake-config --flake";
-        k = "kubectl";
-        kall = "kubectl get $(kubectl api-resources --namespaced=true --no-headers -o name | egrep -v 'events|nodes' | paste -s -d, - ) --no-headers";
-      };
+      shellAliases = aliases;
     };
     nushell = lib.mkIf (config.shell.name == "nu") {
       enable = true;
-      shellAliases = {
-        gs = "git status";
-        gp = "git push";
-        gc = "git commit";
-        ga = "git add";
-        nixupdate = "sudo nixos-rebuild switch --accept-flake-config --flake";
-        k = "kubectl";
-        kall = "kubectl get (kubectl api-resources --namespaced=true --no-headers -o name | split row --regex '\\s+' | where $it not-in ['node', 'events'] | str join ',') --no-headers";
-      };
+      shellAliases = aliases;
       configFile.text = ''
         $env.config = {
           show_banner: false,
@@ -52,6 +44,8 @@
         ];
       };
     };
+
+    ripgrep.enable = true;
 
     atuin.enable = true;
     atuin.flags = [

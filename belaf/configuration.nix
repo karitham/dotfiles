@@ -3,22 +3,6 @@
   pkgs,
   ...
 }: {
-  nix.settings = {
-    trusted-users = ["root" "kar"];
-    experimental-features = ["nix-command" "flakes"];
-    auto-optimise-store = true;
-  };
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 14d";
-  };
-  # Allow unfree packages
-  nixpkgs.config = {
-    allowUnfree = true;
-    input-fonts.acceptLicense = true;
-  };
-
   fonts.packages = with pkgs; [
     victor-mono
     nerd-fonts.martian-mono
