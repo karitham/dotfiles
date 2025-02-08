@@ -15,11 +15,11 @@
 
         imports = [
           inputs.catppuccin.homeManagerModules.catppuccin
-          ../common/fonts.nix
-          ../common/shell.nix
-          ../common/home/git.nix
-          ../common/home/shell.nix
-          ../common/home/helix.nix
+          ../../modules/fonts.nix
+          ../../modules/shell.nix
+          ../../modules/home/git.nix
+          ../../modules/home/shell.nix
+          ../../modules/home/helix.nix
         ];
       })
     ];

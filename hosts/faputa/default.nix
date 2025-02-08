@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   imports = [
     ./hardware-configuration.nix
-    ../common/seedbox.nix
+    ../../modules/seedbox.nix
   ];
 
   nix.settings = {
