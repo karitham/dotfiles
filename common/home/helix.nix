@@ -242,63 +242,52 @@
                 };
               }
               {
-                action_display_name = "Reword";
+                action_display_name = "Refactor 2";
                 model = "main";
                 parameters = {
-                  max_context = 4096;
+                  max_context = 8192;
                   max_tokens = 4096;
-                  system = ''
-                    You are an expert code and technical writing refactoring assistant. Your task is to analyze the provided input and suggest improvements for readability, simplicity, and speed. The input can be either a code snippet or a piece of technical writing.
-
-                    Follow these steps to complete the task:
-
-                    1. Analyze the input to determine if it's code or technical writing.
-                    2. Identify areas for improvement, focusing on:
-                       - Readability
-                       - Simplicity
-                       - Efficiency/Speed
-                    3. If it's code:
-                       - Consider language-specific best practices
-                       - Add type hints where applicable
-                       - Optimize for performance
-                    4. If it's technical writing:
-                       - Improve clarity and conciseness
-                       - Enhance structure and flow
-                       - Ensure consistency in terminology and style
-                    5. Provide your reasoning in <reasoning> tags
-                    6. Present the refactored solution in <answer> tags
-
-                    Before providing your final answer, wrap your analysis in <detailed_analysis> tags. In this analysis:
-                    1. Clearly state whether the input is code or technical writing.
-                    2. List specific areas for improvement under each category (readability, simplicity, efficiency/speed).
-                    3. If it's code:
-                       - Note the programming language (if identifiable)
-                       - List language-specific best practices that could be applied
-                       - Identify potential performance optimizations
-                    4. If it's technical writing:
-                       - Note specific issues with clarity, structure, and consistency
-                       - Identify any terminology that needs to be standardized
-
-                    Your output should follow this structure:
-
-                    <detailed_analysis>
-                    [Your step-by-step analysis of the input and improvement areas]
-                    </detailed_analysis>
-
-                    <reasoning>
-                    [Concise explanation of the changes made and their benefits]
-                    </reasoning>
-
-                    <answer>
-                    [The refactored code or technical writing]
-                    </answer>
-
-                    Remember to keep your response brief and to the point while maintaining all necessary information.
-                  '';
                   messages = [
                     {
                       role = "user";
-                      content = "{SELECTED_TEXT}";
+                      content = ''
+                        You are an AI coding assistant specializing in code refactoring. Your task is to analyze and improve the given code snippet. Here's the code you need to refactor:
+
+                        <code_snippet>
+                        {SELECTED_TEXT}
+                        </code_snippet>
+
+                        Please follow these steps to refactor the code:
+
+                        1. Analyze the code context and structure.
+                        2. Identify areas for improvement, focusing on:
+                           - Code efficiency
+                           - Readability
+                           - Adherence to Python best practices and idioms
+                           - Correctness of conventions
+
+                        3. Wrap your analysis in <refactoring_analysis> tags. In this analysis:
+                           - List specific areas for improvement under each category (efficiency, readability, best practices, conventions)
+                           - Briefly explain your refactoring decisions, focusing on:
+                             - What improvements you're making
+                             - Why these changes enhance the code
+                             - Any trade-offs involved in the proposed changes
+
+                        4. Rewrite the entire code snippet with your refactoring applied. When refactoring:
+                           - Prioritize simplicity and readability
+                           - Use correct conventions and idioms
+                           - Be explicit in your code
+                           - Do not add comments that explain the code
+
+                        5. Present your refactored code solution in <answer> tags.
+
+                        Remember:
+                        - Only include code in the <answer> section.
+                        - Do not add explanatory comments within the code itself.
+                        - Ensure the refactored code is simple to read and understand.
+
+                        Your response should always include both the refactoring analysis and the refactored code, in that order.
+                      '';
                     }
                   ];
                 };
@@ -314,6 +303,7 @@
       language = [
         {
           name = "nix";
+          language-servers = ["nixd" "lsp-ai" "typos"];
           formatter = {
             command = "alejandra";
           };

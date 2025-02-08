@@ -6,9 +6,9 @@
   options.shell = {
     name = lib.mkOption {
       type = lib.types.str;
-      default = "zsh";
+      default = "nu";
       description = "Default shell";
     };
-    pkg = lib.mkPackageOption pkgs "zsh" {};
+    pkg = lib.mkPackageOption pkgs "nushell" {};
   };
 }

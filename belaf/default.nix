@@ -4,9 +4,6 @@
   inputs,
   ...
 }: {
-  nix.registry = {
-    k.flake = inputs.knixpkgs;
-  };
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
   shell.name = "nu";
@@ -39,6 +36,7 @@
     ../common/shell.nix
     ../common/nixos/greetd.nix
     ../common/nixos/ipcam.nix
+    ../common/nixos/nix.nix
     ./hardware.nix
     ./configuration.nix
   ];
