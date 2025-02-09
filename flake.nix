@@ -46,27 +46,22 @@
     systems = {
       belaf = {
         user = "kar";
-        system = "x86_64-linux";
         hasHome = true;
       };
       kiwi = {
         user = "kar";
-        system = "x86_64-linux";
         hasHome = true;
       };
       reg = {
         user = "kar";
-        system = "x86_64-linux";
         hasHome = false;
       };
       faputa = {
         user = "nixos";
-        system = "x86_64-linux";
         hasHome = false;
       };
       ozen = {
         user = "nixos";
-        system = "x86_64-linux";
         hasHome = true;
       };
     };
@@ -74,9 +69,7 @@
     # Helper function to create NixOS configurations
     mkSystem = hostname: cfg:
       nixpkgs.lib.nixosSystem {
-        system = cfg.system;
         specialArgs = {
-          inherit self;
           inputs =
             inputs
             // {

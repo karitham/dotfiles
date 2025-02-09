@@ -1,13 +1,22 @@
-{inputs, ...}: {
-  nix.settings = {
-    trusted-users = ["root" inputs.username];
-    experimental-features = ["nix-command" "flakes"];
-    auto-optimise-store = true;
-    warn-dirty = false;
+{
+  inputs,
+  pkgs,
+  ...
+}: {
+  nix = {
+    package = pkgs.lix;
+
+    settings = {
+      trusted-users = ["root" inputs.username];
+      experimental-features = ["nix-command" "flakes"];
+      auto-optimise-store = true;
+      warn-dirty = false;
+    };
   };
+
   nixpkgs = {
     overlays = [
-      (import ../../overlays/gotools.nix {})
+      (import ../../overlays/gotools.nix)
     ];
     config = {
       allowUnfree = true;
