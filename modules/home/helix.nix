@@ -97,30 +97,40 @@
             # config = ./typos.toml;
           };
         };
+        golangci-lint-lsp = {
+          command = "golangci-lint-langserver";
+          config = {
+            command = [
+              "golangci-lint"
+              "run"
+              "--config"
+              "~/.golangci.yml"
+              "--out-format"
+              "json"
+              "--issues-exit-code=1"
+            ];
+          };
+        };
+
         lsp-ai = {
           command = "lsp-ai";
           config = {
             memory.file_store = {};
-            models = {
-              main = {
+            models = rec {
+              smart = {
                 type = "anthropic";
                 chat_endpoint = "https://api.anthropic.com/v1/messages";
                 model = "claude-3-5-sonnet-latest";
                 auth_token_env_var_name = "ANTHROPIC_API_KEY";
               };
               fast = {
-                type = "anthropic";
-                chat_endpoint = "https://api.anthropic.com/v1/messages";
-                model = "claude-3-5-haiku-latest";
-                auth_token_env_var_name = "ANTHROPIC_API_KEY";
+                type = "open_ai";
+                completions_endpoint = "https://api.fireworks.ai/inference/v1/completions";
+                chat_endpoint = "https://api.fireworks.ai/inference/v1/chat/completions";
+                model = "accounts/fireworks/models/qwen2p5-coder-32b-instruct";
+                auth_token_env_var_name = "FIREWORKS_API_KEY";
               };
-            };
-            completion = {
-              model = "fast";
-              parameters = {
-                max_tokens = 128;
-                max_context = 4096;
-              };
+              main = fast;
             };
             chat = [
               {
@@ -139,7 +149,7 @@
                 model = "main";
                 parameters = {
                   max_tokens = 1024;
-                  max_context = 4096;
+                  max_context = 8192;
                   system = "You are a code assistant chatbot. The user will ask you for assistance coding and you will do you best to answer succinctly and accurately given the code context:\n\n{CONTEXT}";
                 };
               }
@@ -319,7 +329,7 @@
         }
         {
           name = "ruby";
-          language-servers = ["solargraph" "lsp-ai"];
+          language-servers = ["solargraph" "lsp-ai" "typos"];
           auto-format = true;
           formatter = {
             command = "rubocop";
