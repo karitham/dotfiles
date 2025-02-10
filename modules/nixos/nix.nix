@@ -14,10 +14,11 @@
     };
   };
 
+  imports = [
+    ./overlays
+  ];
+
   nixpkgs = {
-    overlays = [
-      (import ../../overlays/gotools.nix)
-    ];
     config = {
       allowUnfree = true;
       input-fonts.acceptLicense = true;

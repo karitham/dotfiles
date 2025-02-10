@@ -36,6 +36,10 @@
     docker.enable = true;
   };
 
+  environment.sessionVariables = {
+    EDITOR = "hx";
+  };
+
   programs = {
     nix-ld = {
       enable = true;
