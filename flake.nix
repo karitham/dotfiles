@@ -37,13 +37,7 @@
       ./modules/shell.nix
       ./modules/fonts.nix
       ./modules/nixos/shell.nix
-      ({inputs, ...}: {
-        nixpkgs.overlays = [
-          (final: prev: {
-            ghostty = inputs.stable.legacyPackages.${prev.system}.ghostty;
-          })
-        ];
-      })
+      ./modules/nixos/nix.nix
     ];
 
     # Unified system configuration

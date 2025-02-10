@@ -30,9 +30,9 @@
     extraSpecialArgs = {
       inherit inputs;
     };
-    users.kar = {
-      home.username = "kar";
-      home.homeDirectory = "/home/kar";
+    users.${inputs.username} = {
+      home.username = inputs.username;
+      home.homeDirectory = "/home/${inputs.username}";
       home.stateVersion = "24.05";
       shell.name = "nu";
       catppuccin.enable = true;
