@@ -319,6 +319,7 @@
         "nixpkgs": "nixpkgs_3",
         "spicetify-nix": "spicetify-nix",
         "ssh-keys": "ssh-keys",
+        "stable": "stable",
         "zen-browser": "zen-browser"
       }
     },
@@ -378,6 +379,22 @@
       "original": {
         "type": "file",
         "url": "https://github.com/karitham.keys"
+      }
+    },
+    "stable": {
+      "locked": {
+        "lastModified": 1735704835,
+        "narHash": "sha256-wDPMc5l/kwRGjdKjxCcH4ulQplapmFgo8ZffUvoT7WQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "f7b11968ea1d19496487f6afaac99c130a87c1ff",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "f7b11968ea1d19496487f6afaac99c130a87c1ff",
+        "type": "github"
       }
     },
     "systems": {

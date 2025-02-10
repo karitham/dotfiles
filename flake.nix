@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    stable.url = "github:nixos/nixpkgs?rev=f7b11968ea1d19496487f6afaac99c130a87c1ff";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -30,16 +31,19 @@
       flake = false;
     };
   };
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    ...
-  }: let
+  outputs = inputs @ {nixpkgs, ...}: let
     # Common modules used across all systems
     commonModules = [
       ./modules/shell.nix
       ./modules/fonts.nix
       ./modules/nixos/shell.nix
+      ({inputs, ...}: {
+        nixpkgs.overlays = [
+          (final: prev: {
+            ghostty = inputs.stable.legacyPackages.${prev.system}.ghostty;
+          })
+        ];
+      })
     ];
 
     # Unified system configuration
