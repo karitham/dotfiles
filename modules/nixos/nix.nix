@@ -7,10 +7,21 @@
     package = pkgs.lix;
 
     settings = {
-      trusted-users = ["root" inputs.username];
-      experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
+      builders-use-substitutes = true;
+      allowed-users = ["@wheel"];
+      trusted-users = ["@wheel"];
+      commit-lockfile-summary = "chore: Update flake.lock";
+      accept-flake-config = true;
+      keep-derivations = true;
+      keep-outputs = true;
       warn-dirty = false;
+
+      sandbox = true;
+      max-jobs = "auto";
+      keep-going = true;
+      log-lines = 20;
+      extra-experimental-features = ["flakes" "nix-command" "recursive-nix" "ca-derivations"];
     };
   };
 
@@ -23,6 +34,11 @@
       allowUnfree = true;
       input-fonts.acceptLicense = true;
     };
+  };
+
+  system.switch = {
+    enable = false;
+    enableNg = true;
   };
 
   programs.nh = {
