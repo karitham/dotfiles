@@ -51,11 +51,7 @@
         hasHome = true;
       };
       reg = {
-        user = "kar";
-        hasHome = false;
-      };
-      faputa = {
-        user = "nixos";
+        user = "root";
         hasHome = false;
       };
       ozen = {

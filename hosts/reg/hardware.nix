@@ -17,4 +17,5 @@
   };
   boot.tmp.cleanOnBoot = true;
   zramSwap.enable = true;
+  nixpkgs.hostPlatform = "x86_64-linux";
 }
