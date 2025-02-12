@@ -1,0 +1,3 @@
+{...}: {
+  programs.xplr.enable = true;
+}

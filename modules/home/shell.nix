@@ -57,7 +57,7 @@ in {
     };
 
     starship.enable = true;
-    starship.settings.kubernetes.disabled = false;
+    # starship.settings.kubernetes.disabled = false;
 
     direnv = {
       enable = true;
