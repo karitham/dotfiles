@@ -7,7 +7,7 @@
 
   boot.tmp.cleanOnBoot = true;
   zramSwap.enable = true;
-  networking.hostName = inputs.hostname;
+  hm.enable = false;
 
   services = {
     tailscale.enable = true;

@@ -1,5 +1,5 @@
 {
-  config,
+  osConfig,
   lib,
   ...
 }: let
@@ -9,15 +9,15 @@
     k = "kubectl";
   };
 in {
-  config.programs = {
-    zsh = lib.mkIf (config.shell.name == "zsh") {
+  programs = {
+    zsh = lib.mkIf (osConfig.shell.name == "zsh") {
       enable = true;
       enableCompletion = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
       shellAliases = aliases;
     };
-    nushell = lib.mkIf (config.shell.name == "nu") {
+    nushell = lib.mkIf (osConfig.shell.name == "nu") {
       enable = true;
       shellAliases = aliases;
       configFile.text = ''

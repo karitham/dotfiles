@@ -1,59 +1,51 @@
 {
+  config,
+  lib,
   inputs,
-  pkgs,
   ...
 }: {
-  catppuccin.enable = true;
-  catppuccin.flavor = "macchiato";
+  options.hm.enable = lib.mkEnableOption "Enable home manager";
 
-  services.upower.enable = true;
-  environment = with pkgs; {
-    systemPackages = [
-      wl-clipboard
-      waybar
-      wlroots
-      dunst
-      xdg-utils
-      pavucontrol
-      killall
-      playerctl
-      brightnessctl
-      upower
-      pulseaudio
-      gnome-themes-extra
-    ];
-  };
+  config = {
+    users.users.${inputs.username} =
+      if inputs.username != "root"
+      then {
+        home = "/home/${inputs.username}";
+        isNormalUser = true;
+        extraGroups = ["networkmanager" "docker" "wheel"];
+      }
+      else {};
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    extraSpecialArgs = {
-      inherit inputs;
-    };
-    users.${inputs.username} = {
-      home.username = inputs.username;
-      home.homeDirectory = "/home/${inputs.username}";
-      home.stateVersion = "24.05";
-      shell.name = "nu";
-      catppuccin.enable = true;
-      catppuccin.flavor = "macchiato";
+    home-manager = lib.mkIf config.hm.enable {
+      useGlobalPkgs = true;
+      useUserPackages = true;
+      extraSpecialArgs = {
+        inherit inputs;
+      };
+      users.${inputs.username} = {
+        home.username = inputs.username;
+        home.stateVersion = "24.05";
 
-      imports = [
-        ../fonts.nix
-        ../shell.nix
-        inputs.catppuccin.homeManagerModules.catppuccin
+        catppuccin = {
+          enable = config.catppuccin.enable;
+          flavor = config.catppuccin.flavor;
+        };
 
-        ./hyprland.nix
-        ./waybar.nix
-        ./rofi.nix
-        ./ghostty.nix
-        ./spotify.nix
-        ./git.nix
-        ./shell.nix
-        ./helix.nix
-        ./rnnoise.nix
-        ./file-manager.nix
-      ];
+        imports = [
+          inputs.catppuccin.homeManagerModules.catppuccin
+
+          ./hyprland.nix
+          ./waybar.nix
+          ./rofi.nix
+          ./ghostty.nix
+          ./spotify.nix
+          ./git.nix
+          ./shell.nix
+          ./helix.nix
+          ./rnnoise.nix
+          ./file-manager.nix
+        ];
+      };
     };
   };
 }
