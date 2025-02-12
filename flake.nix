@@ -32,14 +32,6 @@
     };
   };
   outputs = inputs @ {nixpkgs, ...}: let
-    # Common modules used across all systems
-    commonModules = [
-      ./modules/shell.nix
-      ./modules/fonts.nix
-      ./modules/nixos/shell.nix
-      ./modules/nixos/nix.nix
-    ];
-
     # Unified system configuration
     systems = {
       belaf = {
@@ -67,15 +59,18 @@
           inputs =
             inputs
             // {
-              inherit hostname;
               username = cfg.user;
             };
         };
-        modules =
-          [
-            ./hosts/${hostname}
-          ]
-          ++ commonModules;
+        modules = [
+          ({...}: {
+            networking.hostName = hostname;
+          })
+          inputs.home-manager.nixosModules.home-manager
+          ./modules/nixos
+          ./modules/home
+          ./hosts/${hostname}
+        ];
       };
   in rec {
     nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem systems;

@@ -1,9 +1,12 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }: {
-  config = {
+  options.ipcam.enable = lib.mkEnableOption "enable ipcam module";
+
+  config = lib.mkIf (config.desktop.enable && config.ipcam.enable) {
     boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];
     boot.kernelModules = ["v4l2loopback"];
     boot.extraModprobeConfig = ''
