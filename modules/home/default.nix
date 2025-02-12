@@ -52,6 +52,7 @@
         ./shell.nix
         ./helix.nix
         ./rnnoise.nix
+        ./file-manager.nix
       ];
     };
   };
