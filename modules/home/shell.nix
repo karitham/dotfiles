@@ -78,5 +78,11 @@ in {
         }
       '';
     };
+
+    less.enable = true;
+    less.keys = ''
+      #env
+      LESS = -S -R -i
+    '';
   };
 }
