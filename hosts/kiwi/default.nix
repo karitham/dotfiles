@@ -46,7 +46,7 @@
   programs.ssh.startAgent = true;
   environment = with pkgs; {
     systemPackages = [
-      vesktop
+      signal-desktop
       vscode
       mpv
       sd
