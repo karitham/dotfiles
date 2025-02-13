@@ -3,16 +3,14 @@
   lib,
   pkgs,
   ...
-}: let
-  getExe = name: "${pkgs.${name}}/bin/${name}";
-in {
+}: {
   config = lib.mkIf osConfig.desktop.enable {
     programs.waybar = {
       enable = true;
       systemd.enable = true;
       systemd.target = "hyprland-session.target";
       settings.mainBar = let
-        hctl = "${pkgs.hyprland}/bin/hyprctl";
+        hctl = lib.meta.getExe pkgs.hyprland;
       in {
         font = osConfig.fonts.mono;
         height = 40;
@@ -53,7 +51,7 @@ in {
         };
 
         backlight = let
-          bctl = getExe "brightnessctl";
+          bctl = lib.meta.getExe pkgs.brightnessctl;
         in {
           device = "eDP-1";
           max-length = "4";
@@ -89,7 +87,7 @@ in {
             car = "";
             default = ["" "" ""];
           };
-          on-click = "${getExe "pavucontrol"}";
+          on-click = lib.meta.getExe pkgs.pavucontrol;
         };
 
         network = {

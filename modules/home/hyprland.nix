@@ -5,9 +5,7 @@
   ...
 }: {
   config = lib.mkIf osConfig.desktop.enable {
-    wayland.windowManager.hyprland = let
-      getExe = name: "${pkgs."${name}"}/bin/${name}";
-    in {
+    wayland.windowManager.hyprland = {
       enable = true;
       systemd.enable = true;
       settings = {
@@ -87,8 +85,7 @@
         };
 
         windowrulev2 = [
-          # Make pavucontrol float
-          "float,class:^(pavucontrol)$"
+          "float,class:^(org.pulseaudio.pavucontrol)$"
           "opacity 0.0 override,class:^(xwaylandvideobridge)$"
           "noanim,class:^(xwaylandvideobridge)$"
           "noinitialfocus,class:^(xwaylandvideobridge)$"
@@ -99,7 +96,7 @@
 
         bind = let
           generateBindings = keyBind: workspacePrefix: i: "${keyBind}, ${toString i}, ${workspacePrefix}, ${toString i}";
-          screenshot = "${getExe "grim"} -g \"$(${getExe "slurp"} -d)\" -";
+          screenshot = "${lib.meta.getExe pkgs.grim} -g \"$(${lib.meta.getExe pkgs.slurp} -d)\" -";
         in
           [
             # Software
@@ -123,7 +120,7 @@
 
             # Screenshot
             "$mainMod, S, exec, ${screenshot} | wl-copy"
-            "$mainMod SHIFT, S, exec, ${screenshot} | ${getExe "swappy"} -f - -o - | wl-copy"
+            "$mainMod SHIFT, S, exec, ${screenshot} | ${lib.meta.getExe pkgs.swappy} -f - -o - | wl-copy"
 
             # Scroll through worskpaces
             "$mainMod, mouse_down, workspace, e+1"
@@ -148,18 +145,18 @@
         ];
 
         bindle = [
-          ",XF86MonBrightnessUp,   exec, ${getExe "brightnessctl"} set +5%"
-          ",XF86MonBrightnessDown, exec, ${getExe "brightnessctl"} set  5%-"
-          ",XF86KbdBrightnessUp,   exec, ${getExe "brightnessctl"} -d asus::kbd_backlight set +1"
-          ",XF86KbdBrightnessDown, exec, ${getExe "brightnessctl"} -d asus::kbd_backlight set  1-"
+          ",XF86MonBrightnessUp,   exec, ${lib.meta.getExe pkgs.brightnessctl} set +5%"
+          ",XF86MonBrightnessDown, exec, ${lib.meta.getExe pkgs.brightnessctl} set  5%-"
+          ",XF86KbdBrightnessUp,   exec, ${lib.meta.getExe pkgs.brightnessctl} -d asus::kbd_backlight set +1"
+          ",XF86KbdBrightnessDown, exec, ${lib.meta.getExe pkgs.brightnessctl} -d asus::kbd_backlight set  1-"
         ];
 
         bindl = [
-          ",XF86AudioPlay,    exec, ${getExe "playerctl"} play-pause"
-          ",XF86AudioStop,    exec, ${getExe "playerctl"} pause"
-          ",XF86AudioPause,   exec, ${getExe "playerctl"} pause"
-          ",XF86AudioPrev,    exec, ${getExe "playerctl"} previous"
-          ",XF86AudioNext,    exec, ${getExe "playerctl"} next"
+          ",XF86AudioPlay,    exec, ${lib.meta.getExe pkgs.playerctl} play-pause"
+          ",XF86AudioStop,    exec, ${lib.meta.getExe pkgs.playerctl} pause"
+          ",XF86AudioPause,   exec, ${lib.meta.getExe pkgs.playerctl} pause"
+          ",XF86AudioPrev,    exec, ${lib.meta.getExe pkgs.playerctl} previous"
+          ",XF86AudioNext,    exec, ${lib.meta.getExe pkgs.playerctl} next"
         ];
       };
     };
