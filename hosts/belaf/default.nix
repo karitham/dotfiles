@@ -9,7 +9,9 @@
   desktop.enable = true;
   hm.enable = true;
 
-  system = {stateVersion = "24.05";};
+  system = {
+    stateVersion = "24.05";
+  };
 
   environment.systemPackages = [
     # For debugging and troubleshooting Secure Boot.

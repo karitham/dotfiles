@@ -12,7 +12,11 @@
       then {
         home = "/home/${inputs.username}";
         isNormalUser = true;
-        extraGroups = ["networkmanager" "docker" "wheel"];
+        extraGroups = [
+          "networkmanager"
+          "docker"
+          "wheel"
+        ];
       }
       else {};
 
