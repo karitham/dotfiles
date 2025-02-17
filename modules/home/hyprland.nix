@@ -132,12 +132,8 @@
             "$mainMod CTRL, k, movecurrentworkspacetomonitor, u"
             "$mainMod CTRL, j, movecurrentworkspacetomonitor, d"
           ]
-          ++ map
-          (i: generateBindings "$mainMod" "workspace" i)
-          (pkgs.lib.range 1 9)
-          ++ map
-          (i: generateBindings "$mainMod SHIFT" "movetoworkspace" i)
-          (pkgs.lib.range 1 9);
+          ++ map (i: generateBindings "$mainMod" "workspace" i) (pkgs.lib.range 1 9)
+          ++ map (i: generateBindings "$mainMod SHIFT" "movetoworkspace" i) (pkgs.lib.range 1 9);
 
         bindm = [
           "$mainMod, mouse:272, movewindow"

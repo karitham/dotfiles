@@ -21,7 +21,12 @@
       max-jobs = "auto";
       keep-going = true;
       log-lines = 20;
-      extra-experimental-features = ["flakes" "nix-command" "recursive-nix" "ca-derivations"];
+      extra-experimental-features = [
+        "flakes"
+        "nix-command"
+        "recursive-nix"
+        "ca-derivations"
+      ];
     };
   };
 

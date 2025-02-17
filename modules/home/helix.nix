@@ -225,7 +225,11 @@
       language = [
         {
           name = "nix";
-          language-servers = ["nixd" "lsp-ai" "typos"];
+          language-servers = [
+            "nixd"
+            "lsp-ai"
+            "typos"
+          ];
           formatter = {
             command = "${pkgs.alejandra}/bin/alejandra";
           };
@@ -233,7 +237,12 @@
         }
         {
           name = "go";
-          language-servers = ["gopls" "golangci-lint-lsp" "lsp-ai" "typos"];
+          language-servers = [
+            "gopls"
+            "golangci-lint-lsp"
+            "lsp-ai"
+            "typos"
+          ];
           formatter = {
             command = "goimports";
           };
@@ -241,19 +250,37 @@
         }
         {
           name = "ruby";
-          language-servers = ["solargraph" "lsp-ai" "typos"];
+          language-servers = [
+            "solargraph"
+            "lsp-ai"
+            "typos"
+          ];
           auto-format = true;
           formatter = {
             command = "rubocop";
-            args = ["--stdin" "file.rb" "-a" "--stderr" "--fail-level" "fatal"];
+            args = [
+              "--stdin"
+              "file.rb"
+              "-a"
+              "--stderr"
+              "--fail-level"
+              "fatal"
+            ];
           };
         }
         {
           name = "html";
-          language-servers = ["vscode-html-language-server" "lsp-ai" "typos"];
+          language-servers = [
+            "vscode-html-language-server"
+            "lsp-ai"
+            "typos"
+          ];
           formatter = {
             command = "prettier";
-            args = ["--stdin-filepath" "file.html"];
+            args = [
+              "--stdin-filepath"
+              "file.html"
+            ];
           };
           auto-format = true;
         }
@@ -281,7 +308,13 @@
           ];
           formatter = {
             command = "biome";
-            args = ["format" "--indent-style" "space" "--stdin-file-path" "file.json"];
+            args = [
+              "format"
+              "--indent-style"
+              "space"
+              "--stdin-file-path"
+              "file.json"
+            ];
           };
           auto-format = true;
         }
@@ -296,9 +329,18 @@
           ];
           formatter = {
             command = "biome";
-            args = ["format" "--indent-style" "space" "--stdin-file-path" "file.jsonc"];
+            args = [
+              "format"
+              "--indent-style"
+              "space"
+              "--stdin-file-path"
+              "file.jsonc"
+            ];
           };
-          file-types = ["jsonc" "hujson"];
+          file-types = [
+            "jsonc"
+            "hujson"
+          ];
           auto-format = true;
         }
         {
@@ -313,7 +355,13 @@
           ];
           formatter = {
             command = "biome";
-            args = ["format" "--indent-style" "space" "--stdin-file-path" "file.jsx"];
+            args = [
+              "format"
+              "--indent-style"
+              "space"
+              "--stdin-file-path"
+              "file.jsx"
+            ];
           };
           auto-format = true;
         }
@@ -330,7 +378,13 @@
           ];
           formatter = {
             command = "biome";
-            args = ["format" "--indent-style" "space" "--stdin-file-path" "file.ts"];
+            args = [
+              "format"
+              "--indent-style"
+              "space"
+              "--stdin-file-path"
+              "file.ts"
+            ];
           };
           auto-format = true;
         }
@@ -339,25 +393,43 @@
           language-servers = ["yaml-language-server"];
           formatter = {
             command = "prettier";
-            args = ["--stdin-filepath" "file.yaml"];
+            args = [
+              "--stdin-filepath"
+              "file.yaml"
+            ];
           };
           auto-format = true;
         }
         {
           name = "markdown";
-          language-servers = ["marksman" "lsp-ai" "typos"];
+          language-servers = [
+            "marksman"
+            "lsp-ai"
+            "typos"
+          ];
           formatter = {
             command = "prettier";
-            args = ["--stdin-filepath" "file.md"];
+            args = [
+              "--stdin-filepath"
+              "file.md"
+            ];
           };
           auto-format = true;
         }
         {
           name = "sql";
-          language-servers = ["lsp-ai" "typos"];
+          language-servers = [
+            "lsp-ai"
+            "typos"
+          ];
           formatter = {
             command = "sql-formatter";
-            args = ["-l" "postgresql" "-c" "{\"keywordCase\": \"lower\", \"dataTypeCase\": \"lower\", \"functionCase\": \"lower\", \"expressionWidth\": 120, \"tabWidth\": 4}"];
+            args = [
+              "-l"
+              "postgresql"
+              "-c"
+              "{\"keywordCase\": \"lower\", \"dataTypeCase\": \"lower\", \"functionCase\": \"lower\", \"expressionWidth\": 120, \"tabWidth\": 4}"
+            ];
           };
           auto-format = true;
         }

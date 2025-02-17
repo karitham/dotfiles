@@ -46,7 +46,10 @@ in {
         "background-color" = mkLiteral "@bg-col";
       };
       inputbar = {
-        children = map mkLiteral ["prompt" "entry"];
+        children = map mkLiteral [
+          "prompt"
+          "entry"
+        ];
         "background-color" = mkLiteral "@bg-col";
         "border-radius" = 5;
         padding = 2;

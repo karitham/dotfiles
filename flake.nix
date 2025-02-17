@@ -63,9 +63,11 @@
             };
         };
         modules = [
-          ({...}: {
-            networking.hostName = hostname;
-          })
+          (
+            {...}: {
+              networking.hostName = hostname;
+            }
+          )
           inputs.home-manager.nixosModules.home-manager
           ./modules/nixos
           ./modules/home
@@ -76,7 +78,9 @@
     nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem systems;
     homeConfigurations = nixpkgs.lib.mapAttrs' (hostname: cfg: {
       name = "${cfg.user}@${hostname}";
-      value = {config = nixosConfigurations.${hostname}.config.home-manager.users.${cfg.user};};
+      value = {
+        config = nixosConfigurations.${hostname}.config.home-manager.users.${cfg.user};
+      };
     }) (nixpkgs.lib.filterAttrs (_: cfg: cfg.hasHome) systems);
   };
   nixConfig = {

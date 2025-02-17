@@ -12,14 +12,19 @@
   ipcam.enable = true;
   time.timeZone = "Europe/Paris";
 
-  system = {stateVersion = "24.11";};
+  system = {
+    stateVersion = "24.11";
+  };
 
   imports = [
     inputs.catppuccin.nixosModules.catppuccin
     ./hardware.nix
   ];
 
-  home-manager.users.kar.imports = [./home-upf.nix ./desktop.nix];
+  home-manager.users.kar.imports = [
+    ./home-upf.nix
+    ./desktop.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;

@@ -18,9 +18,20 @@
         position = "top";
         output = "eDP-1";
         spacing = 7;
-        modules-left = ["custom/launcher" "cpu" "temperature" "backlight"];
+        modules-left = [
+          "custom/launcher"
+          "cpu"
+          "temperature"
+          "backlight"
+        ];
         modules-center = ["hyprland/workspaces"];
-        modules-right = ["pulseaudio" "network" "battery" "clock" "custom/powermenu"];
+        modules-right = [
+          "pulseaudio"
+          "network"
+          "battery"
+          "clock"
+          "custom/powermenu"
+        ];
 
         "hyprland/workspaces" = {
           disable-scroll = true;
@@ -56,7 +67,17 @@
           device = "eDP-1";
           max-length = "4";
           format = "{icon}  {percent}%";
-          format-icons = ["" "" "" "" "" "" "" "" ""];
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
           on-scroll-up = pkgs.writeShellScript "brightness.sh" ''
             MIN_BRIGHTNESS=5
             current_brightness=$(${bctl} g)
@@ -85,7 +106,11 @@
             phone = "";
             portable = "";
             car = "";
-            default = ["" "" ""];
+            default = [
+              ""
+              ""
+              ""
+            ];
           };
           on-click = lib.meta.getExe pkgs.pavucontrol;
         };
@@ -112,7 +137,13 @@
           format-plugged = "  {capacity}%";
           format-alt = "{icon}  {time}";
           format-full = "  {capacity}%";
-          format-icons = ["" "" "" "" ""];
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
         };
 
         clock = {
