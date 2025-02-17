@@ -21,8 +21,6 @@
       else {};
 
     home-manager = lib.mkIf config.hm.enable {
-      useGlobalPkgs = true;
-      useUserPackages = true;
       extraSpecialArgs = {
         inherit inputs;
       };
