@@ -139,36 +139,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1739756364,
-        "narHash": "sha256-r8RxE0W3uhJ6unzbIddWTAzrpP9tMnmbj0F+DF+CTSM=",
+        "lastModified": 1739802995,
+        "narHash": "sha256-kZv0upOigS/4sUEgZuZd6/uO6s8X8oYOLk9/sGMsl+c=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "662fa98bf488daa82ce8dc2bc443872952065ab9",
+        "rev": "9d0d48f4c3d2fb1a8c8607da143bb567a741d914",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
         "type": "github"
-      }
-    },
-    "knixpkgs": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1725454707,
-        "narHash": "sha256-FuJzhhU5tPcPXLy7Wze1f2nBEyq/UWcNWMtxcyKUlbU=",
-        "rev": "8876e3e19f3c2d5391ba274045dd623584569c6b",
-        "revCount": 16,
-        "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/karitham/knixpkgs/0.1.16%2Brev-8876e3e19f3c2d5391ba274045dd623584569c6b/0191bd1d-ff47-7d97-b5fd-08db200c6261/source.tar.gz?rev=8876e3e19f3c2d5391ba274045dd623584569c6b&revCount=16"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://flakehub.com/f/karitham/knixpkgs/0.1.%2A.tar.gz"
       }
     },
     "lanzaboote": {
@@ -204,11 +185,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1739779999,
-        "narHash": "sha256-a0UjUyDmZjkTy8lKBOkQORn8R2pkmV6D8Gos8K+Le18=",
+        "lastModified": 1739782332,
+        "narHash": "sha256-bPZKuual2WKfyHv7Wq+Owcj9R+i/qFzOWByqSS9rlxI=",
         "owner": "nix-community",
         "repo": "NixOS-WSL",
-        "rev": "e728a92095cd3e065a1d790b62b28ce783f5e8b4",
+        "rev": "59bdbb1e75232bf1dd6d2a9313b9b6ddc5049ba2",
         "type": "github"
       },
       "original": {
@@ -252,11 +233,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1739357830,
-        "narHash": "sha256-9xim3nJJUFbVbJCz48UP4fGRStVW5nv4VdbimbKxJ3I=",
+        "lastModified": 1739624908,
+        "narHash": "sha256-f84lBmLl4tkDp1ZU5LBTSFzlxXP4926DVW3KnXrke10=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0ff09db9d034a04acd4e8908820ba0b410d7a33a",
+        "rev": "a60651b217d2e529729cbc7d989c19f3941b9250",
         "type": "github"
       },
       "original": {
@@ -268,11 +249,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1739580444,
-        "narHash": "sha256-+/bSz4EAVbqz8/HsIGLroF8aNaO8bLRL7WfACN+24g4=",
+        "lastModified": 1739736696,
+        "narHash": "sha256-zON2GNBkzsIyALlOCFiEBcIjI4w38GYOb+P+R4S8Jsw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8bb37161a0488b89830168b81c48aed11569cb93",
+        "rev": "d74a2335ac9c133d6bbec9fc98d91a77f1604c1f",
         "type": "github"
       },
       "original": {
@@ -313,13 +294,11 @@
       "inputs": {
         "catppuccin": "catppuccin",
         "home-manager": "home-manager",
-        "knixpkgs": "knixpkgs",
         "lanzaboote": "lanzaboote",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_3",
         "spicetify-nix": "spicetify-nix",
         "ssh-keys": "ssh-keys",
-        "stable": "stable",
         "zen-browser": "zen-browser"
       }
     },
@@ -379,22 +358,6 @@
       "original": {
         "type": "file",
         "url": "https://github.com/karitham.keys"
-      }
-    },
-    "stable": {
-      "locked": {
-        "lastModified": 1735704835,
-        "narHash": "sha256-wDPMc5l/kwRGjdKjxCcH4ulQplapmFgo8ZffUvoT7WQ=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "f7b11968ea1d19496487f6afaac99c130a87c1ff",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "f7b11968ea1d19496487f6afaac99c130a87c1ff",
-        "type": "github"
       }
     },
     "systems": {
