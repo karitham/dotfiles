@@ -1,26 +1,32 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  global-tools = with pkgs; [
+    alejandra
+    biome
+    golangci-lint
+    gotools
+    sql-formatter
+    nodePackages.prettier
+  ];
+in {
+  home.packages = global-tools;
   programs.helix = {
     enable = true;
     defaultEditor = true;
-    extraPackages = with pkgs; [
-      biome
-      gopls
-      golangci-lint
-      gotools
-      golangci-lint-langserver
-      rubocop
-      rubyPackages.solargraph
-      nixd
-      marksman
-      sql-formatter
-      nodePackages.prettier
-      nodePackages.typescript-language-server
-      vscode-langservers-extracted
-      yaml-language-server
-      lsp-ai
-      typos-lsp
-      alejandra
-    ];
+    extraPackages = with pkgs;
+      [
+        gopls
+        golangci-lint-langserver
+        rubocop
+        rubyPackages.solargraph
+        nixd
+        marksman
+        nodePackages.typescript-language-server
+        vscode-langservers-extracted
+        yaml-language-server
+        lsp-ai
+        typos-lsp
+      ]
+      ++ global-tools;
 
     settings = {
       keys = let
@@ -231,7 +237,7 @@
             "typos"
           ];
           formatter = {
-            command = "${pkgs.alejandra}/bin/alejandra";
+            command = "alejandra";
           };
           auto-format = true;
         }
