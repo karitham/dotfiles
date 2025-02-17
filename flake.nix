@@ -1,7 +1,6 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    stable.url = "github:nixos/nixpkgs?rev=f7b11968ea1d19496487f6afaac99c130a87c1ff";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -15,10 +14,6 @@
     };
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    knixpkgs = {
-      url = "https://flakehub.com/f/karitham/knixpkgs/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
