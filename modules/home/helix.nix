@@ -28,6 +28,12 @@ in {
       ]
       ++ global-tools;
 
+    ignores = [
+      ".zig-cache"
+      "node_modules"
+      ".direnv"
+    ];
+
     settings = {
       keys = let
         plusMenu = {
@@ -228,218 +234,217 @@ in {
         };
       };
 
-      language = [
-        {
-          name = "nix";
-          language-servers = [
-            "nixd"
-            "lsp-ai"
-            "typos"
-          ];
-          formatter = {
-            command = "alejandra";
-          };
-          auto-format = true;
-        }
-        {
-          name = "go";
-          language-servers = [
-            "gopls"
-            "golangci-lint-lsp"
-            "lsp-ai"
-            "typos"
-          ];
-          formatter = {
-            command = "goimports";
-          };
-          auto-format = true;
-        }
-        {
-          name = "ruby";
-          language-servers = [
-            "solargraph"
-            "lsp-ai"
-            "typos"
-          ];
-          auto-format = true;
-          formatter = {
-            command = "rubocop";
-            args = [
-              "--stdin"
-              "file.rb"
-              "-a"
-              "--stderr"
-              "--fail-level"
-              "fatal"
-            ];
-          };
-        }
-        {
-          name = "html";
-          language-servers = [
-            "vscode-html-language-server"
-            "lsp-ai"
-            "typos"
-          ];
-          formatter = {
-            command = "prettier";
-            args = [
-              "--stdin-filepath"
-              "file.html"
-            ];
-          };
-          auto-format = true;
-        }
-        {
-          name = "javascript";
-          language-servers = [
+      language =
+        map (lang:
+          lang
+          // {
+            language-servers =
+              if lang ? language-servers
+              then lang.language-servers ++ ["lsp-ai" "typos"]
+              else ["lsp-ai" "typos"];
+          })
+        ([
             {
-              name = "typescript-language-server";
-              except-features = ["format"];
+              name = "nix";
+              language-servers = [
+                "nixd"
+              ];
+              formatter = {
+                command = "alejandra";
+              };
+              auto-format = true;
             }
-            "biome"
-            "lsp-ai"
-            "typos"
-          ];
-          auto-format = true;
-        }
-        {
-          name = "json";
-          language-servers = [
             {
-              name = "vscode-json-language-server";
-              except-features = ["format"];
+              name = "go";
+              language-servers = [
+                "gopls"
+                "golangci-lint-lsp"
+              ];
+              formatter = {
+                command = "goimports";
+              };
+              auto-format = true;
             }
-            "biome"
-          ];
-          formatter = {
-            command = "biome";
-            args = [
-              "format"
-              "--indent-style"
-              "space"
-              "--stdin-file-path"
-              "file.json"
-            ];
-          };
-          auto-format = true;
-        }
-        {
-          name = "jsonc";
-          language-servers = [
             {
-              name = "vscode-json-language-server";
-              except-features = ["format"];
+              name = "ruby";
+              language-servers = [
+                "solargraph"
+              ];
+              auto-format = true;
+              formatter = {
+                command = "rubocop";
+                args = [
+                  "--stdin"
+                  "file.rb"
+                  "-a"
+                  "--stderr"
+                  "--fail-level"
+                  "fatal"
+                ];
+              };
             }
-            "biome"
-          ];
-          formatter = {
-            command = "biome";
-            args = [
-              "format"
-              "--indent-style"
-              "space"
-              "--stdin-file-path"
-              "file.jsonc"
-            ];
-          };
-          file-types = [
-            "jsonc"
-            "hujson"
-          ];
-          auto-format = true;
-        }
-        {
-          name = "jsx";
-          language-servers = [
             {
-              name = "typescript-language-server";
-              except-features = ["format"];
+              name = "html";
+              language-servers = [
+                "vscode-html-language-server"
+              ];
+              formatter = {
+                command = "prettier";
+                args = [
+                  "--stdin-filepath"
+                  "file.html"
+                ];
+              };
+              auto-format = true;
             }
-            "biome"
-            "typos"
-          ];
-          formatter = {
-            command = "biome";
-            args = [
-              "format"
-              "--indent-style"
-              "space"
-              "--stdin-file-path"
-              "file.jsx"
-            ];
-          };
-          auto-format = true;
-        }
-        {
-          name = "typescript";
-          language-servers = [
             {
-              name = "typescript-language-server";
-              except-features = ["format"];
+              name = "javascript";
+              language-servers = [
+                {
+                  name = "typescript-language-server";
+                  except-features = ["format"];
+                }
+                "biome"
+              ];
+              auto-format = true;
             }
-            "biome"
-            "lsp-ai"
-            "typos"
-          ];
-          formatter = {
-            command = "biome";
-            args = [
-              "format"
-              "--indent-style"
-              "space"
-              "--stdin-file-path"
-              "file.ts"
-            ];
-          };
-          auto-format = true;
-        }
-        {
-          name = "yaml";
-          language-servers = ["yaml-language-server"];
-          formatter = {
-            command = "prettier";
-            args = [
-              "--stdin-filepath"
-              "file.yaml"
-            ];
-          };
-          auto-format = true;
-        }
-        {
-          name = "markdown";
-          language-servers = [
-            "marksman"
-            "lsp-ai"
-            "typos"
-          ];
-          formatter = {
-            command = "prettier";
-            args = [
-              "--stdin-filepath"
-              "file.md"
-            ];
-          };
-          auto-format = true;
-        }
-        {
-          name = "sql";
-          language-servers = [
-            "lsp-ai"
-            "typos"
-          ];
-          formatter = {
-            command = "sql-formatter";
-            args = [
-              "-l"
-              "postgresql"
-              "-c"
-              "{\"keywordCase\": \"lower\", \"dataTypeCase\": \"lower\", \"functionCase\": \"lower\", \"expressionWidth\": 120, \"tabWidth\": 4}"
-            ];
-          };
-          auto-format = true;
-        }
-      ];
+            {
+              name = "json";
+              language-servers = [
+                {
+                  name = "vscode-json-language-server";
+                  except-features = ["format"];
+                }
+                "biome"
+              ];
+              formatter = {
+                command = "biome";
+                args = [
+                  "format"
+                  "--indent-style"
+                  "space"
+                  "--stdin-file-path"
+                  "file.json"
+                ];
+              };
+              auto-format = true;
+            }
+            {
+              name = "jsonc";
+              language-servers = [
+                {
+                  name = "vscode-json-language-server";
+                  except-features = ["format"];
+                }
+                "biome"
+              ];
+              formatter = {
+                command = "biome";
+                args = [
+                  "format"
+                  "--indent-style"
+                  "space"
+                  "--stdin-file-path"
+                  "file.jsonc"
+                ];
+              };
+              file-types = [
+                "jsonc"
+                "hujson"
+              ];
+              auto-format = true;
+            }
+            {
+              name = "jsx";
+              language-servers = [
+                {
+                  name = "typescript-language-server";
+                  except-features = ["format"];
+                }
+                "biome"
+              ];
+              formatter = {
+                command = "biome";
+                args = [
+                  "format"
+                  "--indent-style"
+                  "space"
+                  "--stdin-file-path"
+                  "file.jsx"
+                ];
+              };
+              auto-format = true;
+            }
+            {
+              name = "typescript";
+              language-servers = [
+                {
+                  name = "typescript-language-server";
+                  except-features = ["format"];
+                }
+                "biome"
+              ];
+              formatter = {
+                command = "biome";
+                args = [
+                  "format"
+                  "--indent-style"
+                  "space"
+                  "--stdin-file-path"
+                  "file.ts"
+                ];
+              };
+              auto-format = true;
+            }
+            {
+              name = "yaml";
+              language-servers = ["yaml-language-server"];
+              formatter = {
+                command = "prettier";
+                args = [
+                  "--stdin-filepath"
+                  "file.yaml"
+                ];
+              };
+              auto-format = true;
+            }
+            {
+              name = "markdown";
+              language-servers = [
+                "marksman"
+              ];
+              formatter = {
+                command = "prettier";
+                args = [
+                  "--stdin-filepath"
+                  "file.md"
+                ];
+              };
+              auto-format = true;
+            }
+            {
+              name = "sql";
+              formatter = {
+                command = "sql-formatter";
+                args = [
+                  "-l"
+                  "postgresql"
+                  "-c"
+                  "{\"keywordCase\": \"lower\", \"dataTypeCase\": \"lower\", \"functionCase\": \"lower\", \"expressionWidth\": 120, \"tabWidth\": 4}"
+                ];
+              };
+              auto-format = true;
+            }
+          ]
+          ++ map (lang: {
+            name = lang;
+          }) [
+            "git-attributes"
+            "git-commit"
+            "git-config"
+            "git-ignore"
+            "git-rebase"
+          ]);
     };
   };
 }
