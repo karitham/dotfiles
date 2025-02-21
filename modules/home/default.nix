@@ -24,6 +24,7 @@
       extraSpecialArgs = {
         inherit inputs;
       };
+      backupFileExtension = "bak";
       users.${inputs.username} = {
         home.username = inputs.username;
         home.stateVersion = "24.05";
@@ -46,6 +47,7 @@
           ./helix.nix
           ./rnnoise.nix
           ./file-manager.nix
+          ./browser.nix
         ];
       };
     };
