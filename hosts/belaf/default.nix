@@ -36,6 +36,9 @@
     # touchpad
     touchegg.enable = true;
 
+    #power
+    auto-cpufreq.enable = true;
+
     # bluetooth
     blueman.enable = true;
 
