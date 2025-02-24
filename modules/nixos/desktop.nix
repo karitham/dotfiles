@@ -54,6 +54,10 @@ in {
         xwayland.enable = true;
         withUWSM = true;
       };
+
+      hyprlock = {
+        enable = true;
+      };
     };
 
     services = {

@@ -3,8 +3,24 @@
   lib,
   pkgs,
   ...
-}: {
+}: let
+  powermenu = pkgs.writeShellScriptBin "powermenu" ''
+    declare -rA power_menu=(
+        ["  Lock"]="hyprlock"
+        ["  Shut down"]="systemctl poweroff"
+        ["  Reboot"]="systemctl reboot"
+    )
+
+    set -e -x
+    selected_option=$(printf '%s\n' "''${!power_menu[@]}" | rofi -dmenu)
+
+    if [[ -n $selected_option ]] && [[ -v power_menu[$selected_option] ]]; then
+        ''${power_menu[$selected_option]}
+    fi
+  '';
+in {
   config = lib.mkIf osConfig.desktop.enable {
+    home.packages = [powermenu];
     wayland.windowManager.hyprland = {
       enable = true;
       systemd.enable = true;
@@ -22,8 +38,8 @@
           "QT_QPA_PLATFORMTHEME,qt5ct" # change to qt6ct if you have that
         ];
 
-        "$powermenu" = "${./scripts/powermenu.sh}";
-        "$menu" = "${pkgs.rofi-wayland-unwrapped}/bin/rofi -show drun";
+        "$powermenu" = "${lib.meta.getExe powermenu}";
+        "$menu" = "${lib.meta.getExe pkgs.rofi-wayland-unwrapped} -show drun";
 
         input = {
           kb_layout = "us";
