@@ -41,6 +41,7 @@
     tailscale.useRoutingFeatures = "client";
     touchegg.enable = true;
     blueman.enable = true;
+    auto-cpufreq.enable = true;
   };
 
   security = {
