@@ -83,6 +83,10 @@ in {
             "position"
           ];
         };
+        gutters = [
+          "diff"
+          "diagnostics"
+        ];
         end-of-line-diagnostics = "hint";
         inline-diagnostics = {
           cursor-line = "warning"; # show warnings and errors on the cursorline inline
