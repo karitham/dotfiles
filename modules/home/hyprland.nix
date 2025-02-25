@@ -21,6 +21,13 @@
 in {
   config = lib.mkIf osConfig.desktop.enable {
     home.packages = [powermenu];
+    services.hyprpaper = {
+      enable = true;
+      settings = {
+        preload = ["${osConfig.desktop.wallpaper}"];
+        wallpaper = [", ${osConfig.desktop.wallpaper}"];
+      };
+    };
     wayland.windowManager.hyprland = {
       enable = true;
       systemd.enable = true;
@@ -94,10 +101,6 @@ in {
 
         gestures = {
           workspace_swipe = "off";
-        };
-
-        misc = {
-          force_default_wallpaper = "-1";
         };
 
         windowrulev2 = [
