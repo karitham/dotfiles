@@ -7,6 +7,7 @@
   powermenu = pkgs.writeShellScriptBin "powermenu" ''
     declare -rA power_menu=(
         ["  Lock"]="hyprlock"
+        ["  Sleep"]='hyprlock & systemctl suspend'
         ["  Shut down"]="systemctl poweroff"
         ["  Reboot"]="systemctl reboot"
     )
@@ -15,7 +16,7 @@
     selected_option=$(printf '%s\n' "''${!power_menu[@]}" | rofi -dmenu)
 
     if [[ -n $selected_option ]] && [[ -v power_menu[$selected_option] ]]; then
-        ''${power_menu[$selected_option]}
+        eval "''${power_menu[$selected_option]}"
     fi
   '';
 in {
