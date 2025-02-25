@@ -108,7 +108,7 @@ in {
     programs.rofi.extraConfig = {
       modi = "run,drun,window";
       lines = 8;
-      font = "Iosevka 10.5";
+      font = "${osConfig.fonts.mono} 10.5";
       show-icons = true;
       icon-theme = "Papirus-Dark";
       terminal = "ghostty";
@@ -118,7 +118,7 @@ in {
       hide-scrollbar = true;
       display-drun = "   Apps ";
       display-run = "   Run ";
-      display-window = " 﩯  window";
+      display-window = " 﩯 Window";
       sidebar-mode = true;
     };
   };
