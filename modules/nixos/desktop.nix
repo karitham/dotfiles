@@ -6,8 +6,18 @@
 }: let
   cfg = config.desktop;
 in {
-  options.desktop = {
+  options.desktop = let
+    defaultWallpaper = pkgs.fetchurl {
+      url = "https://raw.githubusercontent.com/HoulFloof/wallpapers/f23c1010b93cb97baa7ad7c94fd552f7601496d2/misc/waves_right_colored.png";
+      hash = "sha256-NqqE+pGnCIWAitH86sxu1EudVEEaSO82y3NqbhtDh9k=";
+    };
+  in {
     enable = lib.mkEnableOption "desktop usage";
+    wallpaper = lib.mkOption {
+      default = "${defaultWallpaper}";
+      type = lib.types.path;
+      description = "the wallpaper to use";
+    };
   };
 
   config = lib.mkIf cfg.enable {
