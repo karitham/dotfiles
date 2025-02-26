@@ -1,7 +1,10 @@
 {pkgs, ...}: let
   global-tools = with pkgs; [
     alejandra
-    biome
+    (biome.overrideAttrs
+      (attrs: {
+        doCheck = false;
+      }))
     golangci-lint
     gotools
     sql-formatter
