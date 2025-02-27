@@ -16,6 +16,12 @@
     stateVersion = "24.11";
   };
 
+  # https://gitlab.freedesktop.org/drm/amd/-/issues/3925
+  # https://gitlab.freedesktop.org/drm/amd/-/issues/3647
+  boot.kernelParams = [
+    "amdgpu.dcdebugmask=0x10"
+  ];
+
   imports = [
     inputs.catppuccin.nixosModules.catppuccin
     ./hardware.nix

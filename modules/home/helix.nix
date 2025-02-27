@@ -8,6 +8,7 @@
     golangci-lint
     gotools
     sql-formatter
+    rubocop
     nodePackages.prettier
   ];
 in {
@@ -19,7 +20,6 @@ in {
       [
         gopls
         golangci-lint-langserver
-        rubocop
         rubyPackages.solargraph
         nixd
         marksman
