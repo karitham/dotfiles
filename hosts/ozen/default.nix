@@ -7,7 +7,7 @@
     inputs.catppuccin.nixosModules.catppuccin
     inputs.nixos-wsl.nixosModules.default
     {
-      system.stateVersion = "24.05";
+      system.stateVersion = "24.11";
       wsl.enable = true;
       wsl.defaultUser = "nixos";
     }
