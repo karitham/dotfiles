@@ -11,7 +11,7 @@
   time.timeZone = "Europe/Paris";
 
   system = {
-    stateVersion = "24.05";
+    stateVersion = "24.11";
   };
 
   boot.loader.systemd-boot.enable = lib.mkForce false;

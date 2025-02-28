@@ -27,7 +27,7 @@
       backupFileExtension = "bak";
       users.${inputs.username} = {
         home.username = inputs.username;
-        home.stateVersion = "24.05";
+        home.stateVersion = "24.11";
 
         catppuccin = {
           enable = config.catppuccin.enable;
