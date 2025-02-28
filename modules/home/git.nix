@@ -5,7 +5,7 @@
 }: {
   programs.git = {
     enable = true;
-    userName = "Karitham";
+    userName = "karitham";
     userEmail = "kar@karitham.dev";
 
     signing = {
