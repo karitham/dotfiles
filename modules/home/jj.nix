@@ -17,7 +17,7 @@
         sign-on-push = true;
       };
       ui = {
-        default-command = ["log" "--reversed"];
+        default-command = ["log" "-r" "..@" "-n" "10" "--no-pager"];
       };
     };
   };
