@@ -7,8 +7,6 @@
 
   boot.tmp.cleanOnBoot = true;
   zramSwap.enable = true;
-  hm.enable = false;
-
   services = {
     tailscale.enable = true;
     tailscale.useRoutingFeatures = "server";

@@ -57,17 +57,20 @@
               username = cfg.user;
             };
         };
-        modules = [
-          (
-            {...}: {
-              networking.hostName = hostname;
-            }
-          )
-          inputs.home-manager.nixosModules.home-manager
-          ./modules/nixos
-          ./modules/home
-          ./hosts/${hostname}
-        ];
+        modules =
+          [
+            (
+              {...}: {
+                networking.hostName = hostname;
+              }
+            )
+            ./modules/nixos
+            ./hosts/${hostname}
+          ]
+          ++ nixpkgs.lib.optionals (cfg.hasHome) [
+            inputs.home-manager.nixosModules.home-manager
+            ./modules/home
+          ];
       };
   in rec {
     nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem systems;

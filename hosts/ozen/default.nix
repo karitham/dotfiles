@@ -19,7 +19,6 @@
   };
 
   virtualisation.docker.enable = true;
-  hm.enable = true;
 
   environment.sessionVariables = {
     EDITOR = "hx";

@@ -7,7 +7,6 @@
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
   desktop.enable = true;
-  hm.enable = true;
   time.timeZone = "Europe/Paris";
 
   system = {
