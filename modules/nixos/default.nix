@@ -5,6 +5,7 @@
     ./desktop.nix
     ./sound.nix
     ./nix.nix
+    ./cachix.nix
     ./locale.nix
     ./docker.nix
     ./fonts.nix
