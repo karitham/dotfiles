@@ -1,10 +1,14 @@
 {
+  lib,
   inputs,
   pkgs,
   ...
 }: {
   nix = {
     package = pkgs.lix;
+
+    registry.nixpkgs.flake = inputs.nixpkgs;
+    channel.enable = false;
 
     settings = {
       auto-optimise-store = true;
@@ -29,6 +33,8 @@
       ];
     };
   };
+
+  environment.etc."nix/inputs/nixpkgs".source = "${inputs.nixpkgs}";
 
   imports = [
     ./overlays
