@@ -8,7 +8,6 @@
     flavor = "macchiato";
   };
   desktop.enable = true;
-  hm.enable = true;
   ipcam.enable = true;
   time.timeZone = "Europe/Paris";
 
