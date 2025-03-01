@@ -1,7 +1,6 @@
 {...}: {
   programs.jujutsu = {
     enable = true;
-    ediff = true;
 
     settings = {
       user = {
