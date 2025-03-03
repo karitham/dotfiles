@@ -40,6 +40,7 @@
         ./ghostty.nix
         ./spotify.nix
         ./git.nix
+        ./jj.nix
         ./shell.nix
         ./helix.nix
         ./rnnoise.nix
