@@ -14,6 +14,7 @@
       };
       git = {
         sign-on-push = true;
+        auto-local-bookmark = true;
       };
       ui = {
         default-command = ["log" "-r" "..@" "-n" "10" "--no-pager"];
