@@ -7,7 +7,7 @@
   powermenu = pkgs.writeShellScriptBin "powermenu" ''
     declare -rA power_menu=(
         ["  Lock"]="${pkgs.systemd}/bin/loginctl lock-sessions"
-        ["  Sleep"]='${pkgs.systemd}/bin/loginctl lock-sessions & systemctl suspend'
+        ["  Sleep"]='systemctl suspend'
         ["  Shut down"]="systemctl poweroff"
         ["  Reboot"]="systemctl reboot"
     )
