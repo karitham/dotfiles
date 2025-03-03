@@ -8,6 +8,7 @@
   catppuccin.flavor = "macchiato";
   desktop.enable = true;
   time.timeZone = "Europe/Paris";
+  yubikey.enable = true;
 
   system = {
     stateVersion = "24.11";
@@ -24,10 +25,6 @@
 
   networking.networkmanager.enable = true;
 
-  services.pcscd.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-  };
   services = {
     tailscale.enable = true;
     tailscale.useRoutingFeatures = "client";
