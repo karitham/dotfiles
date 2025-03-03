@@ -6,8 +6,8 @@
 }: let
   powermenu = pkgs.writeShellScriptBin "powermenu" ''
     declare -rA power_menu=(
-        ["  Lock"]="hyprlock"
-        ["  Sleep"]='hyprlock & systemctl suspend'
+        ["  Lock"]="${pkgs.systemd}/bin/loginctl lock-sessions"
+        ["  Sleep"]='${pkgs.systemd}/bin/loginctl lock-sessions & systemctl suspend'
         ["  Shut down"]="systemctl poweroff"
         ["  Reboot"]="systemctl reboot"
     )

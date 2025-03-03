@@ -1,24 +1,34 @@
 {
   lib,
   osConfig,
-  pkgs,
   ...
-}: let
-  hyprland-catpuccin = pkgs.fetchFromGitHub {
-    owner = "catppuccin";
-    repo = "hyprland";
-    rev = "b57375545f5da1f7790341905d1049b1873a8bb3";
-    hash = "sha256-XTqpmucOeHUgSpXQ0XzbggBFW+ZloRD/3mFhI+Tq4O8=";
-  };
-in {
+}: {
   config = lib.mkIf osConfig.desktop.enable {
+    services.hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+          ignore_dbus_inhibit = false;
+          lock_cmd = "hyprlock";
+        };
+
+        listener = [
+          {
+            timeout = 900;
+            on-timeout = "hyprlock";
+          }
+          {
+            timeout = 1200;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+        ];
+      };
+    };
     programs.hyprlock = {
       enable = true;
       settings = {
-        source = [
-          "${hyprland-catpuccin}/themes/macchitao.conf"
-        ];
-
         "$accent" = "$mauve";
         "$accentAlpha" = "$mauveAlpha";
         "$font" = osConfig.fonts.mono;
