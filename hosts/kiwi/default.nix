@@ -9,6 +9,7 @@
   };
   desktop.enable = true;
   ipcam.enable = true;
+  yubikey.enable = true;
   time.timeZone = "Europe/Paris";
 
   system = {
@@ -37,10 +38,6 @@
 
   networking.networkmanager.enable = true;
 
-  services.pcscd.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-  };
   services = {
     tailscale.enable = true;
     tailscale.useRoutingFeatures = "client";

@@ -9,5 +9,6 @@
     ./locale.nix
     ./docker.nix
     ./fonts.nix
+    ./yubikey.nix
   ];
 }
