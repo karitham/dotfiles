@@ -53,6 +53,7 @@ in {
       };
 
       editor = {
+        scrolloff = 10;
         bufferline = "multiple";
         color-modes = true;
         auto-format = true;
