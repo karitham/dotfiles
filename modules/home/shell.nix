@@ -9,6 +9,7 @@
     k = "kubectl";
   };
 in {
+  # home.packages = [(import ../../pkgs/pokego.nix {inherit pkgs;})];
   programs = {
     zsh = lib.mkIf (osConfig.shell.name == "zsh") {
       enable = true;
@@ -31,6 +32,7 @@ in {
 
         source ${./navi.plugin.nu}
       '';
+      # pokego --random 1-8
     };
     zoxide.enable = true;
     carapace.enable = true;
