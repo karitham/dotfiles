@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   programs.jujutsu = {
     enable = true;
 
@@ -22,6 +22,13 @@
       ui = {
         default-command = ["log" "--no-pager"];
         movement.edit = true;
+        editor = "hx";
+        diff.tool = [
+          "${pkgs.difftastic}/bin/difft"
+          "--color=always"
+          "$left"
+          "$right"
+        ];
       };
       "--scope" = [
         {
@@ -29,6 +36,15 @@
           revset-aliases."immutable_heads()" = "builtin_immutable_heads() | (trunk().. & ~mine()) | master@origin | staging@origin";
         }
       ];
+      aliases = {
+        fetch = [
+          "util"
+          "exec"
+          "git"
+          "fetch"
+          "origin"
+        ];
+      };
     };
   };
 }
