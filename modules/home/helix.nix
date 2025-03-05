@@ -240,20 +240,30 @@ in {
       };
 
       language =
-        map (lang:
-          lang
-          // {
-            language-servers =
-              if lang ? language-servers
-              then lang.language-servers ++ ["lsp-ai" "typos"]
-              else ["lsp-ai" "typos"];
-          })
-        ([
+        map
+        (
+          lang:
+            lang
+            // {
+              language-servers =
+                if lang ? language-servers
+                then
+                  lang.language-servers
+                  ++ [
+                    "lsp-ai"
+                    "typos"
+                  ]
+                else [
+                  "lsp-ai"
+                  "typos"
+                ];
+            }
+        )
+        (
+          [
             {
               name = "nix";
-              language-servers = [
-                "nixd"
-              ];
+              language-servers = ["nixd"];
               formatter = {
                 command = "alejandra";
               };
@@ -272,9 +282,7 @@ in {
             }
             {
               name = "ruby";
-              language-servers = [
-                "solargraph"
-              ];
+              language-servers = ["solargraph"];
               auto-format = true;
               formatter = {
                 command = "rubocop";
@@ -290,9 +298,7 @@ in {
             }
             {
               name = "html";
-              language-servers = [
-                "vscode-html-language-server"
-              ];
+              language-servers = ["vscode-html-language-server"];
               formatter = {
                 command = "prettier";
                 args = [
@@ -415,9 +421,7 @@ in {
             }
             {
               name = "markdown";
-              language-servers = [
-                "marksman"
-              ];
+              language-servers = ["marksman"];
               formatter = {
                 command = "prettier";
                 args = [
@@ -441,15 +445,14 @@ in {
               auto-format = true;
             }
           ]
-          ++ map (lang: {
-            name = lang;
-          }) [
+          ++ map (lang: {name = lang;}) [
             "git-attributes"
             "git-commit"
             "git-config"
             "git-ignore"
             "git-rebase"
-          ]);
+          ]
+        );
     };
   };
 }

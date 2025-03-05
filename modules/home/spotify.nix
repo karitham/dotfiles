@@ -9,10 +9,7 @@
 in {
   imports = [inputs.spicetify-nix.homeManagerModules.default];
   config = lib.mkIf osConfig.desktop.enable {
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [
-        "spotify"
-      ];
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) ["spotify"];
 
     programs.spicetify = {
       enable = true;

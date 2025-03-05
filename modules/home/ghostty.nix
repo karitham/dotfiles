@@ -12,9 +12,7 @@
         window-decoration = true;
         gtk-titlebar = false;
 
-        keybind = [
-          "ctrl+alt+v=new_split:right"
-        ];
+        keybind = ["ctrl+alt+v=new_split:right"];
       };
     };
   };

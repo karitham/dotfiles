@@ -36,9 +36,7 @@
 
   environment.etc."nix/inputs/nixpkgs".source = "${inputs.nixpkgs}";
 
-  imports = [
-    ./overlays
-  ];
+  imports = [./overlays];
 
   nixpkgs = {
     config = {

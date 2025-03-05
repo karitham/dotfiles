@@ -14,14 +14,19 @@
     stateVersion = "24.11";
   };
 
-  boot.loader.systemd-boot.enable = lib.mkForce false;
-  boot.lanzaboote = {
-    enable = true;
-    pkiBundle = "/etc/secureboot";
+  boot = {
+    loader.systemd-boot = {
+      enable = lib.mkForce false;
+
+      configurationLimit = 10;
+    };
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/etc/secureboot";
+    };
+    supportedFilesystems = ["bcachefs"];
+    kernelPackages = pkgs.linuxPackages_latest;
   };
-  boot.supportedFilesystems = ["bcachefs"];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.loader.systemd-boot.configurationLimit = 10;
 
   networking.networkmanager.enable = true;
 
@@ -65,9 +70,11 @@
     ];
   };
 
-  virtualisation.docker.enable = true;
-  virtualisation.docker.daemon.settings = {
-    data-root = "/docker";
+  virtualisation.docker = {
+    enable = true;
+    daemon.settings = {
+      data-root = "/docker";
+    };
   };
 
   home-manager.users.kar.imports = [./desktop.nix];

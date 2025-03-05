@@ -59,15 +59,11 @@
         };
         modules =
           [
-            (
-              {...}: {
-                networking.hostName = hostname;
-              }
-            )
+            (_: {networking.hostName = hostname;})
             ./modules/nixos
             ./hosts/${hostname}
           ]
-          ++ nixpkgs.lib.optionals (cfg.hasHome) [
+          ++ nixpkgs.lib.optionals cfg.hasHome [
             inputs.home-manager.nixosModules.home-manager
             ./modules/home
           ];

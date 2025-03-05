@@ -17,17 +17,15 @@
     else {};
 
   home-manager = {
-    extraSpecialArgs = {
-      inherit inputs;
-    };
+    extraSpecialArgs = {inherit inputs;};
     backupFileExtension = "bak";
     users.${inputs.username} = {
       home.username = inputs.username;
       home.stateVersion = "24.11";
 
       catppuccin = {
-        enable = config.catppuccin.enable;
-        flavor = config.catppuccin.flavor;
+        inherit (config.catppuccin) enable;
+        inherit (config.catppuccin) flavor;
       };
 
       imports = [

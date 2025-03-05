@@ -20,7 +20,10 @@
         "immutable_heads()" = "builtin_immutable_heads() | (trunk().. & ~mine())";
       };
       ui = {
-        default-command = ["log" "--no-pager"];
+        default-command = [
+          "log"
+          "--no-pager"
+        ];
         movement.edit = true;
         editor = "hx";
         diff.tool = [

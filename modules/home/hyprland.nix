@@ -33,13 +33,9 @@ in {
       enable = true;
       systemd.enable = true;
       settings = {
-        exec-once = [
-          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        ];
+        exec-once = ["dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"];
 
-        monitor = [
-          ", preferred, auto, 1"
-        ];
+        monitor = [", preferred, auto, 1"];
 
         env = [
           "XCURSOR_SIZE,24"

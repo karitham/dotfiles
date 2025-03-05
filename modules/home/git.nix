@@ -96,7 +96,5 @@
           echo "Rebase cancelled"
       fi
     '';
-  in [
-    git-deploy
-  ];
+  in [git-deploy];
 }

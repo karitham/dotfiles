@@ -1,4 +1,4 @@
-{...}: {
+_: {
   # [includeIf "hasconfig:remote.*.url:git+ssh://git@github/upfluence/**"]
   #     path = "~/upf/.gitconfig"
   xdg.configFile."git/config".text = ''

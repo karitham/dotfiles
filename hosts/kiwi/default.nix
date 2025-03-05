@@ -16,12 +16,6 @@
     stateVersion = "24.11";
   };
 
-  # https://gitlab.freedesktop.org/drm/amd/-/issues/3925
-  # https://gitlab.freedesktop.org/drm/amd/-/issues/3647
-  boot.kernelParams = [
-    "amdgpu.dcdebugmask=0x10"
-  ];
-
   imports = [
     inputs.catppuccin.nixosModules.catppuccin
     ./hardware.nix
@@ -32,9 +26,16 @@
     ./desktop.nix
   ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 10;
+  boot = {
+    # https://gitlab.freedesktop.org/drm/amd/-/issues/3925
+    # https://gitlab.freedesktop.org/drm/amd/-/issues/3647
+    kernelParams = ["amdgpu.dcdebugmask=0x10"];
+
+    loader.systemd-boot = {
+      enable = true;
+      configurationLimit = 10;
+    };
+  };
 
   networking.networkmanager.enable = true;
 
