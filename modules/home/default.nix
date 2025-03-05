@@ -40,6 +40,7 @@
         ./git.nix
         ./jj.nix
         ./shell.nix
+        ./atuin.nix
         ./helix.nix
         ./rnnoise.nix
         ./file-manager.nix

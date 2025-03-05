@@ -8,12 +8,11 @@
         name = "karitham";
       };
       signing = {
-        behavior = "own";
+        sign-all = true;
         backend = "ssh";
         key = "~/.ssh/id_ed25519.pub";
       };
       git = {
-        sign-on-push = true;
         auto-local-bookmark = true;
       };
       revset-aliases = {

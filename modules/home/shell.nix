@@ -49,13 +49,6 @@ in {
 
     ripgrep.enable = true;
 
-    atuin.enable = true;
-    atuin.flags = ["--disable-up-arrow"];
-    atuin.settings = {
-      enter_accept = false;
-      style = "compact";
-    };
-
     starship.enable = true;
     # starship.settings.kubernetes.disabled = false;
 
