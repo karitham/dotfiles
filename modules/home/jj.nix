@@ -16,9 +16,19 @@
         sign-on-push = true;
         auto-local-bookmark = true;
       };
-      ui = {
-        default-command = ["log" "-r" "..@" "-n" "10" "--no-pager"];
+      revset-aliases = {
+        "immutable_heads()" = "builtin_immutable_heads() | (trunk().. & ~mine())";
       };
+      ui = {
+        default-command = ["log" "--no-pager"];
+        movement.edit = true;
+      };
+      "--scope" = [
+        {
+          "--when".repositories = ["~/upf"];
+          revset-aliases."immutable_heads()" = "builtin_immutable_heads() | (trunk().. & ~mine()) | master@origin | staging@origin";
+        }
+      ];
     };
   };
 }
