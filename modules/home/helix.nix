@@ -58,6 +58,9 @@ in {
         color-modes = true;
         auto-format = true;
         auto-save = true;
+        sticky-context = {
+          enable = true;
+        };
         lsp = {
           snippets = true;
           display-inlay-hints = true;

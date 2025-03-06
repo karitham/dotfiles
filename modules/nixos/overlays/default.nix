@@ -1,1 +1,6 @@
-_: {nixpkgs.overlays = [(final: prev: import ./gotools.nix final prev)];}
+_: {
+  nixpkgs.overlays = [
+    (import ./gotools.nix)
+    (import ./helix.nix)
+  ];
+}

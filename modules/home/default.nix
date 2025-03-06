@@ -29,6 +29,7 @@
       };
 
       imports = [
+        ../nixos/overlays
         inputs.catppuccin.homeManagerModules.catppuccin
 
         ./hyprland.nix
