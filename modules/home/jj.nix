@@ -32,12 +32,6 @@
           "$right"
         ];
       };
-      "--scope" = [
-        {
-          "--when".repositories = ["~/upf"];
-          revset-aliases."immutable_heads()" = "builtin_immutable_heads() | (trunk().. & ~mine()) | master@origin | staging@origin";
-        }
-      ];
       aliases = {
         fetch = [
           "util"

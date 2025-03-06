@@ -27,11 +27,7 @@
     extraConfig = {
       init.defaultBranch = "main";
       merge.stat = true;
-
-      pull = {
-        rebase = true;
-        ff = "only";
-      };
+      pull.rebase = true;
 
       push = {
         autoSetupRemote = true;
