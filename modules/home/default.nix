@@ -46,6 +46,7 @@
         ./rnnoise.nix
         ./file-manager.nix
         ./browser.nix
+        ./direnv.nix
       ];
     };
   };
