@@ -41,6 +41,7 @@ in {
         upower
         pulseaudio
         gnome-themes-extra
+        mpv
       ];
 
       etc = {

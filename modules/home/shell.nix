@@ -3,14 +3,15 @@
   osConfig,
   lib,
   ...
-}: let
-  aliases = {
-    gs = "git status";
-    nixupdate = "sudo nixos-rebuild switch --accept-flake-config --flake";
-    k = "kubectl";
-  };
-in {
-  programs = {
+}: {
+  home.packages = [
+    pkgs.sd
+  ];
+  programs = let
+    aliases = {
+      k = "kubectl";
+    };
+  in {
     zsh = lib.mkIf (osConfig.shell.name == "zsh") {
       enable = true;
       enableCompletion = true;

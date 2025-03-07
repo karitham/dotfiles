@@ -59,14 +59,10 @@
     systemPackages = [
       sbctl
       vscode
-      fzf
-      sd
-      mpv
       busybox
       moreutils
       age
       wireguard-tools
-      helix
     ];
   };
 

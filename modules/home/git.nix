@@ -3,6 +3,7 @@
   pkgs,
   ...
 }: {
+  home.packages = [pkgs.gh];
   programs.git = {
     enable = true;
     userName = "karitham";
@@ -66,31 +67,4 @@
       };
     };
   };
-
-  home.packages = let
-    git-deploy = pkgs.writeShellScriptBin "git-deploy" ''
-      if [ $# -ne 1 ]; then
-          echo "Usage: git deploy <target-branch>"
-          exit 1
-      fi
-
-      target=$1
-      current=$(git branch --show-current)
-
-      git fetch origin
-
-      # Show commits between current branch and target
-      echo "Commits to be deployed:"
-      git --no-pager log "origin/$target..$current" --oneline
-
-      read -p "Continue with rebase? (y/n) " -n 1 -r
-      echo
-      if [[ $REPLY =~ ^[Yy]$ ]]; then
-          git checkout "$target"
-          git rebase "origin" "$current"
-      else
-          echo "Rebase cancelled"
-      fi
-    '';
-  in [git-deploy];
 }

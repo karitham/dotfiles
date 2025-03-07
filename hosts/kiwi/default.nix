@@ -55,13 +55,8 @@
   programs.ssh.startAgent = true;
   environment = with pkgs; {
     systemPackages = [
-      signal-desktop
-      vscode
-      mpv
-      sd
       busybox
       moreutils
-      gh
     ];
   };
 }
