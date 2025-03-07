@@ -15,12 +15,15 @@
   config = lib.mkIf config.desktop.enable {
     fonts = {
       packages = with pkgs; [
-        victor-mono
         lexend
         nerd-fonts.jetbrains-mono
+        noto-fonts
+        noto-fonts-cjk-sans
+        noto-fonts-emoji
       ];
 
       fontconfig = {
+        useEmbeddedBitmaps = true;
         defaultFonts = {
           monospace = [
             config.fonts.mono
