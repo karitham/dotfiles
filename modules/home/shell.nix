@@ -5,7 +5,7 @@
 }: {
   home.packages = [
     pkgs.sd
-    pkgs.busybox
+    pkgs.coreutils
     pkgs.moreutils
   ];
   programs = {

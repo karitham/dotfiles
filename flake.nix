@@ -26,24 +26,32 @@
       flake = false;
     };
   };
-  outputs = inputs @ {nixpkgs, ...}: let
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    ...
+  }: let
+    hasHome = cfg: (cfg ? home) && cfg.home;
+
     # Unified system configuration
     systems = {
       belaf = {
         user = "kar";
-        hasHome = true;
+        home = true;
       };
       kiwi = {
         user = "kar";
-        hasHome = true;
+        home = true;
       };
       reg = {
         user = "root";
-        hasHome = false;
       };
       ozen = {
         user = "nixos";
-        hasHome = true;
+        home = true;
+      };
+      wakuna = {
+        user = "root";
       };
     };
 
@@ -63,20 +71,26 @@
             ./modules/nixos
             ./hosts/${hostname}
           ]
-          ++ nixpkgs.lib.optionals cfg.hasHome [
+          ++ nixpkgs.lib.optionals (hasHome cfg) [
             inputs.home-manager.nixosModules.home-manager
             ./modules/home
           ];
       };
-  in rec {
+  in {
     nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem systems;
+
     homeConfigurations = nixpkgs.lib.mapAttrs' (hostname: cfg: {
       name = "${cfg.user}@${hostname}";
       value = {
-        config = nixosConfigurations.${hostname}.config.home-manager.users.${cfg.user};
+        config = self.nixosConfigurations.${hostname}.config.home-manager.users.${cfg.user};
       };
-    }) (nixpkgs.lib.filterAttrs (_: cfg: cfg.hasHome) systems);
+    }) (nixpkgs.lib.filterAttrs (_: hasHome) systems);
+
+    images = {
+      wakuna = self.nixosConfigurations.wakuna.config.system.build.sdImage;
+    };
   };
+
   nixConfig = {
     warn-dirty = false;
     extra-experimental-features = [
