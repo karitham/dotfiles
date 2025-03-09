@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: {
+{inputs, ...}: {
   catppuccin = {
     enable = true;
     flavor = "macchiato";
@@ -53,10 +49,5 @@
   };
 
   programs.ssh.startAgent = true;
-  environment = with pkgs; {
-    systemPackages = [
-      busybox
-      moreutils
-    ];
-  };
+  virtualisation.docker.enable = true;
 }

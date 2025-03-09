@@ -58,9 +58,6 @@
   environment = with pkgs; {
     systemPackages = [
       sbctl
-      vscode
-      busybox
-      moreutils
       age
       wireguard-tools
     ];

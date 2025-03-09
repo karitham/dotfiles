@@ -5,6 +5,8 @@
 }: {
   home.packages = [
     pkgs.sd
+    pkgs.busybox
+    pkgs.moreutils
   ];
   programs = {
     nushell = {
