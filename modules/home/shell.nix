@@ -1,27 +1,17 @@
 {
   pkgs,
-  osConfig,
   lib,
   ...
 }: {
   home.packages = [
     pkgs.sd
   ];
-  programs = let
-    aliases = {
-      k = "kubectl";
-    };
-  in {
-    zsh = lib.mkIf (osConfig.shell.name == "zsh") {
+  programs = {
+    nushell = {
       enable = true;
-      enableCompletion = true;
-      autosuggestion.enable = true;
-      syntaxHighlighting.enable = true;
-      shellAliases = aliases;
-    };
-    nushell = lib.mkIf (osConfig.shell.name == "nu") {
-      enable = true;
-      shellAliases = aliases;
+      shellAliases = {
+        k = "kubectl";
+      };
       configFile.text = ''
         $env.config = {
           show_banner: false,
