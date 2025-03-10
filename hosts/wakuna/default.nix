@@ -6,6 +6,7 @@
 }: {
   imports = [
     (modulesPath + "/installer/sd-card/sd-image-aarch64-installer.nix")
+    ./torrent.nix
   ];
 
   sdImage.compressImage = false;

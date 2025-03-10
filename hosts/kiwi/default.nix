@@ -31,6 +31,8 @@
       enable = true;
       configurationLimit = 10;
     };
+
+    binfmt.emulatedSystems = ["aarch64-linux"];
   };
 
   networking.networkmanager.enable = true;
