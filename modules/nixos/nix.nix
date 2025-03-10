@@ -1,5 +1,6 @@
 {
   inputs,
+  username,
   pkgs,
   ...
 }: {
@@ -55,6 +56,6 @@
     enable = true;
     clean.enable = true;
     clean.extraArgs = "--keep-since 15d --keep 5";
-    flake = "/home/${inputs.username}/dotfiles";
+    flake = "/home/${username}/dotfiles";
   };
 }

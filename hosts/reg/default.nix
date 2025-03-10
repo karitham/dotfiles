@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  username,
   ...
 }: {
   imports = [./hardware.nix];
@@ -14,7 +15,7 @@
   };
 
   users.users = {
-    ${inputs.username}.openssh.authorizedKeys.keyFiles = [inputs.ssh-keys];
+    ${username}.openssh.authorizedKeys.keyFiles = [inputs.ssh-keys];
   };
 
   environment.systemPackages = with pkgs; [helix];

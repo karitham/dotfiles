@@ -41,20 +41,25 @@
       belaf = {
         user = "kar";
         home = true;
+        arch = "x86_64-linux";
       };
       kiwi = {
         user = "kar";
         home = true;
+        arch = "x86_64-linux";
       };
       reg = {
         user = "root";
+        arch = "x86_64-linux";
       };
       ozen = {
         user = "nixos";
         home = true;
+        arch = "x86_64-linux";
       };
       wakuna = {
         user = "root";
+        arch = "aarch64-linux";
       };
     };
 
@@ -62,11 +67,8 @@
     mkSystem = hostname: cfg:
       nixpkgs.lib.nixosSystem {
         specialArgs = {
-          inputs =
-            inputs
-            // {
-              username = cfg.user;
-            };
+          username = cfg.user;
+          inputs = with nixpkgs; lib.mapAttrs (_: lib.mapAttrs (_: v: v.${cfg.arch} or v)) inputs;
         };
         modules =
           [

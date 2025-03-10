@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  inputs,
+  username,
   pkgs,
   ...
 }: {
@@ -12,5 +12,5 @@
     lib.mkIf (
       config ? home-manager
     )
-    config.home-manager.users.${inputs.username}.home.sessionVariables.EDITOR;
+    config.home-manager.users.${username}.home.sessionVariables.EDITOR;
 }

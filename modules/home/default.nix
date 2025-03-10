@@ -1,12 +1,13 @@
 {
   config,
   inputs,
+  username,
   ...
 }: {
-  users.users.${inputs.username} =
-    if inputs.username != "root"
+  users.users.${username} =
+    if username != "root"
     then {
-      home = "/home/${inputs.username}";
+      home = "/home/${username}";
       isNormalUser = true;
       extraGroups = [
         "networkmanager"
@@ -17,10 +18,10 @@
     else {};
 
   home-manager = {
-    extraSpecialArgs = {inherit inputs;};
+    extraSpecialArgs = {inherit inputs username;};
     backupFileExtension = "bak";
-    users.${inputs.username} = {
-      home.username = inputs.username;
+    users.${username} = {
+      home.username = username;
       home.stateVersion = "24.11";
 
       catppuccin = {
