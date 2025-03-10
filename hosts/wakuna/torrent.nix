@@ -1,6 +1,6 @@
-_: {
+{config, ...}: {
   systemd.services.flood.serviceConfig = {
-    SupplementaryGroups = ["rtorrent"];
+    SupplementaryGroups = [config.services.rtorrent.group];
   };
   services = {
     flood = {
@@ -9,6 +9,10 @@ _: {
     };
     rtorrent = {
       enable = true;
+    };
+    jellyfin = {
+      enable = true;
+      openFirewall = true;
     };
   };
 }
