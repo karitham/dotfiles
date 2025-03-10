@@ -102,6 +102,7 @@ in {
 
         windowrulev2 = [
           "float,class:^(org.pulseaudio.pavucontrol)$"
+          "float,class:^(.*blueman-manager.*)$"
           "opacity 0.0 override,class:^(xwaylandvideobridge)$"
           "noanim,class:^(xwaylandvideobridge)$"
           "noinitialfocus,class:^(xwaylandvideobridge)$"
