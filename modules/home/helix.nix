@@ -38,6 +38,8 @@ in {
       keys = let
         plusMenu = {
           o = ":pipe-to xargs xdg-open";
+          g = ":sh gh browse %{buffer_name}:%{cursor_line}";
+          b = ":echo %sh{git blame --date=short -L %{cursor_line},+1 %{buffer_name} | sed -E 's/[0-9]+).*//' | sed 's/(//g'}";
         };
       in {
         insert = {
@@ -58,9 +60,6 @@ in {
         color-modes = true;
         auto-format = true;
         auto-save = true;
-        sticky-context = {
-          enable = true;
-        };
         lsp = {
           snippets = true;
           display-inlay-hints = true;

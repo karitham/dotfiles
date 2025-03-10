@@ -16,6 +16,9 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    helix = {
+      url = "github:helix-editor/helix";
+    };
 
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
