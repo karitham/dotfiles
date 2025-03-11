@@ -4,8 +4,6 @@
   pkgs,
   ...
 }: {
-  documentation.enable = false;
-
   nix = {
     package = pkgs.lix;
 

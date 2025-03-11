@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  inputs',
   username,
   ...
 }: {
@@ -18,7 +19,7 @@
     else {};
 
   home-manager = {
-    extraSpecialArgs = {inherit inputs username;};
+    extraSpecialArgs = {inherit inputs inputs' username;};
     backupFileExtension = "bak";
     users.${username} = {
       home.username = username;

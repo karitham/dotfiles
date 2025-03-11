@@ -1,7 +1,7 @@
 {
   lib,
   osConfig,
-  inputs,
+  inputs',
   pkgs,
   ...
 }: {
@@ -30,7 +30,7 @@
         };
       };
     in {
-      packages = [inputs.zen-browser.packages.default];
+      packages = [inputs'.zen-browser.packages.default];
       file = {
         "${firefoxConfigPath}/profiles.ini".text = lib.generators.toINI {} profiles;
         "${profilesPath}/${profiles.Profile0.Path}/chrome/userChrome.css".source = "${catppuccin}/themes/Macchiato/Mauve/userChrome.css";

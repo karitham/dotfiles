@@ -66,9 +66,12 @@
     # Helper function to create NixOS configurations
     mkSystem = hostname: cfg:
       nixpkgs.lib.nixosSystem {
-        specialArgs = {
+        specialArgs = let
+          inherit (nixpkgs) lib;
+        in {
+          inherit inputs;
           username = cfg.user;
-          inputs = with nixpkgs; lib.mapAttrs (_: lib.mapAttrs (_: v: v.${cfg.arch} or v)) inputs;
+          inputs' = lib.mapAttrs (_: lib.mapAttrs (_: v: v.${cfg.arch} or v)) inputs;
         };
         modules =
           [
