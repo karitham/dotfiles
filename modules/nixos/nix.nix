@@ -45,15 +45,8 @@
     };
   };
 
-  system.switch = {
-    enable = false;
-    enableNg = true;
-  };
-
   programs.nh = {
     enable = true;
-    clean.enable = true;
-    clean.extraArgs = "--keep-since 15d --keep 5";
     flake = "/home/${username}/dotfiles";
   };
 }

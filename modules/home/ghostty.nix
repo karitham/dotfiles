@@ -8,6 +8,7 @@
       enable = true;
       settings = {
         font-family = osConfig.fonts.mono;
+        font-size = 11;
 
         window-decoration = true;
         gtk-titlebar = false;

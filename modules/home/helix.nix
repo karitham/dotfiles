@@ -41,6 +41,9 @@ in {
           g = ":sh gh browse %{buffer_name}:%{cursor_line}";
           b = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}";
         };
+        runMenu = {
+          t = ":sh nu -c 'go test (\"%{buffer_name}\" | path dirname | path expand)'";
+        };
       in {
         insert = {
           C-space = "completion";
@@ -48,9 +51,12 @@ in {
         normal = {
           C-A-c = ":clipboard-yank";
           "+" = plusMenu;
+          "-" = runMenu;
         };
         select = {
+          C-A-c = ":clipboard-yank";
           "+" = plusMenu;
+          "-" = runMenu;
         };
       };
 
