@@ -13,7 +13,7 @@
     )
 
     set -e -x
-    selected_option=$(printf '%s\n' "''${!power_menu[@]}" | rofi -dmenu)
+    selected_option=$(printf '%s\n' "''${!power_menu[@]}" | fuzzel -d)
 
     if [[ -n $selected_option ]] && [[ -v power_menu[$selected_option] ]]; then
         eval "''${power_menu[$selected_option]}"
@@ -43,7 +43,7 @@ in {
         ];
 
         "$powermenu" = "${lib.meta.getExe powermenu}";
-        "$menu" = "${lib.meta.getExe pkgs.rofi-wayland-unwrapped} -show drun";
+        "$menu" = "${lib.meta.getExe pkgs.fuzzel}";
 
         input = {
           kb_layout = "us";

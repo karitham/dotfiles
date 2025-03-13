@@ -1,12 +1,10 @@
 {
-  config,
   pkgs,
   osConfig,
   lib,
   ...
 }: {
   config = lib.mkIf osConfig.desktop.enable {
-    services.dunst.enable = true;
     programs.rofi = {
       package = pkgs.rofi-wayland;
       enable = true;

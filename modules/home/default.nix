@@ -37,7 +37,9 @@
         ./hyprland.nix
         ./hyprlock.nix
         ./waybar.nix
-        ./rofi.nix
+        ./dunst.nix
+        # ./rofi.nix
+        ./fuzzel.nix
         ./ghostty.nix
         ./spotify.nix
         ./git.nix
