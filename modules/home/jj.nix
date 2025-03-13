@@ -22,6 +22,10 @@
         default-command = [
           "log"
           "--no-pager"
+          "-r"
+          "ancestors(trunk()..) | ::@"
+          "-n"
+          "10"
         ];
         movement.edit = true;
         editor = "hx";
