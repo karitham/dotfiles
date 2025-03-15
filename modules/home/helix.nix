@@ -24,7 +24,8 @@ in {
         vscode-langservers-extracted
         yaml-language-server
         lsp-ai
-        typos-lsp
+        # typos-lsp
+        harper
       ]
       ++ global-tools;
 
@@ -120,7 +121,14 @@ in {
           command = "typos-lsp";
           config = {
             diagnosticSeverity = "Warning";
-            # config = ./typos.toml;
+          };
+          harper-ls = {
+            command = "harper-ls";
+            args = ["--stdio"];
+            config.harper-ls = {
+              # https://writewithharper.com/docs/rules
+              linters = {};
+            };
           };
         };
         golangci-lint-lsp = {
@@ -247,7 +255,13 @@ in {
         };
       };
 
-      language =
+      language = let
+        defaults = [
+          "lsp-ai"
+          # "typos"
+          "harper-ls"
+        ];
+      in
         map
         (
           lang:
@@ -257,14 +271,8 @@ in {
                 if lang ? language-servers
                 then
                   lang.language-servers
-                  ++ [
-                    "lsp-ai"
-                    "typos"
-                  ]
-                else [
-                  "lsp-ai"
-                  "typos"
-                ];
+                  ++ defaults
+                else defaults;
             }
         )
         (
