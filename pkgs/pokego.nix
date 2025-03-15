@@ -5,8 +5,8 @@ pkgs.buildGoModule {
   src = pkgs.fetchFromGitHub {
     owner = "karitham";
     repo = "pokego";
-    rev = "7b1d5d3ddb6da6a114840c96bd2e49424406add1";
-    hash = "sha256-IV3yJHZcqs9j9FstabkItrrOItMo/Uy9qml+l5oW6nM=";
+    rev = "main";
+    hash = "sha256-zd5HNg63e6fdBDM+ri6NpA4gU4uEvvvs69XDOTFOQr8=";
   };
 
   vendorHash = "sha256-Eykg/qGqWA+qxeFPAhd0BERHtLj5X7kMQo/IPp1yRU4=";
