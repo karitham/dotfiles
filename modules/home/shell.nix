@@ -7,6 +7,7 @@
     pkgs.sd
     pkgs.coreutils
     pkgs.moreutils
+    pkgs.uutils-coreutils-noprefix
   ];
   programs = {
     nushell = {
