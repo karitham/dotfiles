@@ -6,6 +6,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    systems.url = "github:nix-systems/default";
 
     catppuccin.url = "github:catppuccin/nix";
     spicetify-nix = {
@@ -84,6 +85,11 @@
             ./modules/home
           ];
       };
+
+    forAllSystems = function:
+      nixpkgs.lib.genAttrs (import inputs.systems) (
+        system: function nixpkgs.legacyPackages.${system}
+      );
   in {
     nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem systems;
 
@@ -97,8 +103,13 @@
     images = {
       wakuna = self.nixosConfigurations.wakuna.config.system.build.sdImage;
     };
-  };
 
+    packages = forAllSystems (pkgs: {
+      pokego = pkgs.callPackage ./pkgs/pokego.nix {};
+    });
+
+    overlays.default = import ./overlays;
+  };
   nixConfig = {
     warn-dirty = false;
     extra-experimental-features = [

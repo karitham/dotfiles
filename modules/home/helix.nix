@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  inputs',
+  ...
+}: let
   global-tools = with pkgs; [
     alejandra
     biome
@@ -13,6 +17,7 @@ in {
   programs.helix = {
     enable = true;
     defaultEditor = true;
+    package = inputs'.helix.packages.default;
     extraPackages = with pkgs;
       [
         gopls

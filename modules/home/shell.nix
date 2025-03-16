@@ -24,7 +24,7 @@
         }
 
         source ${./navi.plugin.nu}
-        ${lib.meta.getExe (pkgs.callPackage ../../pkgs/pokego.nix {})} -l french
+        ${lib.meta.getExe pkgs.pokego} -l french
       '';
     };
     zoxide.enable = true;

@@ -30,8 +30,11 @@
         inherit (config.catppuccin) flavor;
       };
 
+      nixpkgs.overlays = [
+        inputs.self.overlays.default
+      ];
+
       imports = [
-        ../nixos/overlays
         inputs.catppuccin.homeManagerModules.catppuccin
 
         ./hyprland.nix

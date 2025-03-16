@@ -36,13 +36,14 @@
 
   environment.etc."nix/inputs/nixpkgs".source = "${inputs.nixpkgs}";
 
-  imports = [./overlays];
-
   nixpkgs = {
     config = {
       allowUnfree = true;
       input-fonts.acceptLicense = true;
     };
+    overlays = [
+      inputs.self.overlays.default
+    ];
   };
 
   programs.nh = {
