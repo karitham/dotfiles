@@ -5,8 +5,6 @@
 }: {
   home.packages = [
     pkgs.sd
-    pkgs.coreutils
-    pkgs.moreutils
     pkgs.uutils-coreutils-noprefix
   ];
   programs = {
@@ -18,6 +16,7 @@
       configFile.text = ''
         $env.config = {
           show_banner: false,
+          edit_mode: 'vi',
         }
 
         if ("~/.profile.nu" | path exists) {
