@@ -12,6 +12,11 @@
     tailscale.enable = true;
     tailscale.useRoutingFeatures = "server";
     openssh.enable = true;
+
+    atuin = {
+      enable = true;
+      host = "0.0.0.0";
+    };
   };
 
   users.users = {
