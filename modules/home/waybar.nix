@@ -8,7 +8,6 @@
     programs.waybar = {
       enable = true;
       systemd.enable = true;
-      systemd.target = "hyprland-session.target";
       settings.mainBar = let
         hctl = lib.meta.getExe pkgs.hyprland;
       in {

@@ -38,6 +38,7 @@
         inputs.catppuccin.homeManagerModules.catppuccin
 
         ./hyprland.nix
+        ./niri.nix
         ./hyprlock.nix
         ./waybar.nix
         ./dunst.nix
