@@ -12,12 +12,18 @@ in {
       hash = "sha256-NqqE+pGnCIWAitH86sxu1EudVEEaSO82y3NqbhtDh9k=";
     };
   in {
-    enable = lib.mkEnableOption "desktop usage";
+    enable =
+      lib.mkEnableOption "desktop usage"
+      // {
+        default = lib.lists.any (isTrue: isTrue == true) [cfg.hyprland cfg.niri];
+      };
     wallpaper = lib.mkOption {
       default = "${defaultWallpaper}";
       type = lib.types.path;
       description = "the wallpaper to use";
     };
+    hyprland = lib.mkEnableOption "enable hyprland";
+    niri = lib.mkEnableOption "enable niri";
   };
 
   config = lib.mkIf cfg.enable {
@@ -28,9 +34,7 @@ in {
     environment = {
       systemPackages = with pkgs; [
         wl-clipboard
-        waybar
         wlroots
-        dunst
         xdg-utils
         pavucontrol
         killall
@@ -51,14 +55,15 @@ in {
           [Settings]
           gtk-application-prefer-dark-theme=1
         '';
-        "greetd/environments".text = ''
-          hyprland
-        '';
+        "greetd/environments".text = lib.strings.concatLines (map lib.meta.getExe (
+          (lib.optional cfg.hyprland pkgs.hyprland)
+          ++ (lib.optional cfg.niri pkgs.niri)
+        ));
       };
     };
 
     programs = {
-      hyprland = {
+      hyprland = lib.mkIf cfg.hyprland {
         enable = true;
         xwayland.enable = true;
         withUWSM = true;
@@ -76,11 +81,10 @@ in {
         vt = 7; # # tty to skip startup msgs
         settings = {
           default_session.command = ''
-            ${pkgs.greetd.tuigreet}/bin/tuigreet \
+            ${lib.meta.getExe pkgs.greetd.tuigreet} \
               --time \
               --asterisks \
               --user-menu \
-              --cmd Hyprland
           '';
         };
       };

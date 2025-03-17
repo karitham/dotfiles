@@ -3,7 +3,7 @@
     enable = true;
     flavor = "macchiato";
   };
-  desktop.enable = true;
+  desktop.hyprland = true;
   ipcam.enable = true;
   yubikey.enable = true;
   time.timeZone = "Europe/Paris";

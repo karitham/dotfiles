@@ -20,7 +20,7 @@
     fi
   '';
 in {
-  config = lib.mkIf osConfig.desktop.enable {
+  config = lib.mkIf osConfig.desktop.hyprland {
     home.packages = [powermenu];
     services.hyprpaper = {
       enable = true;
@@ -35,7 +35,11 @@ in {
       settings = {
         exec-once = ["dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"];
 
-        monitor = [", preferred, auto, 1"];
+        monitor = [
+          ", preferred, auto, 1"
+          "eDP-1, preferred, 0x0, 1"
+          "HDMI-A-1, preferred, auto-left, 1"
+        ];
 
         env = [
           "XCURSOR_SIZE,24"

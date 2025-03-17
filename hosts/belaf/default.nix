@@ -6,7 +6,7 @@
 }: {
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
-  desktop.enable = true;
+  desktop.hyprland = true;
   time.timeZone = "Europe/Paris";
   yubikey.enable = true;
 
@@ -71,7 +71,6 @@
     };
   };
 
-  home-manager.users.kar.imports = [./desktop.nix];
   imports = [
     inputs.lanzaboote.nixosModules.lanzaboote
     inputs.catppuccin.nixosModules.catppuccin
