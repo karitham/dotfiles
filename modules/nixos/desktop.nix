@@ -77,16 +77,19 @@ in {
 
       services = {
         upower.enable = true;
-        greetd = {
+        greetd = let
+          tuigreet = lib.getExe pkgs.greetd.tuigreet;
+          wm = lib.meta.getExe (builtins.head wms);
+        in {
           enable = true;
           vt = 7; # # tty to skip startup messages
           settings = {
             default_session.command = ''
-              ${lib.meta.getExe pkgs.greetd.tuigreet} \
+              ${tuigreet} \
                 --time \
                 --asterisks \
-                --user-menu \
-                --cmd ${lib.meta.getExe (builtins.head wms)}
+                --remember \
+                --cmd ${wm}
             '';
           };
         };

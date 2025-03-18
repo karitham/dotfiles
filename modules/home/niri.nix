@@ -1,4 +1,5 @@
 {
+  config,
   osConfig,
   lib,
   inputs,
@@ -49,38 +50,48 @@
           }
         ];
 
-        binds = with inputs.niri.lib.niri.actions; {
-          "Mod+O".action = show-hotkey-overlay;
-          "Mod+Q".action.spawn = "${lib.meta.getExe pkgs.ghostty}";
-          "Mod+R".action.spawn = "${lib.meta.getExe pkgs.fuzzel}";
-          "Mod+C".action.close-window = [];
+        binds = with config.lib.niri.actions; let
+          # programs.niri.settings.binds."Mod+Q".action.close-window = []
+          toAction = dir: (lib.mapAttrs' (argName: argValue: lib.nameValuePair "${argName}+${dir.name}" {action = {"${argValue}-${dir.value}" = [];};}) {
+            "Mod" = "focus";
+            "Mod+Ctrl" = "move";
+            # "Mod+Shift" = "focus-monitor";
+            # "Mod+Ctrl+Shift" = "move-window-to-monitor";
+          });
 
-          "Mod+Comma".action = consume-window-into-column;
-          "Mod+Period".action = expel-window-from-column;
+          windowMoves = lib.mergeAttrsList (map toAction (lib.attrsToList {
+            "Up" = "window-up";
+            "Down" = "window-down";
+            "Left" = "column-left";
+            "Right" = "column-right";
+          }));
+        in
+          {
+            "Mod+O".action = show-hotkey-overlay;
+            "Mod+Q".action.spawn = "${lib.meta.getExe pkgs.ghostty}";
+            "Mod+R".action.spawn = "${lib.meta.getExe pkgs.fuzzel}";
+            "Mod+C".action.close-window = [];
 
-          "Mod+T".action = switch-preset-column-width;
-          "Mod+F".action = maximize-column;
-          "Mod+Shift+F".action = fullscreen-window;
-          "Mod+D".action = center-column;
+            "Mod+Comma".action = consume-window-into-column;
+            "Mod+Period".action = expel-window-from-column;
 
-          "Mod+Minus".action = set-column-width "-10%";
-          "Mod+Plus".action = set-column-width "+10%";
-          "Mod+Shift+Minus".action = set-window-height "-10%";
-          "Mod+Shift+Plus".action = set-window-height "+10%";
+            "Mod+T".action = switch-preset-column-width;
+            "Mod+F".action = maximize-column;
+            "Mod+Shift+F".action = fullscreen-window;
+            "Mod+D".action = center-column;
 
-          "Mod+Shift+Escape".action = toggle-keyboard-shortcuts-inhibit;
-          "Mod+Shift+E".action = quit;
-          "Mod+Shift+P".action = power-off-monitors;
+            "Mod+Minus".action = set-column-width "-10%";
+            "Mod+Plus".action = set-column-width "+10%";
+            "Mod+Shift+Minus".action = set-window-height "-10%";
+            "Mod+Shift+Plus".action = set-window-height "+10%";
 
-          "Mod+Shift+Ctrl+T".action = toggle-debug-tint;
+            "Mod+Shift+Escape".action = toggle-keyboard-shortcuts-inhibit;
+            "Mod+Shift+E".action = quit;
+            "Mod+Shift+P".action = power-off-monitors;
 
-          "XF86AudioRaiseVolume".action = sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+";
-          "XF86AudioLowerVolume".action = sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-";
-          "XF86AudioMute".action = sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-
-          "XF86MonBrightnessUp".action = sh "brightnessctl set 10%+";
-          "XF86MonBrightnessDown".action = sh "brightnessctl set 10%-";
-        };
+            "Mod+Shift+Ctrl+T".action = toggle-debug-tint;
+          }
+          // windowMoves;
       };
     };
   };

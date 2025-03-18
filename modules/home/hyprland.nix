@@ -53,6 +53,8 @@ in {
           kb_layout = "us";
           kb_variant = "intl";
           follow_mouse = "1";
+          repeat_delay = 150;
+          repeat_rate = 30;
 
           touchpad = {
             natural_scroll = "no";
