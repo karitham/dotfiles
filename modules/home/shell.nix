@@ -25,6 +25,16 @@
         source ${./navi.plugin.nu}
         ${lib.meta.getExe pkgs.pokego} -l french
       '';
+
+      extraLogin = ''
+        bash -c ". /etc/profile && env"
+         | parse "{n}={v}"
+         | filter { |x| ($x.n not-in $env) or $x.v != ($env | get $x.n) }
+         | where n not-in ["_", "LAST_EXIT_CODE", "DIRS_POSITION"]
+         | transpose --header-row
+         | into record
+         | load-env
+      '';
     };
     zoxide.enable = true;
     carapace.enable = true;
