@@ -65,6 +65,10 @@ in {
         withUWSM = true;
       };
 
+      niri = lib.mkIf cfg.niri {
+        enable = true;
+      };
+
       hyprlock = {
         enable = true;
       };
