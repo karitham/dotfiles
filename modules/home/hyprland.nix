@@ -3,25 +3,9 @@
   lib,
   pkgs,
   ...
-}: let
-  powermenu = pkgs.writeShellScriptBin "powermenu" ''
-    declare -rA power_menu=(
-        ["  Lock"]="${pkgs.systemd}/bin/loginctl lock-sessions"
-        ["  Sleep"]='systemctl suspend'
-        ["  Shut down"]="systemctl poweroff"
-        ["  Reboot"]="systemctl reboot"
-    )
-
-    set -e -x
-    selected_option=$(printf '%s\n' "''${!power_menu[@]}" | fuzzel -d)
-
-    if [[ -n $selected_option ]] && [[ -v power_menu[$selected_option] ]]; then
-        eval "''${power_menu[$selected_option]}"
-    fi
-  '';
-in {
+}: {
   config = lib.mkIf osConfig.desktop.hyprland {
-    home.packages = [powermenu];
+    home.packages = [pkgs.powermenu];
     services.hyprpaper = {
       enable = true;
       settings = {
@@ -46,7 +30,7 @@ in {
           "QT_QPA_PLATFORMTHEME,qt5ct" # change to qt6ct if you have that
         ];
 
-        "$powermenu" = "${lib.meta.getExe powermenu}";
+        "$powermenu" = "${lib.meta.getExe pkgs.powermenu}";
         "$menu" = "${lib.meta.getExe pkgs.fuzzel}";
 
         input = {

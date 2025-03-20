@@ -2,26 +2,41 @@
   config,
   osConfig,
   lib,
-  inputs,
   pkgs,
   ...
 }: {
-  imports = [inputs.niri.homeModules.niri];
-
   config = lib.mkIf (osConfig.desktop.enable && osConfig.desktop.niri) {
     programs.niri = {
       settings = {
         environment = {
           NIXOS_OZONE_WL = "1";
+          ELECTRON_OZONE_PLATFORM_HINT = "auto";
+          QT_QPA_PLATFORMTHEME = "qt5ct";
+          QT_QPA_PLATFORM = "wayland";
+          DISPLAY = ":0";
         };
 
+        screenshot-path = null;
+
         input = {
-          keyboard.xkb = {
-            layout = "us";
-            variant = "intl";
+          focus-follows-mouse = {
+            enable = true;
+            max-scroll-amount = "80%";
+          };
+          keyboard = {
+            repeat-delay = 150;
+            repeat-rate = 30;
+            xkb = {
+              layout = "us";
+              variant = "intl";
+            };
           };
 
-          mouse.accel-speed = 1.0;
+          mouse = {
+            accel-profile = "flat";
+            accel-speed = 0.5;
+          };
+
           touchpad = {
             tap = true;
             dwt = true;
@@ -30,41 +45,69 @@
           };
         };
 
-        spawn-at-startup = let
-          # https://github.com/sodiboo/system/blob/main/niri.mod.nix#L273
-          get-wayland-display = "systemctl --user show-environment | awk -F 'WAYLAND_DISPLAY=' '{print $2}' | awk NF";
-          wrapper = name: op:
-            pkgs.writeScript "${name}" ''
-              if [ "$(${get-wayland-display})" ${op} "$WAYLAND_DISPLAY" ]; then
-                exec "$@"
-              fi
-            '';
-
-          only-without-session = wrapper "only-without-session" "!=";
-        in [
+        spawn-at-startup = [
           {
             command = [
-              "${only-without-session}"
-              "${lib.getExe pkgs.waybar}"
+              "systemctl --user restart waybar.service"
             ];
           }
         ];
 
+        layout = {
+          gaps = 16;
+          always-center-single-column = true;
+          empty-workspace-above-first = true;
+        };
+
+        outputs = rec {
+          eDP-1 = {
+            mode = null;
+            position = {
+              x = HDMI-A-1.mode.width;
+              y = 0;
+            };
+          };
+          HDMI-A-1 = {
+            mode = {
+              width = 2560;
+              height = 1440;
+            };
+            position = {
+              x = 0;
+              y = 0;
+            };
+          };
+        };
+
         binds = with config.lib.niri.actions; let
           # programs.niri.settings.binds."Mod+Q".action.close-window = []
-          toAction = dir: (lib.mapAttrs' (argName: argValue: lib.nameValuePair "${argName}+${dir.name}" {action = {"${argValue}-${dir.value}" = [];};}) {
-            "Mod" = "focus";
-            "Mod+Ctrl" = "move";
-            # "Mod+Shift" = "focus-monitor";
-            # "Mod+Ctrl+Shift" = "move-window-to-monitor";
-          });
-
-          windowMoves = lib.mergeAttrsList (map toAction (lib.attrsToList {
-            "Up" = "window-up";
-            "Down" = "window-down";
-            "Left" = "column-left";
-            "Right" = "column-right";
-          }));
+          toAction = act: dir: (lib.mapAttrs' (argName: argValue: lib.nameValuePair "${argName}+${dir.name}" {action = {"${argValue}-${dir.value}" = [];};}) act);
+          windowMoves = lib.mergeAttrsList (
+            (
+              map (toAction {
+                "Mod" = "focus";
+                "Mod+Ctrl" = "move";
+              }) (lib.attrsToList {
+                "Up" = "window-up";
+                "Down" = "window-down";
+                "Left" = "column-left";
+                "Right" = "column-right";
+                "I" = "workspace-down";
+                "U" = "workspace-up";
+              })
+            )
+            ++ (
+              map (toAction {
+                "Mod+Shift" = "focus-monitor";
+                "Mod+Ctrl+Shift" = "move-window-to-monitor";
+              }) (lib.attrsToList {
+                "Up" = "up";
+                "Down" = "down";
+                "Left" = "left";
+                "Right" = "right";
+              })
+            )
+          );
         in
           {
             "Mod+O".action = show-hotkey-overlay;
@@ -79,17 +122,27 @@
             "Mod+F".action = maximize-column;
             "Mod+Shift+F".action = fullscreen-window;
             "Mod+D".action = center-column;
+            "Mod+B".action = toggle-window-floating;
 
             "Mod+Minus".action = set-column-width "-10%";
-            "Mod+Plus".action = set-column-width "+10%";
+            "Mod+Equal".action = set-column-width "+10%";
             "Mod+Shift+Minus".action = set-window-height "-10%";
-            "Mod+Shift+Plus".action = set-window-height "+10%";
+            "Mod+Shift+Equal".action = set-window-height "+10%";
 
             "Mod+Shift+Escape".action = toggle-keyboard-shortcuts-inhibit;
             "Mod+Shift+E".action = quit;
             "Mod+Shift+P".action = power-off-monitors;
+            "Mod+Shift+L".action.spawn = "${lib.getExe pkgs.powermenu}";
 
             "Mod+Shift+Ctrl+T".action = toggle-debug-tint;
+
+            "Mod+Shift+WheelScrollDown".action = focus-workspace-down;
+            "Mod+Shift+WheelScrollUp".action = focus-workspace-up;
+            "Mod+WheelScrollDown".action = focus-column-right;
+            "Mod+WheelScrollUp".action = focus-column-left;
+
+            "Mod+Shift+S".action.screenshot = {};
+            "Mod+S".action.screenshot-window = {};
           }
           // windowMoves;
       };

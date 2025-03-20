@@ -83,6 +83,7 @@
           ]
           ++ nixpkgs.lib.optionals (hasHome cfg) [
             inputs.home-manager.nixosModules.home-manager
+            inputs.niri.nixosModules.niri
             ./modules/home
           ];
       };
