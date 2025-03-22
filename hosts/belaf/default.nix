@@ -7,6 +7,7 @@
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
   desktop.hyprland = true;
+  desktop.niri = true;
   time.timeZone = "Europe/Paris";
   yubikey.enable = true;
 
