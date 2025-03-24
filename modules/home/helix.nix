@@ -135,6 +135,21 @@ in {
               linters = {};
             };
           };
+          yaml-language-server = {
+            config = {
+              enabled = true;
+              enabledForFilesGlob = "*.{yaml,yml}";
+              diagnosticsLimit = 50;
+              showDiagnosticsDirectly = false;
+              config = {
+                schemas = {
+                  kubernetes = "templates/**";
+                };
+                completion = true;
+                hover = true;
+              };
+            };
+          };
         };
         golangci-lint-lsp = {
           command = "golangci-lint-langserver";
@@ -439,6 +454,10 @@ in {
                 ];
               };
               auto-format = true;
+            }
+            {
+              name = "helm";
+              language-servers = ["helm_ls"];
             }
             {
               name = "markdown";

@@ -43,6 +43,7 @@
         ./cursor.nix
         ./waybar.nix
         ./dunst.nix
+        ./discord.nix
         # ./rofi.nix
         ./fuzzel.nix
         ./ghostty.nix
