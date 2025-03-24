@@ -40,6 +40,7 @@
         ./hyprland.nix
         ./niri.nix
         ./hyprlock.nix
+        ./cursor.nix
         ./waybar.nix
         ./dunst.nix
         # ./rofi.nix
