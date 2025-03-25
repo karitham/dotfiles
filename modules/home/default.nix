@@ -54,7 +54,7 @@
         ./atuin.nix
         ./helix.nix
         ./rnnoise.nix
-        ./file-manager.nix
+        ./zellij.nix
         ./browser.nix
         ./direnv.nix
       ];
