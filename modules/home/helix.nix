@@ -460,6 +460,10 @@ in {
               language-servers = ["helm_ls"];
             }
             {
+              name = "typst";
+              language-servers = ["tinymist"];
+            }
+            {
               name = "markdown";
               language-servers = ["marksman"];
               formatter = {
