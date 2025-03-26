@@ -57,7 +57,22 @@
           gaps = 16;
           always-center-single-column = true;
           empty-workspace-above-first = true;
+          default-column-width = {proportion = 0.5;};
         };
+
+        window-rules = [
+          {
+            geometry-corner-radius = let
+              radius = 8.0;
+            in {
+              bottom-left = radius;
+              bottom-right = radius;
+              top-left = radius;
+              top-right = radius;
+            };
+            clip-to-geometry = true;
+          }
+        ];
 
         outputs = rec {
           eDP-1 = {
