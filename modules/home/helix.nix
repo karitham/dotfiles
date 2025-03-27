@@ -157,8 +157,6 @@ in {
             command = [
               "golangci-lint"
               "run"
-              "--config"
-              "~/.golangci.yml"
               "--out-format"
               "json"
               "--issues-exit-code=1"
