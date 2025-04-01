@@ -35,7 +35,7 @@
       ];
 
       imports = [
-        inputs.catppuccin.homeManagerModules.catppuccin
+        inputs.catppuccin.homeModules.default
 
         ./hyprland.nix
         ./niri.nix
