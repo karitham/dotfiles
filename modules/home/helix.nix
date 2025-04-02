@@ -29,8 +29,7 @@ in {
         vscode-langservers-extracted
         yaml-language-server
         lsp-ai
-        # typos-lsp
-        harper
+        typos-lsp
       ]
       ++ global-tools;
 
@@ -74,7 +73,7 @@ in {
         auto-save = true;
         lsp = {
           snippets = true;
-          display-inlay-hints = true;
+          # display-inlay-hints = true;
           display-messages = true;
         };
         soft-wrap = {
@@ -126,14 +125,6 @@ in {
           command = "typos-lsp";
           config = {
             diagnosticSeverity = "Warning";
-          };
-          harper-ls = {
-            command = "harper-ls";
-            args = ["--stdio"];
-            config.harper-ls = {
-              # https://writewithharper.com/docs/rules
-              linters = {};
-            };
           };
           yaml-language-server = {
             config = {
@@ -277,8 +268,7 @@ in {
       language = let
         defaults = [
           "lsp-ai"
-          # "typos"
-          "harper-ls"
+          "typos"
         ];
       in
         map
