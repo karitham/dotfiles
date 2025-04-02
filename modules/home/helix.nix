@@ -376,6 +376,20 @@ in {
               auto-format = true;
             }
             {
+              name = "graphql";
+              formatter = {
+                command = "biome";
+                args = [
+                  "format"
+                  "--indent-style"
+                  "space"
+                  "--stdin-file-path"
+                  "file.gql"
+                ];
+              };
+              auto-format = true;
+            }
+            {
               name = "jsonc";
               language-servers = [
                 {
