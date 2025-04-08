@@ -44,6 +44,7 @@
         ./waybar.nix
         ./dunst.nix
         ./discord.nix
+        ./xdg.nix
         # ./rofi.nix
         ./fuzzel.nix
         ./ghostty.nix

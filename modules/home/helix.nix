@@ -42,7 +42,6 @@ in {
     settings = {
       keys = let
         plusMenu = {
-          o = ":pipe-to xargs xdg-open";
           g = ":sh gh browse -n %{buffer_name}:%{cursor_line} | ${pkgs.wl-clipboard}/bin/wl-copy";
           b = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}";
         };
