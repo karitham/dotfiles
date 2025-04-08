@@ -486,7 +486,14 @@ in {
                   "-l"
                   "postgresql"
                   "-c"
-                  "{\"keywordCase\": \"lower\", \"dataTypeCase\": \"lower\", \"functionCase\": \"lower\", \"expressionWidth\": 120, \"tabWidth\": 4}"
+                  ''
+                    {
+                      "keywordCase": "upper",
+                      "dataTypeCase": "upper",
+                      "functionCase": "upper",
+                      "expressionWidth": 120,
+                      "tabWidth": 4
+                    }''
                 ];
               };
               auto-format = true;
