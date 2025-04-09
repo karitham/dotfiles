@@ -113,21 +113,23 @@
             )
             ++ (
               map (toAction {
-                "Mod+Shift" = "focus-monitor";
-                "Mod+Ctrl+Shift" = "move-window-to-monitor";
+                "Mod+Shift" = "focus";
+                "Mod+Ctrl+Shift" = "move-window-to";
               }) (lib.attrsToList {
-                "Up" = "up";
-                "Down" = "down";
-                "Left" = "left";
-                "Right" = "right";
+                "Up" = "monitor-up";
+                "Down" = "monitor-down";
+                "Left" = "monitor-left";
+                "Right" = "monitor-right";
+                "I" = "workspace-down";
+                "U" = "workspace-up";
               })
             )
           );
         in
           {
             "Mod+O".action = show-hotkey-overlay;
-            "Mod+Q".action.spawn = "${lib.meta.getExe pkgs.ghostty}";
-            "Mod+R".action.spawn = "${lib.meta.getExe pkgs.fuzzel}";
+            "Mod+Q".action.spawn = "${lib.getExe pkgs.ghostty}";
+            "Mod+R".action.spawn = "${lib.getExe pkgs.fuzzel}";
             "Mod+C".action.close-window = [];
 
             "Mod+Comma".action = consume-window-into-column;
@@ -158,6 +160,11 @@
 
             "Mod+Shift+S".action.screenshot = {};
             "Mod+S".action.screenshot-window = {};
+
+            "XF86MonBrightnessDown".action.spawn = [(lib.getExe pkgs.brightnessctl) "set" "5%-"];
+            "XF86MonBrightnessUp".action.spawn = [(lib.getExe pkgs.brightnessctl) "set" "+5%"];
+            "XF86AudioLowerVolume".action.spawn = [(lib.getExe' pkgs.wireplumber "wpctl") "set-volume" "@DEFAULT_AUDIO_SINK@" "2%-"];
+            "XF86AudioRaiseVolume".action.spawn = [(lib.getExe' pkgs.wireplumber "wpctl") "set-volume" "@DEFAULT_AUDIO_SINK@" "2%+"];
           }
           // windowMoves;
       };
