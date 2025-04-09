@@ -12,6 +12,7 @@
       enable = true;
       shellAliases = {
         k = "kubectl";
+        fg = "job unfreeze (job list | last | get id)";
       };
       configFile.text = ''
         $env.config = {
@@ -23,7 +24,7 @@
         }
 
         source ${./navi.plugin.nu}
-        ${lib.meta.getExe pkgs.pokego} -l french
+        # ${lib.meta.getExe pkgs.pokego} -l french
       '';
 
       extraLogin = ''
