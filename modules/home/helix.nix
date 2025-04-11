@@ -72,7 +72,7 @@ in {
         auto-save = true;
         lsp = {
           snippets = true;
-          # display-inlay-hints = true;
+          display-color-swatches = true;
           display-messages = true;
         };
         soft-wrap = {

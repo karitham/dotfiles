@@ -7,8 +7,10 @@
     };
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     systems.url = "github:nix-systems/default";
-
-    catppuccin.url = "github:catppuccin/nix";
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     spicetify-nix = {
       url = "github:gerg-l/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
