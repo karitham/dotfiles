@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   catppuccin = {
     enable = true;
     flavor = "macchiato";
@@ -53,4 +57,6 @@
 
   programs.ssh.startAgent = true;
   virtualisation.docker.enable = true;
+
+  environment.systemPackages = [pkgs.signal-desktop-bin];
 }
