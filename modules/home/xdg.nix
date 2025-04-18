@@ -9,6 +9,8 @@
       "x-scheme-handler/https" = browser;
       "x-scheme-handler/chrome" = browser;
       "text/html" = browser;
+      "binary/octet-stream" = browser;
+      "image/jpeg" = browser;
       "application/x-extension-htm" = browser;
       "application/x-extension-html" = browser;
       "application/x-extension-shtml" = browser;

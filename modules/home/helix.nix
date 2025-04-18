@@ -149,6 +149,7 @@ in {
               "run"
               "--output.json.path"
               "stdout"
+              "--path-mode=abs"
               "--show-stats=false"
               "--issues-exit-code=1"
             ];
@@ -266,7 +267,6 @@ in {
 
       language = let
         defaults = [
-          "lsp-ai"
           "typos"
         ];
       in
