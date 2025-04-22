@@ -73,6 +73,19 @@
             };
             clip-to-geometry = true;
           }
+          {
+            matches = [
+              {
+                title = "Picture-in-Picture";
+              }
+            ];
+            open-floating = true;
+            default-floating-position = {
+              x = 16;
+              y = 16;
+              relative-to = "bottom-right";
+            };
+          }
         ];
 
         outputs = rec {
