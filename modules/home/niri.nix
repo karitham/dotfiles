@@ -17,6 +17,7 @@
         };
 
         screenshot-path = null;
+        prefer-no-csd = true;
 
         input = {
           focus-follows-mouse = {
