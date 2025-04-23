@@ -181,6 +181,41 @@
             "XF86AudioRaiseVolume".action.spawn = [(lib.getExe' pkgs.wireplumber "wpctl") "set-volume" "@DEFAULT_AUDIO_SINK@" "2%+"];
           }
           // windowMoves;
+
+        animations = let
+          vm = {
+            spring = {
+              damping-ratio = 0.75;
+              stiffness = 200;
+              epsilon = 0.0001;
+            };
+          };
+        in {
+          horizontal-view-movement = vm;
+          workspace-switch = vm;
+          window-resize = vm;
+
+          window-open = {
+            easing = {
+              duration-ms = 200;
+              curve = "linear";
+            };
+          };
+          shaders.window-open = ''
+            vec4 open_color(vec3 coords_geo, vec3 size_geo) {
+                vec3 coords_tex = niri_geo_to_tex * coords_geo;
+                vec4 color = texture2D(niri_tex, coords_tex.st);
+
+                vec2 coords = (coords_geo.xy - vec2(0.5, 0.5)) * size_geo.xy * 2.0;
+                coords = coords / length(size_geo.xy);
+                float p = niri_clamped_progress;
+                if (p * p <= dot(coords, coords))
+                    color = vec4(0.0);
+
+                return color;
+            }
+          '';
+        };
       };
     };
   };
