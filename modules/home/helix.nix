@@ -47,6 +47,7 @@ in {
         };
         runMenu = {
           t = ":sh nu -c 'go test (\"%{buffer_name}\" | path dirname | path expand)'";
+          f = [":sh golangci-lint run --issues-exit-code=0 --fix %{buffer_name}" ":reload"];
         };
       in {
         insert = {
