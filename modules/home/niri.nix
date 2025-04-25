@@ -7,6 +7,7 @@
 }: {
   config = lib.mkIf (osConfig.desktop.enable && osConfig.desktop.niri) {
     programs.niri = {
+      package = pkgs.niri-unstable;
       settings = {
         environment = {
           NIXOS_OZONE_WL = "1";
