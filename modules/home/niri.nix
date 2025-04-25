@@ -6,6 +6,7 @@
   ...
 }: {
   config = lib.mkIf (osConfig.desktop.enable && osConfig.desktop.niri) {
+    home.packages = [pkgs.nautilus]; # xdg-desktop-portal-gnome wants it
     programs.niri = {
       package = pkgs.niri-unstable;
       settings = {
