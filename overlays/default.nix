@@ -1,23 +1,11 @@
 _: prev: {
   pokego = prev.callPackage ../pkgs/pokego.nix {};
-  golangci-lint = prev.golangci-lint.overrideAttrs (old: rec {
-    version = "2.1.2";
-    src = prev.fetchFromGitHub {
-      owner = "golangci";
-      repo = "golangci-lint";
-      rev = "v${version}";
-      hash = "sha256-CAO+oo3l3mlZIiC1Srhc0EfZffQOHvVkamPHzSKRSFw=";
-    };
-    vendorHash = "sha256-2GQp/sgYRlDengx8uy3zzqi9hwHh4CQUHoj1zaxNNLE=";
-  });
   golangci-lint-langserver = prev.golangci-lint-langserver.overrideAttrs (old: {
-    src = prev.fetchFromGitHub {
-      owner = "karitham";
-      repo = "golangci-lint-langserver";
-      rev = "main";
-      hash = "sha256-y+A20gb5gw4yOfzQWniKRw4BmZT3gXBwRW+HZN31xd8=";
+    patches = prev.fetchurl {
+      url = "https://github.com/karitham/golangci-lint-langserver/commit/31e6806187d431a8865261b5441ef5a65b589ae5.patch";
+      hash = "sha256-Sw7KCsAhShobhvtwS0KeeWL4ewuXuQYyPeaeHKGUs+I=";
     };
-    vendorHash = "sha256-SsGw26y/ZIBFp9dBk55ebQgJiLWOFRNe21h6huYE84I=";
+    vendorHash = "sha256-kbGTORTTxfftdU8ffsfh53nT7wZldOnBZ/1WWzN89Uc=";
   });
   gotools = prev.gotools.overrideAttrs (old: {
     patches = prev.fetchurl {
