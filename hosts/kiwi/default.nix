@@ -58,5 +58,5 @@
   programs.ssh.startAgent = true;
   virtualisation.docker.enable = true;
 
-  environment.systemPackages = [pkgs.signal-desktop-bin];
+  environment.systemPackages = [pkgs.signal-desktop-bin pkgs.obs-studio];
 }
