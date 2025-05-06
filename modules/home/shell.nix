@@ -12,7 +12,7 @@
       enable = true;
       shellAliases = {
         k = "kubectl";
-        fg = "job unfreeze (job list | last | get id)";
+        fg = "job unfreeze";
       };
       configFile.text = ''
         $env.config = {
