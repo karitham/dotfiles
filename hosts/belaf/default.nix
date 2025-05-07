@@ -77,4 +77,10 @@
     inputs.catppuccin.nixosModules.catppuccin
     ./hardware.nix
   ];
+
+  home-manager.users.kar = {
+    programs.mise = {
+      enable = true;
+    };
+  };
 }

@@ -60,6 +60,7 @@
         ./zellij.nix
         ./browser.nix
         ./direnv.nix
+        ./mise.nix
       ];
     };
   };

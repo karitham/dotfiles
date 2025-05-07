@@ -9,13 +9,6 @@ _: {
         $(which $2) \$@" >.direnv/bin/$1
         chmod +x .direnv/bin/$1
       }
-      use_wg() {
-        if [[ $1 ]] ; then
-          wg-quick up $1
-        else
-          wg-quick up ./*.conf
-        fi
-      }
     '';
   };
 
