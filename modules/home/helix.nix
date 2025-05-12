@@ -22,7 +22,7 @@ in {
       [
         gopls
         golangci-lint-langserver
-        rubyPackages.solargraph
+        rubyPackages.ruby-lsp
         nixd
         marksman
         nodePackages.typescript-language-server
@@ -154,6 +154,47 @@ in {
               "--show-stats=false"
               "--issues-exit-code=1"
             ];
+          };
+        };
+        rubocop = {
+          command = "rubocop";
+          args = ["--lsp"];
+        };
+        ruby-lsp = {
+          command = "ruby-lsp";
+          config = {
+            diagnostics = true;
+            formatting = true;
+            config = {
+              initializationOptions = {
+                enabledFeatures = {
+                  codeActions = true;
+                  codeLens = true;
+                  completion = true;
+                  definition = true;
+                  diagnostics = true;
+                  documentHighlights = true;
+                  documentLink = true;
+                  documentSymbols = true;
+                  foldingRanges = true;
+                  formatting = true;
+                  hover = true;
+                  inlayHint = true;
+                  onTypeFormatting = true;
+                  selectionRanges = true;
+                  semanticHighlighting = true;
+                  signatureHelp = true;
+                  typeHierarchy = true;
+                  workspaceSymbol = true;
+                };
+                featuresConfiguration = {
+                  inlayHint = {
+                    implicitHashValue = true;
+                    implicitRescue = true;
+                  };
+                };
+              };
+            };
           };
         };
 
@@ -307,19 +348,8 @@ in {
             }
             {
               name = "ruby";
-              language-servers = ["solargraph"];
+              language-servers = ["ruby-lsp" "rubocop"];
               auto-format = true;
-              formatter = {
-                command = "rubocop";
-                args = [
-                  "--stdin"
-                  "file.rb"
-                  "-a"
-                  "--stderr"
-                  "--fail-level"
-                  "fatal"
-                ];
-              };
             }
             {
               name = "html";
