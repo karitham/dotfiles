@@ -67,6 +67,8 @@ in {
 
       editor = {
         scrolloff = 10;
+        text-width = 120;
+        rulers = [120];
         bufferline = "multiple";
         color-modes = true;
         auto-format = true;
@@ -499,6 +501,8 @@ in {
             {
               name = "markdown";
               language-servers = ["marksman"];
+              text-width = 100;
+              rulers = [100];
               formatter = {
                 command = "prettier";
                 args = [
