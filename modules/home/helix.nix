@@ -9,7 +9,6 @@
     golangci-lint
     gotools
     sql-formatter
-    rubocop
     nodePackages.prettier
   ];
 in {
@@ -22,7 +21,6 @@ in {
       [
         gopls
         golangci-lint-langserver
-        rubyPackages.ruby-lsp
         nixd
         marksman
         nodePackages.typescript-language-server

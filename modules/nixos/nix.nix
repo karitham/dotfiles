@@ -28,7 +28,6 @@
       extra-experimental-features = [
         "flakes"
         "nix-command"
-        "recursive-nix"
         "ca-derivations"
       ];
     };
