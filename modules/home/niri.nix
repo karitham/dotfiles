@@ -120,9 +120,13 @@
                 "Mod+Ctrl" = "move";
               }) (lib.attrsToList {
                 "Up" = "window-up";
+                "k" = "window-up";
                 "Down" = "window-down";
+                "j" = "window-down";
                 "Left" = "column-left";
+                "h" = "column-left";
                 "Right" = "column-right";
+                "l" = "column-right";
                 "I" = "workspace-down";
                 "U" = "workspace-up";
               })
@@ -133,9 +137,13 @@
                 "Mod+Ctrl+Shift" = "move-window-to";
               }) (lib.attrsToList {
                 "Up" = "monitor-up";
+                "K" = "monitor-up";
                 "Down" = "monitor-down";
+                "J" = "monitor-down";
                 "Left" = "monitor-left";
+                "H" = "monitor-left";
                 "Right" = "monitor-right";
+                "L" = "monitor-right";
                 "I" = "workspace-down";
                 "U" = "workspace-up";
               })
