@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  inputs',
   ...
 }: {
   home.packages = [
@@ -51,10 +52,6 @@
     };
 
     ripgrep.enable = true;
-
-    starship.enable = true;
-    # starship.settings.kubernetes.disabled = false;
-
     less.enable = true;
     less.keys = ''
       #env

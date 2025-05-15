@@ -28,6 +28,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri.url = "github:sodiboo/niri-flake?ref=main";
+    starship-jj.url = "gitlab:lanastara_foss/starship-jj";
     ssh-keys = {
       url = "https://github.com/karitham.keys";
       flake = false;

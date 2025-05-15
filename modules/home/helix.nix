@@ -28,6 +28,7 @@ in {
         yaml-language-server
         lsp-ai
         typos-lsp
+        # vale-ls
       ]
       ++ global-tools;
 
@@ -126,19 +127,22 @@ in {
           config = {
             diagnosticSeverity = "Warning";
           };
-          yaml-language-server = {
+        };
+        # vale-ls = {
+        #   command = "vale-ls";
+        # };
+        yaml-language-server = {
+          config = {
+            enabled = true;
+            enabledForFilesGlob = "*.{yaml,yml}";
+            diagnosticsLimit = 50;
+            showDiagnosticsDirectly = false;
             config = {
-              enabled = true;
-              enabledForFilesGlob = "*.{yaml,yml}";
-              diagnosticsLimit = 50;
-              showDiagnosticsDirectly = false;
-              config = {
-                schemas = {
-                  kubernetes = "templates/**";
-                };
-                completion = true;
-                hover = true;
+              schemas = {
+                kubernetes = "templates/**";
               };
+              completion = true;
+              hover = true;
             };
           };
         };
@@ -498,7 +502,10 @@ in {
             }
             {
               name = "markdown";
-              language-servers = ["marksman"];
+              language-servers = [
+                "marksman"
+                # "vale-ls"
+              ];
               text-width = 100;
               rulers = [100];
               formatter = {

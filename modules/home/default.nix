@@ -49,6 +49,7 @@
         ./xdg.nix
         # ./rofi.nix
         ./fuzzel.nix
+        ./starship.nix
         ./ghostty.nix
         ./spotify.nix
         ./git.nix
