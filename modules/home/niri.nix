@@ -173,8 +173,6 @@
             "Mod+Shift+Escape".action = toggle-keyboard-shortcuts-inhibit;
             "Mod+Shift+E".action = quit;
             "Mod+Shift+P".action = power-off-monitors;
-            "Mod+Shift+L".action.spawn = "${lib.getExe pkgs.powermenu}";
-
             "Mod+Shift+Ctrl+T".action = toggle-debug-tint;
 
             "Mod+Shift+WheelScrollDown".action = focus-workspace-down;

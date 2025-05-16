@@ -153,7 +153,7 @@
 
         "custom/powermenu" = {
           format = "";
-          on-click = "${hctl} keyword exec '$powermenu'";
+          on-click = "${lib.getExe pkgs.powermenu}";
           tooltip = false;
         };
       };
