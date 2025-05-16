@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  inputs',
   ...
 }: {
   home.packages = [
@@ -25,7 +24,7 @@
         }
 
         source ${./navi.plugin.nu}
-        # ${lib.meta.getExe pkgs.pokego} -l french
+        ${lib.meta.getExe pkgs.pokego} -l french
       '';
 
       extraLogin = ''
