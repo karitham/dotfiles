@@ -18,7 +18,7 @@
         track-default-bookmark-on-clone = true;
       };
       revsets = {
-        log = "@ | branches | curbranch::@ | @::nextbranch | downstream(@, branchesandheads)";
+        log = "..@ | branches | curbranch::@ | @::nextbranch | downstream(@, branchesandheads)";
       };
       revset-aliases = {
         "immutable_heads()" = "builtin_immutable_heads() | (trunk().. & ~mine())";

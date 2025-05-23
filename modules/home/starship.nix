@@ -6,6 +6,7 @@
   xdg.configFile."starship-jj/starship-jj.toml".text = ''
     "$schema"="https://gitlab.com/Lanastara/lanastara_foss/-/raw/v0.3.0/schema.json?ref_type=tags"
     module_separator = " "
+    timeout = 1000
     [bookmarks]
     search_depth = 100
     exclude = []
