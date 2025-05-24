@@ -14,6 +14,8 @@
       };
       git = {
         auto-local-bookmark = true;
+        write-change-id-header = true;
+        track-default-bookmark-on-clone = true;
       };
       revsets = {
         log = "@ | branches | curbranch::@ | @::nextbranch | downstream(@, branchesandheads)";
