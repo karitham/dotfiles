@@ -2,6 +2,7 @@
   inputs,
   pkgs,
   lib,
+  username,
   ...
 }: let
   inherit (lib) mkForce;
@@ -44,4 +45,6 @@ in {
   };
 
   nixpkgs.hostPlatform = "x86_64-linux";
+
+  home-manager.users.${username}.programs.mise.enable = true;
 }
