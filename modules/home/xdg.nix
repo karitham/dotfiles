@@ -32,10 +32,20 @@
           "binary/octet-stream" = browser;
           "image/jpeg" = browser;
         }
-        // lib.mergeAttrsList (map (lang: {
-          "text/x-${lang}" = editor;
-          "application/x-${lang}" = editor;
-        }) ["python" "go" "mod" "ruby" "yaml"]);
+        // lib.mergeAttrsList (
+          map
+          (lang: {
+            "text/x-${lang}" = editor;
+            "application/x-${lang}" = editor;
+          })
+          [
+            "python"
+            "go"
+            "mod"
+            "ruby"
+            "yaml"
+          ]
+        );
     };
   };
 }

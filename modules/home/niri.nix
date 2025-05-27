@@ -60,7 +60,9 @@
           gaps = 16;
           always-center-single-column = true;
           empty-workspace-above-first = true;
-          default-column-width = {proportion = 0.5;};
+          default-column-width = {
+            proportion = 0.5;
+          };
         };
 
         window-rules = [
@@ -112,41 +114,57 @@
 
         binds = with config.lib.niri.actions; let
           # programs.niri.settings.binds."Mod+Q".action.close-window = []
-          toAction = act: dir: (lib.mapAttrs' (argName: argValue: lib.nameValuePair "${argName}+${dir.name}" {action = {"${argValue}-${dir.value}" = [];};}) act);
+          toAction = act: dir: (lib.mapAttrs' (
+              argName: argValue:
+                lib.nameValuePair "${argName}+${dir.name}" {
+                  action = {
+                    "${argValue}-${dir.value}" = [];
+                  };
+                }
+            )
+            act);
           windowMoves = lib.mergeAttrsList (
             (
-              map (toAction {
+              map
+              (toAction {
                 "Mod" = "focus";
                 "Mod+Ctrl" = "move";
-              }) (lib.attrsToList {
-                "Up" = "window-up";
-                "k" = "window-up";
-                "Down" = "window-down";
-                "j" = "window-down";
-                "Left" = "column-left";
-                "h" = "column-left";
-                "Right" = "column-right";
-                "l" = "column-right";
-                "I" = "workspace-down";
-                "U" = "workspace-up";
               })
+              (
+                lib.attrsToList {
+                  "Up" = "window-up";
+                  "k" = "window-up";
+                  "Down" = "window-down";
+                  "j" = "window-down";
+                  "Left" = "column-left";
+                  "h" = "column-left";
+                  "Right" = "column-right";
+                  "l" = "column-right";
+                  "I" = "workspace-down";
+                  "U" = "workspace-up";
+                }
+              )
             )
             ++ (
-              map (toAction {
+              map
+              (toAction {
                 "Mod+Shift" = "focus";
                 "Mod+Ctrl+Shift" = "move-window-to";
-              }) (lib.attrsToList {
-                "Up" = "monitor-up";
-                "K" = "monitor-up";
-                "Down" = "monitor-down";
-                "J" = "monitor-down";
-                "Left" = "monitor-left";
-                "H" = "monitor-left";
-                "Right" = "monitor-right";
-                "L" = "monitor-right";
-                "I" = "workspace-down";
-                "U" = "workspace-up";
               })
+              (
+                lib.attrsToList {
+                  "Up" = "monitor-up";
+                  "K" = "monitor-up";
+                  "Down" = "monitor-down";
+                  "J" = "monitor-down";
+                  "Left" = "monitor-left";
+                  "H" = "monitor-left";
+                  "Right" = "monitor-right";
+                  "L" = "monitor-right";
+                  "I" = "workspace-down";
+                  "U" = "workspace-up";
+                }
+              )
             )
           );
         in
@@ -183,10 +201,28 @@
             "Mod+Shift+S".action.screenshot = {};
             "Mod+S".action.screenshot-window = {};
 
-            "XF86MonBrightnessDown".action.spawn = [(lib.getExe pkgs.brightnessctl) "set" "5%-"];
-            "XF86MonBrightnessUp".action.spawn = [(lib.getExe pkgs.brightnessctl) "set" "+5%"];
-            "XF86AudioLowerVolume".action.spawn = [(lib.getExe' pkgs.wireplumber "wpctl") "set-volume" "@DEFAULT_AUDIO_SINK@" "2%-"];
-            "XF86AudioRaiseVolume".action.spawn = [(lib.getExe' pkgs.wireplumber "wpctl") "set-volume" "@DEFAULT_AUDIO_SINK@" "2%+"];
+            "XF86MonBrightnessDown".action.spawn = [
+              (lib.getExe pkgs.brightnessctl)
+              "set"
+              "5%-"
+            ];
+            "XF86MonBrightnessUp".action.spawn = [
+              (lib.getExe pkgs.brightnessctl)
+              "set"
+              "+5%"
+            ];
+            "XF86AudioLowerVolume".action.spawn = [
+              (lib.getExe' pkgs.wireplumber "wpctl")
+              "set-volume"
+              "@DEFAULT_AUDIO_SINK@"
+              "2%-"
+            ];
+            "XF86AudioRaiseVolume".action.spawn = [
+              (lib.getExe' pkgs.wireplumber "wpctl")
+              "set-volume"
+              "@DEFAULT_AUDIO_SINK@"
+              "2%+"
+            ];
           }
           // windowMoves;
 

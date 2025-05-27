@@ -15,7 +15,11 @@
 
   boot = {
     supportedFilesystems.zfs = lib.mkForce false;
-    initrd.availableKernelModules = ["xhci_pci" "usbhid" "usb_storage"];
+    initrd.availableKernelModules = [
+      "xhci_pci"
+      "usbhid"
+      "usb_storage"
+    ];
   };
 
   users.users.root.openssh.authorizedKeys.keyFiles = [inputs.ssh-keys];

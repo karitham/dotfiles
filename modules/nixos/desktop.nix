@@ -15,7 +15,10 @@ in {
     enable =
       lib.mkEnableOption "desktop usage"
       // {
-        default = lib.lists.any (isTrue: isTrue == true) [cfg.hyprland cfg.niri];
+        default = lib.lists.any (isTrue: isTrue == true) [
+          cfg.hyprland
+          cfg.niri
+        ];
       };
     wallpaper = lib.mkOption {
       default = "${defaultWallpaper}";

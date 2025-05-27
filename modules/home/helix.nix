@@ -45,20 +45,17 @@ in {
           b = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}";
         };
         runMenu = {
-          t = ":sh nu -c 'go test (\"%{buffer_name}\" | path dirname | path expand)'";
-          f = [":sh golangci-lint run --issues-exit-code=0 --fix %{buffer_name}" ":reload"];
+          f = [
+            ":sh golangci-lint run --issues-exit-code=0 --fix %{buffer_name}"
+            ":reload"
+          ];
         };
       in {
-        insert = {
-          C-space = "completion";
-        };
         normal = {
-          C-A-c = ":clipboard-yank";
           "+" = plusMenu;
           "-" = runMenu;
         };
         select = {
-          C-A-c = ":clipboard-yank";
           "+" = plusMenu;
           "-" = runMenu;
         };
@@ -323,9 +320,7 @@ in {
             // {
               language-servers =
                 if lang ? language-servers
-                then
-                  lang.language-servers
-                  ++ defaults
+                then lang.language-servers ++ defaults
                 else defaults;
             }
         )
@@ -352,7 +347,10 @@ in {
             }
             {
               name = "ruby";
-              language-servers = ["ruby-lsp" "rubocop"];
+              language-servers = [
+                "ruby-lsp"
+                "rubocop"
+              ];
               auto-format = true;
             }
             {

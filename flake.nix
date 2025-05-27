@@ -92,9 +92,7 @@
       };
 
     forAllSystems = function:
-      nixpkgs.lib.genAttrs (import inputs.systems) (
-        system: function nixpkgs.legacyPackages.${system}
-      );
+      nixpkgs.lib.genAttrs (import inputs.systems) (system: function nixpkgs.legacyPackages.${system});
   in {
     nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem systems;
 
