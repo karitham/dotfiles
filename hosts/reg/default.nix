@@ -45,6 +45,7 @@
   };
 
   environment.systemPackages = with pkgs; [helix writefreely];
+  server = true;
 
   system = {
     stateVersion = "25.05";

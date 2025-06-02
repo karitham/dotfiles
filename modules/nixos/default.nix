@@ -10,5 +10,6 @@
     ./docker.nix
     ./fonts.nix
     ./yubikey.nix
+    ./server.nix
   ];
 }
