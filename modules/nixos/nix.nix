@@ -32,6 +32,7 @@
           "flakes"
           "nix-command"
           "ca-derivations"
+          "repl-flake"
         ];
       };
     };
