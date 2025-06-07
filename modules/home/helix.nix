@@ -389,8 +389,6 @@ in {
                 command = "biome";
                 args = [
                   "format"
-                  "--indent-style"
-                  "space"
                   "--stdin-file-path"
                   "file.json"
                 ];
@@ -403,8 +401,6 @@ in {
                 command = "biome";
                 args = [
                   "format"
-                  "--indent-style"
-                  "space"
                   "--stdin-file-path"
                   "file.gql"
                 ];
@@ -424,8 +420,6 @@ in {
                 command = "biome";
                 args = [
                   "format"
-                  "--indent-style"
-                  "space"
                   "--stdin-file-path"
                   "file.jsonc"
                 ];
@@ -449,10 +443,27 @@ in {
                 command = "biome";
                 args = [
                   "format"
-                  "--indent-style"
-                  "space"
                   "--stdin-file-path"
                   "file.jsx"
+                ];
+              };
+              auto-format = true;
+            }
+            {
+              name = "tsx";
+              language-servers = [
+                {
+                  name = "typescript-language-server";
+                  except-features = ["format"];
+                }
+                "biome"
+              ];
+              formatter = {
+                command = "biome";
+                args = [
+                  "format"
+                  "--stdin-file-path"
+                  "file.tsx"
                 ];
               };
               auto-format = true;
@@ -470,8 +481,6 @@ in {
                 command = "biome";
                 args = [
                   "format"
-                  "--indent-style"
-                  "space"
                   "--stdin-file-path"
                   "file.ts"
                 ];
