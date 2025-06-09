@@ -12,15 +12,12 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
-
+      - uses: wimpysworld/nothing-but-nix@main
       - uses: DeterminateSystems/determinate-nix-action@v3
-
-      - name: Set up Cachix
-        uses: cachix/cachix-action@v16
+      - uses: cachix/cachix-action@v16
         with:
           name: karitham
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-
       - uses: DeterminateSystems/update-flake-lock@main
         with:
           pr-title: "Automated: Update flake.lock"
@@ -28,9 +25,7 @@ jobs:
             dependencies
             automated
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build packages to validate update
-        run: nix flake check --accept-flake-config
+      - run: nix build --accept-flake-config .#nixosConfigurations.kiwi.config.system.build.toplevel
 
   cache-latest:
     name: build
@@ -38,13 +33,10 @@ jobs:
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
-
+      - uses: wimpysworld/nothing-but-nix@main
       - uses: DeterminateSystems/determinate-nix-action@v3
-
       - uses: cachix/cachix-action@v16
         with:
           name: karitham
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-
-      - name: Build packages and push to cachix
-        run: nix flake check --accept-flake-config
+      - run: nix build --accept-flake-config .#nixosConfigurations.kiwi.config.system.build.toplevel
