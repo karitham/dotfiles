@@ -37,7 +37,7 @@
         ];
         movement.edit = true;
         editor = "hx";
-        diff.tool = [
+        diff-formatter = [
           "${pkgs.difftastic}/bin/difft"
           "--color=always"
           "$left"
