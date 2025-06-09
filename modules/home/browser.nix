@@ -5,6 +5,12 @@
   pkgs,
   ...
 }: {
+  options.browser.default = lib.mkOption {
+    description = "default browser xdg file";
+    default = "firefox-devedition.desktop";
+    type = lib.types.str;
+  };
+
   config = lib.mkIf osConfig.desktop.enable {
     home = let
       catppuccin = pkgs.fetchFromGitHub {
@@ -30,7 +36,7 @@
         };
       };
     in {
-      packages = [inputs'.zen-browser.packages.default];
+      packages = [inputs'.zen-browser.packages.default pkgs.firefox-devedition];
       file = {
         "${firefoxConfigPath}/profiles.ini".text = lib.generators.toINI {} profiles;
         "${profilesPath}/${profiles.Profile0.Path}/chrome/userChrome.css".source = "${catppuccin}/themes/Macchiato/Mauve/userChrome.css";

@@ -1,7 +1,11 @@
-{lib, ...}: {
+{
+  config,
+  lib,
+  ...
+}: {
   xdg.mimeApps = let
     editor = "Helix.desktop";
-    browser = "zen.desktop";
+    browser = config.browser.default;
   in {
     enable = true;
     defaultApplications = {
