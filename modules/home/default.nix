@@ -28,7 +28,6 @@
       catppuccin = {
         inherit (config.catppuccin) enable;
         inherit (config.catppuccin) flavor;
-        mako.enable = false;
       };
 
       nixpkgs.overlays = [

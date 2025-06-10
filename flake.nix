@@ -9,7 +9,6 @@
     systems.url = "github:nix-systems/default";
     catppuccin = {
       url = "github:catppuccin/nix";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     spicetify-nix = {
       url = "github:gerg-l/spicetify-nix";
@@ -22,7 +21,6 @@
     helix = {
       url = "github:helix-editor/helix";
     };
-
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
