@@ -15,7 +15,7 @@ in {
     enable =
       lib.mkEnableOption "desktop usage"
       // {
-        default = lib.lists.any (isTrue: isTrue == true) [
+        default = lib.lists.any (isTrue: isTrue) [
           cfg.hyprland
           cfg.niri
         ];
