@@ -537,7 +537,7 @@ in {
                       "keywordCase": "upper",
                       "dataTypeCase": "upper",
                       "functionCase": "upper",
-                      "expressionWidth": 120,
+                      "expressionWidth": 80,
                       "tabWidth": 4
                     }''
                 ];
