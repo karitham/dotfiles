@@ -27,8 +27,8 @@
             max-scroll-amount = "80%";
           };
           keyboard = {
-            repeat-delay = 150;
-            repeat-rate = 30;
+            repeat-delay = 300;
+            repeat-rate = 5;
             xkb = {
               layout = "us";
               variant = "intl";

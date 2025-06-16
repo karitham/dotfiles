@@ -44,15 +44,6 @@
           "$right"
         ];
       };
-      aliases = {
-        fetch = [
-          "util"
-          "exec"
-          "git"
-          "fetch"
-          "origin"
-        ];
-      };
     };
   };
 }

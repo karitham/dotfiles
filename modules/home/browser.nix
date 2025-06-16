@@ -7,7 +7,7 @@
 }: {
   options.browser.default = lib.mkOption {
     description = "default browser xdg file";
-    default = "firefox-devedition.desktop";
+    default = "zen.desktop"; # firefox-devedition.desktop
     type = lib.types.str;
   };
 
