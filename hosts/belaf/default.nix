@@ -56,7 +56,6 @@
     rtkit.enable = true;
   };
 
-  programs.ssh.startAgent = true;
   environment = with pkgs; {
     systemPackages = [
       sbctl

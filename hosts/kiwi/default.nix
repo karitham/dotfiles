@@ -14,7 +14,7 @@
   time.timeZone = "Europe/Paris";
 
   system = {
-    stateVersion = "24.11";
+    stateVersion = "25.05";
   };
 
   imports = [
@@ -55,7 +55,6 @@
     rtkit.enable = true;
   };
 
-  programs.ssh.startAgent = true;
   virtualisation.docker.enable = true;
 
   environment.systemPackages = [
