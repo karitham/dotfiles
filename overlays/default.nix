@@ -14,20 +14,4 @@ _: prev: {
     };
     vendorHash = "sha256-UZNYHx5y+kRp3AJq6s4Wy+k789GDG7FBTSzCTorVjgg=";
   });
-
-  powermenu = prev.writeShellScriptBin "powermenu" ''
-    declare -rA power_menu=(
-        ["  Lock"]="${prev.systemd}/bin/loginctl lock-sessions"
-        ["  Sleep"]='systemctl suspend'
-        ["  Shut down"]="systemctl poweroff"
-        ["  Reboot"]="systemctl reboot"
-    )
-
-    set -e -x
-    selected_option=$(printf '%s\n' "''${!power_menu[@]}" | fuzzel -d)
-
-    if [[ -n $selected_option ]] && [[ -v power_menu[$selected_option] ]]; then
-        eval "''${power_menu[$selected_option]}"
-    fi
-  '';
 }

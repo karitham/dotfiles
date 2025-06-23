@@ -17,6 +17,7 @@
       packages = with pkgs; [
         lexend
         nerd-fonts.jetbrains-mono
+        cascadia-code
         noto-fonts
         noto-fonts-cjk-sans
         noto-fonts-emoji

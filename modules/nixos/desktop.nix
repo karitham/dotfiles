@@ -69,7 +69,6 @@ in {
       };
 
       niri = lib.mkIf cfg.niri {
-        package = pkgs.niri-unstable;
         enable = true;
       };
 

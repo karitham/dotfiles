@@ -103,7 +103,11 @@ in {
         inline-diagnostics = {
           cursor-line = "warning"; # show warnings and errors on the cursorline inline
         };
-        cursor-shape.insert = "bar";
+        cursor-shape = {
+          insert = "bar";
+          normal = "bar";
+          select = "underline";
+        };
         whitespace.render.tab = "all";
         indent-guides = {
           render = true;
