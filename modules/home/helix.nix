@@ -36,6 +36,7 @@ in {
       ".zig-cache"
       "node_modules"
       ".direnv"
+      "!/notes"
     ];
 
     settings = {

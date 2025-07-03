@@ -8,6 +8,12 @@
     enable = true;
     userName = "karitham";
     userEmail = "kar@karitham.dev";
+    ignores = [
+      "/notes"
+      "/tmp"
+      ".direnv"
+      ".envrc"
+    ];
 
     signing = {
       key = "~/.ssh/id_ed25519.pub";
@@ -43,7 +49,6 @@
       };
 
       core = {
-        excludesfile = "~/.gitignore";
         editor = config.home.sessionVariables.EDITOR;
         whitespace = "fix,-indent-with-non-tab,trailing-space,cr-at-eol";
       };
