@@ -17,8 +17,8 @@
       catppuccin = pkgs.fetchFromGitHub {
         owner = "catppuccin";
         repo = "zen-browser";
-        rev = "b048e8bd54f784d004812036fb83e725a7454ab4";
-        hash = "sha256-SoaJV83rOgsQpLKO6PtpTyKFGj75FssdWfTITU7psXM=";
+        rev = "e171e2a1d94ed70f39ff0ac452aef335f8b233c9";
+        hash = "sha256-cccLZSrUQ9wxmXnEntbQAfGDFB9gQmIM9pa9BXce1Xo=";
       };
       zenConfigPath = ".zen";
       firefoxConfigPath = "${zenConfigPath}";
