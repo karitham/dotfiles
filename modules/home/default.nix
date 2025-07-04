@@ -38,6 +38,8 @@
 
       imports = [
         inputs.catppuccin.homeModules.default
+        # inputs.nixvim.homeModules.default
+        # ./nvim.nix
 
         ./atuin.nix
         ./browser.nix

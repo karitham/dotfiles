@@ -30,6 +30,7 @@
     };
     niri.url = "github:sodiboo/niri-flake?ref=main";
     starship-jj.url = "gitlab:lanastara_foss/starship-jj";
+    # nixvim.url = "github:nix-community/nixvim";
     ssh-keys = {
       url = "https://github.com/karitham.keys";
       flake = false;
