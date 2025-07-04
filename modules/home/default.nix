@@ -39,29 +39,29 @@
       imports = [
         inputs.catppuccin.homeModules.default
 
-        ./hyprland.nix
-        ./niri.nix
-        ./hyprlock.nix
-        ./cursor.nix
-        ./waybar.nix
-        ./dunst.nix
-        ./discord.nix
-        ./xdg.nix
-        # ./rofi.nix
-        ./fuzzel.nix
-        ./starship.nix
-        ./ghostty.nix
-        ./spotify.nix
-        ./git.nix
-        ./jj.nix
-        ./shell.nix
         ./atuin.nix
-        ./helix.nix
-        ./rnnoise.nix
-        ./zellij.nix
         ./browser.nix
+        ./cursor.nix
         ./direnv.nix
+        ./discord.nix
+        ./dunst.nix
+        ./fuzzel.nix
+        ./ghostty.nix
+        ./git.nix
+        ./helix.nix
+        ./hyprland.nix
+        ./hyprlock.nix
+        ./jj.nix
         ./mise.nix
+        ./niri.nix
+        ./rnnoise.nix
+        ./shell.nix
+        ./spotify.nix
+        ./starship.nix
+        ./waybar.nix
+        ./xdg.nix
+        ./yazi.nix
+        ./zellij.nix
       ];
     };
   };
