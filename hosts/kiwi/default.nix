@@ -60,6 +60,6 @@
   environment.systemPackages = [
     pkgs.signal-desktop-bin
     pkgs.obs-studio
-    pkgs.zed-editor-fhs
+    pkgs.aichat
   ];
 }

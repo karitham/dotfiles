@@ -321,6 +321,7 @@ in {
       language = let
         defaults = [
           "typos"
+          "lsp-ai"
         ];
       in
         map
