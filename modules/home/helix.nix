@@ -45,6 +45,9 @@ in {
           g = ":sh gh browse -n %{buffer_name}:%{cursor_line} | ${pkgs.wl-clipboard}/bin/wl-copy";
           b = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}";
         };
+        goMenu = {
+          "8" = ["move_prev_word_start" "move_next_word_end"];
+        };
         runMenu = {
           f = [
             ":sh golangci-lint run --issues-exit-code=0 --fix %{buffer_name}"
@@ -55,10 +58,12 @@ in {
         normal = {
           "+" = plusMenu;
           "-" = runMenu;
+          "g" = goMenu;
         };
         select = {
           "+" = plusMenu;
           "-" = runMenu;
+          "." = goMenu;
         };
       };
 
