@@ -50,6 +50,10 @@
     auto-cpufreq.enable = true;
   };
 
+  hardware.keyboard.qmk.enable = true;
+
+  services.udev.packages = [pkgs.via];
+
   security = {
     sudo.wheelNeedsPassword = false;
     rtkit.enable = true;
@@ -61,5 +65,6 @@
     pkgs.signal-desktop-bin
     pkgs.obs-studio
     pkgs.aichat
+    pkgs.via
   ];
 }
