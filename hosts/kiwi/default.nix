@@ -1,5 +1,6 @@
 {
   inputs,
+  inputs',
   pkgs,
   ...
 }: {
@@ -30,14 +31,17 @@
   boot = {
     # https://gitlab.freedesktop.org/drm/amd/-/issues/3925
     # https://gitlab.freedesktop.org/drm/amd/-/issues/3647
-    kernelParams = ["amdgpu.dcdebugmask=0x10"];
+    # kernelParams = ["amdgpu.dcdebugmask=0x10"];
 
     loader.systemd-boot = {
       enable = true;
       configurationLimit = 10;
     };
+  };
 
-    binfmt.emulatedSystems = ["aarch64-linux"];
+  hardware = {
+    graphics.package = inputs'.stable.legacyPackages.mesa;
+    keyboard.qmk.enable = true;
   };
 
   networking.networkmanager.enable = true;
@@ -48,11 +52,8 @@
     touchegg.enable = true;
     blueman.enable = true;
     auto-cpufreq.enable = true;
+    udev.packages = [pkgs.via];
   };
-
-  hardware.keyboard.qmk.enable = true;
-
-  services.udev.packages = [pkgs.via];
 
   security = {
     sudo.wheelNeedsPassword = false;
@@ -65,6 +66,5 @@
     pkgs.signal-desktop-bin
     pkgs.obs-studio
     pkgs.aichat
-    pkgs.via
   ];
 }
