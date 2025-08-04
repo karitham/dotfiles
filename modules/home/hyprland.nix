@@ -5,13 +5,6 @@
   ...
 }: {
   config = lib.mkIf osConfig.desktop.hyprland {
-    services.hyprpaper = {
-      enable = true;
-      settings = {
-        preload = ["${osConfig.desktop.wallpaper}"];
-        wallpaper = [", ${osConfig.desktop.wallpaper}"];
-      };
-    };
     wayland.windowManager.hyprland = {
       enable = true;
       systemd.enable = true;

@@ -49,6 +49,7 @@
         ./ghostty.nix
         ./git.nix
         ./helix.nix
+        ./hyprpaper.nix
         ./hyprland.nix
         ./hyprlock.nix
         ./jj.nix
