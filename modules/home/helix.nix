@@ -26,9 +26,7 @@ in {
         nodePackages.typescript-language-server
         vscode-langservers-extracted
         yaml-language-server
-        lsp-ai
         typos-lsp
-        # vale-ls
       ]
       ++ global-tools;
 
@@ -208,120 +206,11 @@ in {
             };
           };
         };
-
-        lsp-ai = {
-          command = "lsp-ai";
-          timeout = 60;
-          config = {
-            memory.file_store = {};
-            models = rec {
-              claude-sonnet = {
-                type = "anthropic";
-                chat_endpoint = "https://api.anthropic.com/v1/messages";
-                model = "claude-3-5-sonnet-latest";
-                auth_token_env_var_name = "ANTHROPIC_API_KEY";
-              };
-              main = claude-sonnet;
-            };
-            chat = [
-              {
-                trigger = "!C";
-                action_display_name = "Chat";
-                model = "main";
-                parameters = {
-                  max_tokens = 1024;
-                  max_context = 4096;
-                  system = "You are a code assistant chatbot. The user will ask you for assistance coding and you will do you best to answer succinctly and accurately";
-                };
-              }
-              {
-                trigger = "!CC";
-                action_display_name = "Chat with context";
-                model = "main";
-                parameters = {
-                  max_tokens = 1024;
-                  max_context = 8192;
-                  system = "You are a code assistant chatbot. The user will ask you for assistance coding and you will do you best to answer succinctly and accurately given the code context:\n\n{CONTEXT}";
-                };
-              }
-            ];
-            actions = [
-              {
-                action_display_name = "Refactor";
-                model = "claude-sonnet";
-                parameters = {
-                  max_context = 8192;
-                  max_tokens = 4096;
-                  system = ''
-                    You are an AI coding assistant specializing in code refactoring. Your task is to analyze and improve the given code snippet.
-
-                    Please follow these steps to refactor the code:
-
-                    1. Analyze the code context and structure.
-                    2. Identify areas for improvement, focusing on:
-                       - Code efficiency
-                       - Readability
-                       - Adherence to Python best practices and idioms
-                       - Correctness of conventions
-
-                    3. Wrap your analysis in <refactoring_analysis> tags. In this analysis:
-                       - List specific areas for improvement under each category (efficiency, readability, best practices, conventions)
-                       - Briefly explain your refactoring decisions, focusing on:
-                         - What improvements you're making
-                         - Why these changes enhance the code
-                         - Any trade-offs involved in the proposed changes
-
-                    4. Rewrite the entire code snippet with your refactoring applied. When refactoring:
-                       - Prioritize simplicity and readability
-                       - Use correct conventions and idioms
-                       - Be explicit in your code
-                       - Do not add comments that explain the code
-
-                    5. Present your refactored code solution in <answer> tags.
-
-                    Remember:
-                    - Only include code in the <answer> section.
-                    - Do not add explanatory comments within the code itself.
-                    - Ensure the refactored code is simple to read and understand.
-
-                    Your response should always include both the refactoring analysis and the refactored code, in that order.
-
-                    Here is example output:
-
-                    <refactoring_analysis>
-                    [Your analysis about the steps taken for the refactoring]
-                    </refactoring_analysis>
-
-                    <answer>
-                    [The newly refactored code]
-                    </answer>
-                  '';
-                  messages = [
-                    {
-                      role = "user";
-                      content = ''
-                        Here's the code you need to refactor:
-
-                        <code_snippet>
-                        {SELECTED_TEXT}
-                        </code_snippet>
-                      '';
-                    }
-                  ];
-                };
-                post_process = {
-                  extractor = "(?s)<answer>(.*?)</answer>";
-                };
-              }
-            ];
-          };
-        };
       };
 
       language = let
         defaults = [
           "typos"
-          "lsp-ai"
         ];
       in
         map
