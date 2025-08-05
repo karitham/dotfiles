@@ -107,6 +107,7 @@
 
     packages = forAllSystems (pkgs: {
       pokego = pkgs.callPackage ./pkgs/pokego.nix {};
+      ccase = pkgs.callPackage ./pkgs/ccase.nix {};
     });
 
     overlays.default = import ./overlays;

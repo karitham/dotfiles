@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   inputs',
   ...
@@ -45,6 +46,15 @@ in {
         };
         goMenu = {
           "8" = ["move_prev_word_start" "move_next_word_end"];
+          "c" = caseMenu;
+        };
+        caseMenu = {
+          p = ":pipe ${lib.getExe pkgs.ccase} --to pascal";
+          c = ":pipe ${lib.getExe pkgs.ccase} --to camel";
+          C = ":pipe ${lib.getExe pkgs.ccase} --to uppercamel";
+          k = ":pipe ${lib.getExe pkgs.ccase} --to kebab";
+          s = ":pipe ${lib.getExe pkgs.ccase} --to snake";
+          S = ":pipe ${lib.getExe pkgs.ccase} --to screamingsnake";
         };
         runMenu = {
           f = [
