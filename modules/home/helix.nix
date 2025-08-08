@@ -49,12 +49,13 @@ in {
           "c" = caseMenu;
         };
         caseMenu = {
-          p = ":pipe ${lib.getExe pkgs.ccase} --to pascal";
-          c = ":pipe ${lib.getExe pkgs.ccase} --to camel";
-          C = ":pipe ${lib.getExe pkgs.ccase} --to uppercamel";
-          k = ":pipe ${lib.getExe pkgs.ccase} --to kebab";
-          s = ":pipe ${lib.getExe pkgs.ccase} --to snake";
-          S = ":pipe ${lib.getExe pkgs.ccase} --to screamingsnake";
+          p = ":pipe ${lib.getExe pkgs.sttr} pascal";
+          c = ":pipe ${lib.getExe pkgs.sttr} camel";
+          k = ":pipe ${lib.getExe pkgs.sttr} kebab";
+          K = ":pipe ${lib.getExe pkgs.sttr} kebab | ${lib.getExe pkgs.sttr} upper";
+          s = ":pipe ${lib.getExe pkgs.sttr} snake";
+          S = ":pipe ${lib.getExe pkgs.sttr} snake | ${lib.getExe pkgs.sttr} upper";
+          t = ":pipe ${lib.getExe pkgs.sttr} title";
         };
         runMenu = {
           f = [
