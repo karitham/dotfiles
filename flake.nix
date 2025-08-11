@@ -31,6 +31,11 @@
       url = "https://github.com/karitham.keys";
       flake = false;
     };
+
+    # zellij
+    zjstatus = {
+      url = "github:dj95/zjstatus";
+    };
   };
   outputs = inputs @ {
     self,
