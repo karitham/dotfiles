@@ -21,18 +21,20 @@
   };
 
   programs.nushell.configFile.text = ''
-    $env.config = ($env.config | upsert hooks {
-    pre_prompt: [ {
-        zellij action rename-tab (pwd | path basename)
-    } ]
-    pre_execution: [ { ||
-        let cmd = if ((commandline | str length) > 8) {
-          (commandline | str substring 0..6) + "..."
-        } else commandline
+    if ($env | get -o ZELLIJ | is-not-empty) {
+      $env.config = ($env.config | upsert hooks {
+      pre_prompt: [ {
+          zellij action rename-tab (pwd | path basename)
+      } ]
+      pre_execution: [ { ||
+          let cmd = if ((commandline | str length) > 8) {
+            (commandline | str substring 0..6) + "..."
+          } else commandline
 
-        zellij action rename-tab ((pwd | path basename) + ' | ' + ($cmd))
-    } ]
-    })
+          zellij action rename-tab ((pwd | path basename) + ' | ' + ($cmd))
+      } ]
+      })
+    }
   '';
 
   # https://github.com/merikan/.dotfiles/blob/main/config/zellij/themes/zjstatus/catppuccin.kdl
