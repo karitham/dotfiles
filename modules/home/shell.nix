@@ -51,10 +51,12 @@
     };
 
     ripgrep.enable = true;
-    less.enable = true;
-    less.keys = ''
-      #env
-      LESS = -S -R -i
-    '';
+    less = {
+      enable = true;
+      config = ''
+        #env
+        LESS = -S -R -i
+      '';
+    };
   };
 }
