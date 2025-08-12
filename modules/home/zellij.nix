@@ -18,10 +18,13 @@
         zellij action rename-tab (pwd | path basename);
     } ]
     pre_execution: [ { ||
-        mut repl_commandline = (pwd | path basename) + ' | ' + (commandline)
-        if ($repl_commandline | str length) > 15 {
-            $repl_commandline = ($repl_commandline | str substring 0..14) + "..."
+        mut cmd = (commandline)
+        if ($cmd | str length) > 8 {
+            $cmd = ($cmd | str substring 0..6) + "..."
         }
+
+        let repl_commandline = (pwd | path basename) + ' | ' + ($cmd)
+
         zellij action rename-tab ($repl_commandline)
     } ]
     })
