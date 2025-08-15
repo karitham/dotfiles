@@ -1,4 +1,13 @@
-{inputs', ...}: {
+{
+  inputs',
+  pkgs,
+  ...
+}: let
+  room = pkgs.fetchurl {
+    url = "https://github.com/rvcas/room/releases/download/v1.2.0/room.wasm";
+    hash = "sha256-t6GPP7OOztf6XtBgzhLF+edUU294twnu0y5uufXwrkw=";
+  };
+in {
   programs.zellij = {
     enable = true;
     settings = {
@@ -10,12 +19,25 @@
       pane_frames = false;
 
       keybinds = {
-        shared = {
-          bind = {
-            _args = ["Alt f"];
-            ToggleFloatingPanes = {};
-          };
-        };
+        shared._children = [
+          {
+            bind = {
+              _args = ["Alt f"];
+              ToggleFloatingPanes = {};
+            };
+          }
+          {
+            bind = {
+              _args = ["Ctrl y"];
+              LaunchOrFocusPlugin = {
+                _args = ["file:${room}"];
+                floating = true;
+                ignore_case = true;
+                quick_jump = true;
+              };
+            };
+          }
+        ];
       };
     };
   };
@@ -41,6 +63,7 @@
   xdg.configFile."zellij/layouts/default.kdl".text = ''
     layout {
         default_tab_template {
+            children
             pane size=1 borderless=true {
                 plugin location="file://${inputs'.zjstatus.packages.default}/bin/zjstatus.wasm" {
                   color_rosewater "#f4dbd6"
@@ -81,8 +104,6 @@
                   border_char     "─"
                   border_format   "#[bg=$surface0]{char}"
                   border_position "top"
-
-                  hide_frame_for_single_pane "true"
 
                   mode_normal        "#[bg=$green,fg=$crust,bold] NORMAL#[bg=$surface0,fg=$green]"
                   mode_tmux          "#[bg=$mauve,fg=$crust,bold] TMUX#[bg=$surface0,fg=$mauve]"
@@ -125,7 +146,6 @@
                   datetime_timezone "Europe/Paris"
                 }
             }
-            children
         }
     }
   '';
