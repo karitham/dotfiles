@@ -18,20 +18,16 @@
     behind_symbol = "⇡"
 
     [[module]]
-    type = "Commit"
-    max_length = 24
-
-    [[module]]
     type = "State"
     separator = " "
 
     [module.conflict]
-    disabled = false
+    disabled = true
     text = "(CONFLICT)"
     color = "Red"
 
     [module.divergent]
-    disabled = false
+    disabled = true
     text = "(DIVERGENT)"
     color = "Cyan"
 
@@ -73,18 +69,22 @@
   programs.starship = {
     enable = true;
     settings = {
-      git_status.disabled = true;
-      git_commit.disabled = true;
-      git_metrics.disabled = true;
-      git_branch.disabled = true;
-
-      # kubernetes.disabled = false;
-
+      format = lib.concatMapStrings (s: s) [
+        "$directory"
+        "$nix_shell"
+        "$custom"
+        "$cmd_duration"
+        "$line_break"
+        "$character"
+      ];
+      nix_shell = {
+        format = "[$symbol]($style)";
+      };
       custom = {
         jj = {
           command = ''${lib.getExe' inputs'.starship-jj.packages.default "starship-jj"} --ignore-working-copy starship prompt'';
-          format = "[$symbol](blue bold) $output ";
-          symbol = "󱗆 ";
+          format = "[$symbol](blue bold) $output";
+          symbol = "󱗆";
           when = "jj root --ignore-working-copy";
         };
         git_branch = {
