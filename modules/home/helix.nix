@@ -166,13 +166,22 @@ in {
           command = "golangci-lint-langserver";
           config = {
             command = [
-              "golangci-lint"
-              "run"
-              "--output.json.path"
-              "stdout"
-              "--path-mode=abs"
-              "--show-stats=false"
-              "--issues-exit-code=1"
+              "nu"
+              "-c"
+              ''
+                let args = [
+                  --output.json.path=stdout
+                  --path-mode=abs
+                  --issues-exit-code=1
+                  --show-stats=false
+                ]
+
+                if ($env.GOLANGCI_LINT_CONFIG? | is-not-empty) {
+                  golangci-lint run --config $env.GOLANGCI_LINT_CONFIG ...$args
+                } else {
+                  golangci-lint run ...$args
+                }
+              ''
             ];
           };
         };
