@@ -9,7 +9,7 @@
     flavor = "macchiato";
   };
   desktop.niri = true;
-  ipcam.enable = true;
+  ipcam.enable = false;
   yubikey.enable = true;
   time.timeZone = "Europe/Paris";
 
