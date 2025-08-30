@@ -6,13 +6,11 @@
 }: {
   catppuccin.enable = true;
   catppuccin.flavor = "macchiato";
-  desktop.hyprland = true;
   desktop.niri = true;
   time.timeZone = "Europe/Paris";
-  yubikey.enable = true;
 
   system = {
-    stateVersion = "24.11";
+    stateVersion = "25.11";
   };
 
   boot = {
@@ -35,17 +33,9 @@
   services = {
     tailscale.enable = true;
     tailscale.useRoutingFeatures = "client";
-
-    # touchpad
     touchegg.enable = true;
-
-    #power
     auto-cpufreq.enable = true;
-
-    # bluetooth
     blueman.enable = true;
-
-    # udev
     udev.packages = [pkgs.via];
   };
 
@@ -59,8 +49,6 @@
   environment = with pkgs; {
     systemPackages = [
       sbctl
-      age
-      wireguard-tools
     ];
   };
 
@@ -76,10 +64,4 @@
     inputs.catppuccin.nixosModules.catppuccin
     ./hardware.nix
   ];
-
-  home-manager.users.kar = {
-    programs.mise = {
-      enable = true;
-    };
-  };
 }
