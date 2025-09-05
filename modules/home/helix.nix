@@ -449,20 +449,19 @@ in {
               formatter = {
                 command = "sql-formatter";
                 args = [
-                  "-l"
-                  "postgresql"
                   "-c"
-                  ''
-                    {
-                      "keywordCase": "upper",
-                      "dataTypeCase": "upper",
-                      "functionCase": "upper",
-                      "expressionWidth": 80,
-                      "tabWidth": 4
-                    }''
+                  (builtins.toJSON {
+                    keywordCase = "upper";
+                    functionCase = "upper";
+                    dataTypeCase = "upper";
+                    identifierCase = "lower";
+                    language = "postgresql";
+                    expressionWidth = 80;
+                    tabWidth = 2;
+                  })
                 ];
               };
-              auto-format = true;
+              auto-format = false;
             }
           ]
           ++ map (lang: {name = lang;}) [
