@@ -66,4 +66,6 @@
     pkgs.obs-studio
     pkgs.aichat
   ];
+
+  programs._1password.enable = true;
 }
