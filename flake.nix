@@ -83,7 +83,12 @@
         };
         modules =
           [
-            (_: {networking.hostName = hostname;})
+            (_: {
+              networking.hostName = hostname;
+              nix.registry = {
+                self.flake = self;
+              };
+            })
             ./modules/nixos
             ./hosts/${hostname}
           ]
