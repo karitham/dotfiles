@@ -111,8 +111,9 @@ in {
           ];
         };
         gutters = [
-          "diff"
+          "line-numbers"
           "diagnostics"
+          "diff"
         ];
         end-of-line-diagnostics = "hint";
         inline-diagnostics = {
@@ -144,9 +145,6 @@ in {
             diagnosticSeverity = "Warning";
           };
         };
-        # vale-ls = {
-        #   command = "vale-ls";
-        # };
         yaml-language-server = {
           config = {
             enabled = true;
