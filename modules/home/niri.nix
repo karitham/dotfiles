@@ -197,8 +197,12 @@
             "Mod+WheelScrollDown".action = focus-column-right;
             "Mod+WheelScrollUp".action = focus-column-left;
 
-            "Mod+Shift+S".action.screenshot = {};
-            "Mod+S".action.screenshot-window = {};
+            "Mod+Shift+S".action.spawn = [
+              (lib.getExe pkgs.bash)
+              "-c"
+              ''${lib.getExe pkgs.slurp} -d | ${lib.getExe pkgs.grim} -t ppm -g - - | ${lib.getExe pkgs.satty} -f - --copy-command=${lib.getExe' pkgs.wl-clipboard "wl-copy"} --actions-on-escape="save-to-clipboard,exit"''
+            ];
+            "Mod+S".action.screenshot = {};
 
             "XF86MonBrightnessDown".action.spawn = [
               (lib.getExe pkgs.brightnessctl)
