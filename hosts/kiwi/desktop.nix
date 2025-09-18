@@ -4,7 +4,6 @@
   ...
 }: {
   home.packages = [
-    pkgs.opencode
     pkgs.signal-desktop-bin
     pkgs.obs-studio
   ];
