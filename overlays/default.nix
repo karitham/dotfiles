@@ -14,4 +14,14 @@ _: prev: {
     };
     vendorHash = "sha256-UZNYHx5y+kRp3AJq6s4Wy+k789GDG7FBTSzCTorVjgg=";
   });
+  prr = prev.prr.overrideAttrs (_: {
+    src = prev.fetchFromGitHub {
+      owner = "danobi";
+      repo = "prr";
+      rev = "e5076af2ab6567a0c738a0dcfeceefd3fe0ce9aa";
+      hash = "sha256-jCW/oKrPDTc8Mn7FV7xUMM8m+3bRSBv4iyU4HiOr0Qg=";
+    };
+    version = "devel";
+    cargoHash = "";
+  });
 }

@@ -55,6 +55,7 @@
         ./jj.nix
         ./mise.nix
         ./niri.nix
+        ./prr.nix
         ./rnnoise.nix
         ./shell.nix
         ./spotify.nix
