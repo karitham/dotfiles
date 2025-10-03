@@ -139,6 +139,10 @@ in {
           command = "biome";
           args = ["lsp-proxy"];
         };
+        nu-lsp = {
+          command = "nu";
+          args = ["--lsp" "--no-config-file"];
+        };
         typos = {
           command = "typos-lsp";
           config = {
