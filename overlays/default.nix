@@ -16,7 +16,7 @@ _: prev: {
   });
   prr = prev.prr.overrideAttrs (_: {
     src = prev.fetchFromGitHub {
-      owner = "danobi";
+      owner = "karitham";
       repo = "prr";
       rev = "e5076af2ab6567a0c738a0dcfeceefd3fe0ce9aa";
       hash = "sha256-jCW/oKrPDTc8Mn7FV7xUMM8m+3bRSBv4iyU4HiOr0Qg=";
