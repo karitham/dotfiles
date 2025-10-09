@@ -9,11 +9,6 @@
     xdg.configFile."legcord/quickCss.css".text = ''
       @import url("https://catppuccin.github.io/discord/dist/catppuccin-macchiato.theme.css");
 
-      /* Hide top bar */
-      .visual-refresh {
-        --custom-app-top-bar-height: 0px !important;
-      }
-
       .visual-refresh .chat_f75fb0[data-has-border="true"],
       .visual-refresh .container__133bf,
       .visual-refresh .container_a592e1 {
@@ -40,7 +35,7 @@
       }
 
       /* Hide gift button in chat message input */
-      .buttons__74017 .button__201d5[aria-label="Send a gift"] {
+      .buttons__74017 > div:first-child {
         display: none !important;
       }
     '';
