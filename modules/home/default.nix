@@ -58,7 +58,6 @@
         ./prr.nix
         ./rnnoise.nix
         ./shell.nix
-        ./spotify.nix
         ./starship.nix
         ./waybar.nix
         ./xdg.nix
