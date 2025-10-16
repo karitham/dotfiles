@@ -9,6 +9,7 @@
     biome
     golangci-lint
     gotools
+    gopls
     sql-formatter
     nodePackages.prettier
   ];
@@ -20,7 +21,6 @@ in {
     package = inputs'.helix.packages.default;
     extraPackages = with pkgs;
       [
-        gopls
         golangci-lint-langserver
         nixd
         marksman
