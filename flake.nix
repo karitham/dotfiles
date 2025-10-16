@@ -11,10 +11,6 @@
     catppuccin = {
       url = "github:catppuccin/nix";
     };
-    spicetify-nix = {
-      url = "github:gerg-l/spicetify-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     helix = {
       url = "github:helix-editor/helix";
     };
