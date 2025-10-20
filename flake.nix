@@ -28,9 +28,12 @@
       flake = false;
     };
 
-    # zellij
     zjstatus = {
       url = "github:dj95/zjstatus";
+    };
+    knixpkgs = {
+      url = "github:karitham/knixpkgs";
+      inputs.nixpkgs.follows = "stable"; # use the same mesa as local system
     };
   };
   outputs = inputs @ {

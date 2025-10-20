@@ -34,6 +34,7 @@
         inputs.self.overlays.default
         inputs.niri.overlays.niri
         inputs.ghostty.overlays.default
+        inputs.knixpkgs.overlays.default
       ];
 
       imports = [
