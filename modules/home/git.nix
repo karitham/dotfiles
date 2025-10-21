@@ -6,8 +6,6 @@
   home.packages = [pkgs.gh];
   programs.git = {
     enable = true;
-    userName = "karitham";
-    userEmail = "kar@karitham.dev";
     ignores = [
       "/notes"
       "/tmp"
@@ -20,18 +18,23 @@
       signByDefault = true;
     };
 
-    aliases = {
-      co = "checkout";
-      ci = "commit";
-      st = "status";
-      br = "branch";
-      hist = "log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short";
-      type = "cat-file -t";
-      dump = "cat-file -p";
-      dft = "difftool";
-    };
+    settings = {
+      user = {
+        name = "karitham";
+        email = "kar@karitham.dev";
+      };
 
-    extraConfig = {
+      alias = {
+        co = "checkout";
+        ci = "commit";
+        st = "status";
+        br = "branch";
+        hist = "log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short";
+        type = "cat-file -t";
+        dump = "cat-file -p";
+        dft = "difftool";
+      };
+
       init.defaultBranch = "main";
       merge.stat = true;
       pull.rebase = true;
