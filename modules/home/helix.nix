@@ -469,6 +469,24 @@ in {
               };
               auto-format = false;
             }
+            {
+              name = "nu";
+              language-servers = ["nu-lsp"];
+              formatter = {
+                command = "${pkgs.writers.writeBashBin "topiary" ''
+                  export TOPIARY_LANGUAGE_DIR="${inputs'.topiary-nu.packages.default}/languages";
+                  export TOPIARY_CONFIG_FILE="${inputs'.topiary-nu.packages.default}/languages.ncl";
+
+                  ${lib.getExe pkgs.topiary} "$@"
+                ''}/bin/topiary";
+                args = [
+                  "format"
+                  "--language"
+                  "nu"
+                ];
+              };
+              auto-format = true;
+            }
           ]
           ++ map (lang: {name = lang;}) [
             "git-attributes"

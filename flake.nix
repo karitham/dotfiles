@@ -2,6 +2,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     stable.url = "github:NixOS/nixpkgs/nixos-25.05";
+    topiary-nu = {
+      url = "github:ck3mp3r/flakes?dir=topiary-nu&ref=cd30d7afc9457c650ef719f9cf11a11dedefaf0d";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
