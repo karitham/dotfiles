@@ -196,24 +196,6 @@
         "type": "github"
       }
     },
-    "flake-utils_4": {
-      "inputs": {
-        "systems": "systems_5"
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "ghostty": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -614,7 +596,6 @@
         "stable": "stable",
         "starship-jj": "starship-jj",
         "systems": "systems_3",
-        "topiary-nu": "topiary-nu",
         "zjstatus": "zjstatus"
       }
     },
@@ -807,79 +788,6 @@
         "type": "github"
       }
     },
-    "systems_5": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "topiary-nu": {
-      "inputs": {
-        "flake-utils": "flake-utils_3",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "topiary-nushell": "topiary-nushell",
-        "tree-sitter-nu": "tree-sitter-nu"
-      },
-      "locked": {
-        "dir": "topiary-nu",
-        "lastModified": 1750272458,
-        "narHash": "sha256-LqwCgzdBVh0Yz4fm/hJXDDGK1jPVkXhkxgoklPz5HLY=",
-        "owner": "ck3mp3r",
-        "repo": "flakes",
-        "rev": "cd30d7afc9457c650ef719f9cf11a11dedefaf0d",
-        "type": "github"
-      },
-      "original": {
-        "dir": "topiary-nu",
-        "owner": "ck3mp3r",
-        "ref": "cd30d7afc9457c650ef719f9cf11a11dedefaf0d",
-        "repo": "flakes",
-        "type": "github"
-      }
-    },
-    "topiary-nushell": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1748947526,
-        "narHash": "sha256-mLcJR6tZclbRKbnPObqrO57AM1vjWfG13VpJCB7m5Vk=",
-        "owner": "blindFS",
-        "repo": "topiary-nushell",
-        "rev": "9c770f22e54609e17cacfaf02e4943936b3f4119",
-        "type": "github"
-      },
-      "original": {
-        "owner": "blindFS",
-        "repo": "topiary-nushell",
-        "type": "github"
-      }
-    },
-    "tree-sitter-nu": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1750158656,
-        "narHash": "sha256-v4Nr+dN7VT4AMuejvDWJZK0+wH9/Q3h29vvAKYABaXE=",
-        "owner": "nushell",
-        "repo": "tree-sitter-nu",
-        "rev": "7983592fe54750b750f2ee9dc8e89449257855d4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nushell",
-        "repo": "tree-sitter-nu",
-        "type": "github"
-      }
-    },
     "xwayland-satellite-stable": {
       "flake": false,
       "locked": {
@@ -945,7 +853,7 @@
     "zjstatus": {
       "inputs": {
         "crane": "crane_2",
-        "flake-utils": "flake-utils_4",
+        "flake-utils": "flake-utils_3",
         "nixpkgs": "nixpkgs_9",
         "rust-overlay": "rust-overlay_3"
       },

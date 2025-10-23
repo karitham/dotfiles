@@ -473,12 +473,7 @@ in {
               name = "nu";
               language-servers = ["nu-lsp"];
               formatter = {
-                command = "${pkgs.writers.writeBashBin "topiary" ''
-                  export TOPIARY_LANGUAGE_DIR="${inputs'.topiary-nu.packages.default}/languages";
-                  export TOPIARY_CONFIG_FILE="${inputs'.topiary-nu.packages.default}/languages.ncl";
-
-                  ${lib.getExe pkgs.topiary} "$@"
-                ''}/bin/topiary";
+                command = "${lib.getExe pkgs.topiary-nu}";
                 args = [
                   "format"
                   "--language"
