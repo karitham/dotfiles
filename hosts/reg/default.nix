@@ -4,10 +4,16 @@
   username,
   ...
 }: {
-  imports = [./hardware.nix];
+  imports = [
+    inputs.sops-nix.nixosModules.sops
+    ./hardware.nix
+    ./pds.nix
+    ./pds-backup.nix
+  ];
 
   boot.tmp.cleanOnBoot = true;
   zramSwap.enable = true;
+  sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
   services = {
     tailscale.enable = true;
     tailscale.useRoutingFeatures = "server";
@@ -17,37 +23,14 @@
       enable = true;
       host = "0.0.0.0";
     };
-
-    writefreely = {
-      enable = true;
-      host = "notes.0xf.fr";
-      nginx.enable = true;
-      acme.enable = true;
-      settings = {
-        server.port = 3003;
-        app.host = "https://notes.0xf.fr";
-        app.site_name = "writefreely";
-        app.site_description = "writefreely";
-        app.single_user = true;
-      };
-    };
-  };
-
-  networking.firewall.allowedTCPPorts = [80 443];
-
-  security.acme = {
-    defaults.email = "netop@0xf.fr";
-    acceptTerms = true;
   };
 
   users.users = {
     ${username}.openssh.authorizedKeys.keyFiles = [inputs.ssh-keys];
   };
 
-  environment.systemPackages = with pkgs; [helix writefreely];
+  environment.systemPackages = with pkgs; [helix];
   server = true;
 
-  system = {
-    stateVersion = "25.05";
-  };
+  system.stateVersion = "25.05";
 }
