@@ -1,42 +1,24 @@
 {
   lib,
   stdenv,
-  fetchFromGitHub,
   tree-sitter,
-  nodejs,
   topiary,
   makeWrapper,
   runCommand,
-}:
-
-let
-  treeSitterNu = stdenv.mkDerivation {
-    name = "tree-sitter-nu";
-    src = fetchFromGitHub {
-      owner = "nushell";
-      repo = "tree-sitter-nu";
-      rev = "18b7f951e0c511f854685dfcc9f6a34981101dd6";
-      hash = "sha256-OSazwPrUD7kWz/oVeStnnXEJiDDmI7itiDPmg062Kl8=";
+  fetchFromGitHub,
+}: let
+  treeSitterWithLatestNu = tree-sitter.override {
+    extraGrammars = {
+      tree-sitter-nu = {
+        url = "https://github.com/nushell/tree-sitter-nu";
+        rev = "18b7f951e0c511f854685dfcc9f6a34981101dd6";
+        sha256 = "sha256-OSazwPrUD7kWz/oVeStnnXEJiDDmI7itiDPmg062Kl8=";
+        fetchSubmodules = false;
+      };
     };
-
-    buildInputs = [
-      tree-sitter
-      nodejs
-    ];
-
-    buildPhase = ''
-      tree-sitter generate --abi=14
-    '';
-
-    installPhase = ''
-      mkdir -p $out/lib
-      if [[ -e src/scanner.c ]]; then
-        $CC -fPIC -c src/scanner.c -o scanner.o -Isrc -O2
-      fi
-      $CC -fPIC -c src/parser.c -o parser.o -Isrc -O2
-      $CC -shared -o $out/lib/tree_sitter_nu.so *.o
-    '';
   };
+
+  treeSitterNu = treeSitterWithLatestNu.builtGrammars.tree-sitter-nu;
 
   topiaryNushell = fetchFromGitHub {
     owner = "blindFS";
@@ -56,7 +38,7 @@ let
         languages = {
           nu = {
             extensions = ["nu"],
-            grammar.source.path = "${treeSitterNu}/lib/tree_sitter_nu.so"
+            grammar.source.path = "${treeSitterNu}/parser"
           },
         },
       }
@@ -68,14 +50,14 @@ let
     '';
   };
 in
-runCommand "topiary-nu" {
-  buildInputs = [ makeWrapper ];
-  meta = {
-    mainProgram = "topiary-nu";
-  };
-} ''
-  mkdir -p $out/bin
-  makeWrapper ${lib.getExe topiary} $out/bin/topiary-nu \
-    --set TOPIARY_LANGUAGE_DIR "${configDir}/languages" \
-    --set TOPIARY_CONFIG_FILE "${configDir}/languages.ncl"
-''
+  runCommand "topiary-nu" {
+    buildInputs = [makeWrapper];
+    meta = {
+      mainProgram = "topiary-nu";
+    };
+  } ''
+    mkdir -p $out/bin
+    makeWrapper ${lib.getExe topiary} $out/bin/topiary-nu \
+      --set TOPIARY_LANGUAGE_DIR "${configDir}/languages" \
+      --set TOPIARY_CONFIG_FILE "${configDir}/languages.ncl"
+  ''
