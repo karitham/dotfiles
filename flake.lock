@@ -286,11 +286,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1761033772,
-        "narHash": "sha256-hjhxhZ2D18LgCDK2IsQ6xXCqFUgyK0Pd677vPFtgWVQ=",
+        "lastModified": 1761308729,
+        "narHash": "sha256-6TTetzgxBTWc/+izud2a0n6Y1OZxLjGjzATgWqoQs8I=",
         "owner": "karitham",
         "repo": "knixpkgs",
-        "rev": "fb421caffe667d88dff72d7bd5c2e781af6d6ed7",
+        "rev": "3bbe8aa446c8183e32f9b5e7a9f69ae7d47ff03b",
         "type": "github"
       },
       "original": {
