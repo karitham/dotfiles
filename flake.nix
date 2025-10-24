@@ -36,6 +36,16 @@
       url = "github:karitham/knixpkgs";
       inputs.nixpkgs.follows = "stable"; # use the same mesa as local system
     };
+
+    tree-sitter-nu = {
+      url = "github:nushell/tree-sitter-nu";
+      flake = false;
+    };
+
+    topiary-nushell = {
+      url = "github:blindFS/topiary-nushell";
+      flake = false;
+    };
   };
   outputs = inputs @ {
     self,
@@ -118,7 +128,9 @@
     packages = forAllSystems (pkgs: {
       pokego = pkgs.callPackage ./pkgs/pokego.nix {};
       http-nu = pkgs.callPackage ./pkgs/http-nu.nix {};
-      topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix {};
+      topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix {
+        inherit (inputs) tree-sitter-nu topiary-nushell;
+      };
     });
 
     overlays.default = import ./overlays;

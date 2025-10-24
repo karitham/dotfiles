@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  inputs,
   inputs',
   ...
 }: let
@@ -472,8 +473,12 @@ in {
             {
               name = "nu";
               language-servers = ["nu-lsp"];
-              formatter = {
-                command = "${lib.getExe pkgs.topiary-nu}";
+              formatter = let
+                tpnu = pkgs.callPackage ../../pkgs/topiary-nu.nix {
+                  inherit (inputs) topiary-nushell tree-sitter-nu;
+                };
+              in {
+                command = "${lib.getExe tpnu}";
                 args = [
                   "format"
                   "--language"

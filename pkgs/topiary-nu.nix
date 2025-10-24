@@ -5,31 +5,27 @@
   topiary,
   makeWrapper,
   runCommand,
-  fetchFromGitHub,
+  nodejs,
+  tree-sitter-nu,
+  topiary-nushell,
 }: let
-  treeSitterWithLatestNu = tree-sitter.override {
-    extraGrammars = {
-      tree-sitter-nu = {
-        url = "https://github.com/nushell/tree-sitter-nu";
-        rev = "18b7f951e0c511f854685dfcc9f6a34981101dd6";
-        sha256 = "sha256-OSazwPrUD7kWz/oVeStnnXEJiDDmI7itiDPmg062Kl8=";
-        fetchSubmodules = false;
-      };
-    };
-  };
-
-  treeSitterNu = treeSitterWithLatestNu.builtGrammars.tree-sitter-nu;
-
-  topiaryNushell = fetchFromGitHub {
-    owner = "blindFS";
-    repo = "topiary-nushell";
-    rev = "fd78be393af5a64e56b493f52e4a9ad1482c07f4";
-    hash = "sha256-5gmLFnbHbQHnE+s1uAhFkUrhEvUWB/hg3/8HSYC9L14=";
+  treeSitterNu = stdenv.mkDerivation {
+    name = "tree-sitter-nu";
+    src = tree-sitter-nu;
+    buildInputs = [tree-sitter nodejs];
+    buildPhase = ''
+      tree-sitter generate
+      gcc -o parser.so -Isrc src/parser.c src/scanner.c -shared -fPIC -O2
+    '';
+    installPhase = ''
+      mkdir -p $out
+      cp parser.so $out/parser
+    '';
   };
 
   configDir = stdenv.mkDerivation {
     name = "topiary-nu-config";
-    src = topiaryNushell;
+    src = topiary-nushell;
 
     buildPhase = ''
       mkdir -p $out
