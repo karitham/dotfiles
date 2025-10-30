@@ -1,7 +1,6 @@
 {
   lib,
   pkgs,
-  inputs,
   inputs',
   ...
 }: let
@@ -228,6 +227,10 @@ in {
               };
             };
           };
+        };
+        thriftls = {
+          command = "thriftls";
+          except-features = ["format"];
         };
       };
 
@@ -473,16 +476,25 @@ in {
             {
               name = "nu";
               language-servers = ["nu-lsp"];
-              formatter = let
-                tpnu = pkgs.callPackage ../../pkgs/topiary-nu.nix {
-                  inherit (inputs) topiary-nushell tree-sitter-nu;
-                };
-              in {
-                command = "${lib.getExe tpnu}";
+              formatter = {
+                command = "${lib.getExe inputs'.self.packages.topiary-nu}";
                 args = [
                   "format"
                   "--language"
                   "nu"
+                ];
+              };
+              auto-format = true;
+            }
+            {
+              name = "thrift";
+              language-servers = ["thriftls"];
+              formatter = {
+                command = "thriftls";
+                args = [
+                  "format"
+                  "-indent"
+                  "2space"
                 ];
               };
               auto-format = true;
