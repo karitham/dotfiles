@@ -4,6 +4,11 @@
   inputs',
   ...
 }: let
+  jj-patch = pkgs.fetchurl {
+    url = "https://patch-diff.githubusercontent.com/raw/helix-editor/helix/pull/14519.patch";
+    hash = "sha256-e4xaKcOhAKKYbJXhYHbjdFk6CwLubmCp+m7y//MmQFw=";
+  };
+  helix = inputs'.helix.packages.default.overrideAttrs (_: {patches = jj-patch;});
   global-tools = with pkgs; [
     alejandra
     biome
@@ -18,7 +23,7 @@ in {
   programs.helix = {
     enable = true;
     defaultEditor = true;
-    package = inputs'.helix.packages.default;
+    package = helix;
     extraPackages = with pkgs;
       [
         golangci-lint-langserver
