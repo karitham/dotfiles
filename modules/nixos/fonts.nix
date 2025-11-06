@@ -7,7 +7,7 @@
   options.fonts = {
     mono = lib.mkOption {
       type = lib.types.str;
-      default = "TX-02 Medium";
+      default = "Lilex Nerd Font Propo Medium";
       description = "Global mono font";
     };
   };
@@ -17,7 +17,7 @@
       packages = with pkgs; [
         lexend
         nerd-fonts.jetbrains-mono
-        cascadia-code
+        nerd-fonts.lilex
         noto-fonts
         noto-fonts-cjk-sans
         noto-fonts-color-emoji
@@ -28,7 +28,6 @@
         defaultFonts = {
           monospace = [
             config.fonts.mono
-            "JetBrainsMono"
             "JetBrainsMono Nerd Font"
             "Noto Color Emoji"
           ];

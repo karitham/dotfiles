@@ -7,7 +7,7 @@
     programs.ghostty = {
       enable = true;
       settings = {
-        font-family = "Cascadia Mono NF";
+        font-family = osConfig.fonts.mono;
         font-size = 13;
 
         window-decoration = true;
