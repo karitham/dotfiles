@@ -1,6 +1,5 @@
 {
   osConfig,
-  config,
   lib,
   pkgs,
   ...
@@ -17,7 +16,6 @@
         output = "eDP-1";
         spacing = 7;
         modules-left = [
-          "custom/launcher"
           "cpu"
           "temperature"
           "backlight"
@@ -32,7 +30,6 @@
           "network"
           "battery"
           "clock"
-          "custom/powermenu"
         ];
 
         "hyprland/workspaces" = {
@@ -60,7 +57,7 @@
 
         cpu = {
           interval = 10;
-          format = "  {usage}%";
+          format = " {usage}%";
           max-length = 10;
         };
 
@@ -68,7 +65,9 @@
           hwmon-path-abs = "/sys/devices/platform/coretemp.0/hwmon";
           input-filename = "tem1_input";
           format = " {temperatureC}°C";
+          format-critical = " {temperatureC}°C";
           on-click = "psensor";
+          critical-threshold = 80;
         };
 
         backlight = let
@@ -126,7 +125,7 @@
         };
 
         network = {
-          format-wifi = "  {signalStrength}%";
+          format-wifi = " {signalStrength}%";
           format-ethernet = "󰈀 ";
           format-disconnected = "󰖪 ";
         };
@@ -146,7 +145,7 @@
           format-charging = " {capacity}%";
           format-plugged = " {capacity}%";
           format-alt = "{icon} {time}";
-          format-full = "  {capacity}%";
+          format-full = " {capacity}%";
           format-icons = [
             ""
             ""
@@ -162,77 +161,81 @@
         };
       };
 
-      style = let
-        background = "@base";
-        text = "@text";
-        bg-active = "@surface0";
-        accent = "@${config.catppuccin.accent}";
-        warning = "@yellow";
-        critical = "@red";
-        active = "@green";
-      in ''
+      style = ''
         * {
           font-family: ${osConfig.fonts.mono}, Noto Sans CJK SC;
           font-weight: bold;
-          font-size: 17px;
+          font-size: 14px;
         }
+
         window#waybar {
-          color: ${text};
+          color: @text;
+          background: transparent;
+          padding: 0 0.375em;
+        }
+
+        #waybar > box {
+          background: @base;
           opacity: 0.95;
-          background-color: ${background};
-          padding: 0 10px;
+          border-radius: 1.25em;
+          margin: 0.25em;
+          padding: 0 0.5em;
         }
-        #custom-launcher {
-          color: ${text};
-          background-color: ${background};
-          border-radius: 10px;
-          padding-left: 15px;
-          padding-right: 18px;
+
+        #waybar > box > * {
+          padding: 0 0.625em;
+          margin: 0 0.1875em;
+          background: transparent;
+          transition: color 120ms ease, background 120ms ease;
         }
-        #workspaces {
-          color: ${text};
-          background-color: ${background};
-          border-radius: 0;
-        }
+
+        #waybar > box > * label { padding-top: 0.0625em; }
+        #clock { margin-right: 0; }
+
+        #workspaces { border-radius: 0; }
+
         #workspaces button {
-          color: ${text};
-          padding: 0 10px;
-          border-radius: 0;
+          color: @subtext0;
+          padding: 0 0.625em;
+          border-bottom: 0.125em solid transparent;
+          transition: border-color 120ms ease, color 120ms ease;
         }
+
         #workspaces button.focused,
         #workspaces button.active {
-          background-color: ${bg-active};
-          border-bottom: 4px solid ${accent};
+          color: @text;
+          border-bottom-color: @mauve;
         }
+
+        #workspaces button.urgent {
+          color: @red;
+          border-bottom-color: @red;
+        }
+
         #workspaces button.empty {
           font-size: 0;
           min-width: 0;
           min-height: 0;
-          margin: 0;
-          padding: 0;
-          border: 0;
           opacity: 0;
-          box-shadow: none;
-          background-color: transparent;
         }
-        #cpu,
-        #pulseaudio,
-        #network,
-        #battery {
-          color: ${text};
-        }
-        #clock {
-          color: ${text};
-          margin-right: 15px;
-        }
-        #battery.warning {
-          color: ${warning};
-        }
-        #battery.critical {
-          color: ${critical};
-        }
-        #battery.charging {
-          color: ${active};
+
+        #battery.charging,
+        #battery.full { color: @green; }
+        #battery.warning { color: @yellow; }
+        #battery.critical,
+        #network.disconnected,
+        #temperature.critical { color: @red; }
+        #network.ethernet { color: @teal; }
+        #network.wifi { color: @sky; }
+        #pulseaudio.muted,
+        .muted { color: @overlay1; }
+
+        tooltip {
+          background: @mantle;
+          color: @text;
+          border: 0.0625em solid @surface1;
+          border-radius: 0.25em;
+          padding: 0.375em 0.625em;
         }
       '';
     };
