@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+_: {
   programs.jujutsu = {
     enable = true;
 
@@ -37,12 +37,6 @@
         ];
         movement.edit = true;
         editor = "hx";
-        diff-formatter = [
-          "${pkgs.difftastic}/bin/difft"
-          "--color=always"
-          "$left"
-          "$right"
-        ];
       };
     };
   };
