@@ -5,6 +5,7 @@
 }: {
   home.packages = [
     pkgs.sd
+    pkgs.fd
     pkgs.uutils-coreutils-noprefix
   ];
   programs = {
