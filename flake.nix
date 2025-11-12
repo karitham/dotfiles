@@ -1,7 +1,6 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    stable.url = "github:NixOS/nixpkgs/nixos-25.05";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -33,7 +32,7 @@
     };
     knixpkgs = {
       url = "github:karitham/knixpkgs";
-      inputs.nixpkgs.follows = "stable"; # use the same mesa as local system
+      inputs.nixpkgs.follows = "nixpkgs"; # use the same mesa as local system
     };
 
     tree-sitter-nu = {

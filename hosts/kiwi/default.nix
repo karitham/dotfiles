@@ -39,7 +39,6 @@
   };
 
   hardware = {
-    graphics.package = inputs'.stable.legacyPackages.mesa;
     keyboard.qmk.enable = true;
   };
 
