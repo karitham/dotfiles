@@ -52,6 +52,7 @@
     };
 
     ripgrep.enable = true;
+    bat.enable = true;
     less = {
       enable = true;
       config = ''
