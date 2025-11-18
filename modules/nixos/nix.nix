@@ -3,11 +3,12 @@
   username,
   lib,
   config,
+  pkgs,
   ...
 }: {
   config = lib.mkIf (!config.server) {
     nix = {
-      # package = pkgs.lix;
+      package = pkgs.lix;
 
       registry.nixpkgs.flake = inputs.nixpkgs;
       channel.enable = false;
