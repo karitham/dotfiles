@@ -28,7 +28,7 @@
     certs."0xf.fr" = {
       dnsProvider = "cloudflare";
       credentialsFile = config.sops.secrets.cloudflare-api.path;
-      group = config.services.nginx.group;
+      inherit (config.services.nginx) group;
 
       domain = "0xf.fr";
       extraDomainNames = ["*.0xf.fr"];
