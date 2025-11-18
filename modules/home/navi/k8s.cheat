@@ -1,9 +1,0 @@
-% k8s, kubectl
-
-# Get resource requests and limits for a pod
-kubectl get <pod> -ojson | from json | get spec.containers.resources
-
-# Get total resource for each nodes in the cluster
-kubectl get nodes -o json | from json | get items | select metadata.name status.allocatable.cpu status.allocatable.memory status.allocatable.ephemeral-storage | rename node cpu memory disk | update memory { into filesize } | update disk { into filesize }
-
-$ pod: kubectl get pods -oname

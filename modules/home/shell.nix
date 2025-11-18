@@ -24,7 +24,6 @@
           source-env "~/.profile.nu"
         }
 
-        source ${./navi.plugin.nu}
         ${lib.meta.getExe pkgs.pokego} -l french
       '';
 
@@ -40,16 +39,6 @@
     };
     zoxide.enable = true;
     carapace.enable = true;
-
-    navi.enable = true;
-    navi.settings = {
-      cheats = {
-        paths = [
-          ./navi
-          "~/.local/share/navi/cheats"
-        ];
-      };
-    };
 
     ripgrep.enable = true;
     bat.enable = true;
