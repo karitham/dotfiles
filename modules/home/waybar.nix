@@ -178,7 +178,7 @@
           background: @base;
           opacity: 0.95;
           border-radius: 1.25em;
-          margin: 0.25em;
+          margin: 0.5em 0.5em 0 0.5em;
           padding: 0 0.5em;
         }
 
