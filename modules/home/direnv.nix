@@ -5,10 +5,13 @@ _: {
     silent = true;
     stdlib = ''
       alias() {
-        mkdir -p .direnv/bin
-        echo "#!/usr/bin/env sh
-        $(which $2) \$@" >.direnv/bin/$1
-        chmod +x .direnv/bin/$1
+      	if [ ! $PWD/.direnv/bin ]; then
+      		mkdir $PWD/.direnv/bin
+      	fi
+
+      	echo "#!/usr/bin/env sh
+      $2 \$@" > "$PWD/.direnv/bin/$1"
+      	chmod +x "$PWD/.direnv/bin/$1"
       }
     '';
   };
