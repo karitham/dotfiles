@@ -12,6 +12,12 @@
     exclude = []
 
     [[module]]
+    type = "Commit"
+    empty_text = ""
+    [module.change]
+    fg = "magenta"
+
+    [[module]]
     type = "Bookmarks"
     separator = " "
     color = "Magenta"

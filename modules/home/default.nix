@@ -23,7 +23,7 @@
     backupFileExtension = "bak";
     users.${username} = {
       home.username = username;
-      home.stateVersion = "24.11";
+      home.stateVersion = "25.11";
 
       catppuccin = {
         inherit (config.catppuccin) enable;
@@ -39,31 +39,8 @@
 
       imports = [
         inputs.catppuccin.homeModules.default
-
-        ./atuin.nix
-        ./browser.nix
-        ./cursor.nix
-        ./direnv.nix
-        ./discord.nix
-        ./dunst.nix
-        ./fuzzel.nix
-        ./ghostty.nix
-        ./git.nix
-        ./helix.nix
-        ./hyprpaper.nix
-        ./hyprland.nix
-        ./hyprlock.nix
-        ./jj.nix
-        ./mise.nix
-        ./niri.nix
-        ./prr.nix
-        ./rnnoise.nix
-        ./shell.nix
-        ./starship.nix
-        ./waybar.nix
-        ./xdg.nix
-        ./yazi.nix
-        ./zellij.nix
+        ./desktop
+        ./dev
       ];
     };
   };
