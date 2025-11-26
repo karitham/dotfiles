@@ -14,5 +14,7 @@
         config ? home-manager
       )
       config.home-manager.users.${username}.home.sessionVariables.EDITOR;
+
+    programs.nano.enable = !((config ? home-manager) && config.home-manager.users.${username}.programs.helix.enable);
   };
 }
