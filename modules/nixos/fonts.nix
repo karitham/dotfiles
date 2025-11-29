@@ -7,7 +7,7 @@
   options.fonts = {
     mono = lib.mkOption {
       type = lib.types.str;
-      default = "Lilex Nerd Font Propo Medium";
+      default = "Lilex Nerd Font Medium";
       description = "Global mono font";
     };
   };
