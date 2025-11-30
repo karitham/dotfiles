@@ -1,11 +1,13 @@
 {
   osConfig,
   lib,
+  inputs',
   ...
 }: {
   config = lib.mkIf osConfig.desktop.enable {
     programs.ghostty = {
       enable = true;
+      package = inputs'.ghostty.packages.default;
       settings = {
         font-family = osConfig.fonts.mono;
         font-size = 13;
