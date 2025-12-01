@@ -1,13 +1,4 @@
-{
-  inputs',
-  pkgs,
-  ...
-}: let
-  room = pkgs.fetchurl {
-    url = "https://github.com/rvcas/room/releases/download/v1.2.0/room.wasm";
-    hash = "sha256-t6GPP7OOztf6XtBgzhLF+edUU294twnu0y5uufXwrkw=";
-  };
-in {
+{inputs', ...}: {
   programs.zellij = {
     enable = true;
     settings = {
@@ -24,17 +15,6 @@ in {
             bind = {
               _args = ["Alt f"];
               ToggleFloatingPanes = {};
-            };
-          }
-          {
-            bind = {
-              _args = ["Ctrl y"];
-              LaunchOrFocusPlugin = {
-                _args = ["file:${room}"];
-                floating = true;
-                ignore_case = true;
-                quick_jump = true;
-              };
             };
           }
         ];
