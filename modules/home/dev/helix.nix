@@ -46,7 +46,18 @@ in {
     settings = {
       keys = let
         plusMenu = {
-          g = ":sh gh browse -n %{buffer_name}:%{cursor_line} | ${pkgs.wl-clipboard}/bin/wl-copy";
+          g = ''
+            :sh ${pkgs.nushell}/bin/nu -c '
+              let line = ("%{selection_line_start}" | default "%{cursor_line}")
+              let line_end = (if ("%{selection_line_end}" | is-not-empty) {$"-L%{selection_line_end}"} else "")
+              let root = (${pkgs.git}/bin/git rev-parse --show-toplevel | str trim)
+              let rel_path = ("%{file_path_absolute}" | path relative-to $root)
+              let ref = (${pkgs.jujutsu}/bin/jj log -r `heads(::@ & remote_bookmarks())` -T `remote_bookmarks` | parse -r `(?<branch>[\w\d\/\-,\.]+)@origin` | get branch.0)
+              let remote_url = (${pkgs.git}/bin/git remote get-url origin | str trim | if ($in | str contains '://') {$in} else $"https://($in | str replace ':' '/')" | url parse)
+              let url = $"https://($remote_url.host)($remote_url.path)/blob/($ref)/($rel_path)#L($line)($line_end)"
+              $url | ${pkgs.wl-clipboard}/bin/wl-copy
+            '
+          '';
           b = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}";
           p = ":sh echo %{buffer_name} | ${pkgs.wl-clipboard}/bin/wl-copy";
         };
