@@ -50,11 +50,11 @@ in {
             :sh ${pkgs.nushell}/bin/nu -c '
               let line = ("%{selection_line_start}" | default "%{cursor_line}")
               let line_end = (if ("%{selection_line_end}" | is-not-empty) {$"-L%{selection_line_end}"} else "")
-              let root = (${pkgs.git}/bin/git rev-parse --show-toplevel | str trim)
+              let root = (${pkgs.jujutsu}/bin/jj workspace root | str trim)
               let rel_path = ("%{file_path_absolute}" | path relative-to $root)
-              let ref = (${pkgs.jujutsu}/bin/jj log -r `heads(::@ & remote_bookmarks())` -T `remote_bookmarks` | parse -r `(?<branch>[\w\d\/\-,\.]+)@origin` | get branch.0)
-              let remote_url = (${pkgs.git}/bin/git remote get-url origin | str trim | if ($in | str contains '://') {$in} else $"https://($in | str replace ':' '/')" | url parse)
-              let url = $"https://($remote_url.host)($remote_url.path)/blob/($ref)/($rel_path)#L($line)($line_end)"
+              let ref = (${pkgs.jujutsu}/bin/jj log -r `heads(::@ & bookmarks())` -T `remote_bookmarks` | parse -r `(?<branch>[^\s]+)@(?<remote>[^\s]+)` | sort-by remote -r | get branch.0)
+              let remote_url = (${pkgs.jujutsu}/bin/jj git remote list | parse "{remote} {url}" | where remote == origin | get url.0 | if ($in | str contains '://') {$in} else $"https://($in | str replace ':' '/')" | url parse)
+              let url = $"https://($remote_url.host)($remote_url.path | str replace ".git" "")/blob/($ref)/($rel_path)#L($line)($line_end)"
               $url | ${pkgs.wl-clipboard}/bin/wl-copy
             '
           '';
