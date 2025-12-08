@@ -138,7 +138,7 @@ in {
         };
         cursor-shape = {
           insert = "bar";
-          normal = "bar";
+          normal = "block";
           select = "underline";
         };
         whitespace.render.tab = "all";
