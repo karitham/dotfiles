@@ -13,10 +13,10 @@ _: {
         key = "~/.ssh/id_ed25519.pub";
       };
       git = {
-        auto-local-bookmark = true;
         write-change-id-header = true;
         track-default-bookmark-on-clone = true;
       };
+      remotes."origin".auto-track-bookmarks = "glob:*";
       revsets = {
         log = "..@ | branches | curbranch::@ | @::nextbranch | downstream(@, branchesandheads)";
       };
