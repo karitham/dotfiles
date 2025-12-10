@@ -4,6 +4,7 @@ _: {
     ./cursor.nix
     ./discord.nix
     ./dunst.nix
+    ./easyeffects.nix
     ./fuzzel.nix
     ./ghostty.nix
     ./hyprland.nix
