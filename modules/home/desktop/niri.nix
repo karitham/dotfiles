@@ -15,6 +15,7 @@
           QT_QPA_PLATFORMTHEME = "qt5ct";
           QT_QPA_PLATFORM = "wayland";
           DISPLAY = ":0";
+          GTK_IM_MODULE = "simple";
         };
 
         screenshot-path = null;
