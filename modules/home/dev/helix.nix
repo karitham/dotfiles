@@ -80,17 +80,25 @@ in {
             ":reload"
           ];
         };
+        scrollFast = {
+          "C-j" = lib.replicate 5 "move_visual_line_down";
+          "C-k" = lib.replicate 5 "move_visual_line_up";
+        };
       in {
-        normal = {
-          "+" = plusMenu;
-          "-" = runMenu;
-          "g" = goMenu;
-        };
-        select = {
-          "+" = plusMenu;
-          "-" = runMenu;
-          "." = goMenu;
-        };
+        normal =
+          {
+            "+" = plusMenu;
+            "-" = runMenu;
+            "g" = goMenu;
+          }
+          // scrollFast;
+        select =
+          {
+            "+" = plusMenu;
+            "-" = runMenu;
+            "." = goMenu;
+          }
+          // scrollFast;
       };
 
       editor = {
