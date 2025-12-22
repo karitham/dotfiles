@@ -15,6 +15,28 @@
     enableMcpIntegration = true;
     settings = {
       theme = "catppuccin-macchiato";
+      agent = {
+        stack-analyst = {
+          description = "Analyzes stack traces to map errors to code paths and identify root causes";
+          prompt = builtins.readFile ./opencode/stack-analyst.md;
+          mode = "primary";
+          tools = {
+            read = true;
+            glob = true;
+            grep = true;
+            write = true;
+            edit = false;
+            bash = true;
+          };
+          permissions = {
+            bash = {
+              "git status" = "allow";
+              "git log" = "allow";
+              "*" = "ask";
+            };
+          };
+        };
+      };
       mcp = {
         linear = {
           type = "remote";
