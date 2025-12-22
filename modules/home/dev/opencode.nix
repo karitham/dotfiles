@@ -48,8 +48,13 @@
         };
         gopls = {
           type = "local";
-          command = ["gopls" "mcp"];
           enabled = true;
+          command = ["gopls" "mcp"];
+        };
+        sentry = {
+          type = "local";
+          enabled = true;
+          command = ["${pkgs.bun}/bin/bun" "x" "mcp-remote@latest" "https://mcp.sentry.dev/mcp"];
         };
       };
     };
