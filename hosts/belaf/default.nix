@@ -25,7 +25,6 @@
     };
     supportedFilesystems = ["bcachefs"];
     kernelPackages = pkgs.linuxPackages_latest;
-    binfmt.emulatedSystems = ["aarch64-linux"];
   };
 
   networking.networkmanager.enable = true;
