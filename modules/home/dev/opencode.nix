@@ -38,23 +38,10 @@
         };
       };
       mcp = {
-        linear = {
-          type = "remote";
-          url = "https://mcp.linear.app/mcp";
-          enabled = true;
-          headers = {
-            Authorization = "Bearer {env:LINEAR_API_KEY}";
-          };
-        };
         gopls = {
           type = "local";
           enabled = true;
           command = ["gopls" "mcp"];
-        };
-        sentry = {
-          type = "local";
-          enabled = true;
-          command = ["${pkgs.bun}/bin/bun" "x" "mcp-remote@latest" "https://mcp.sentry.dev/mcp"];
         };
       };
     };
