@@ -2,7 +2,7 @@
   programs.opencode = let
     opencodePkg = pkgs.symlinkJoin {
       name = "opencode-wrapped";
-      paths = [pkgs.opencode pkgs.nixd];
+      paths = [pkgs.opencode pkgs.nixd pkgs.alejandra];
       buildInputs = [pkgs.makeWrapper];
       postBuild = ''
         wrapProgram $out/bin/opencode \
@@ -15,6 +15,12 @@
     enableMcpIntegration = true;
     settings = {
       theme = "catppuccin-macchiato";
+      formatter = {
+        alejandra = {
+          command = ["alejandra"];
+          extensions = [".nix"];
+        };
+      };
       agent = {
         stack-analyst = {
           description = "Analyzes stack traces to map errors to code paths and identify root causes";
