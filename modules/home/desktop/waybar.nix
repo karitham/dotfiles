@@ -21,9 +21,7 @@
           "backlight"
         ];
 
-        modules-center =
-          lib.optional osConfig.desktop.hyprland "hyprland/workspaces"
-          ++ lib.optional osConfig.desktop.niri "niri/workspaces";
+        modules-center = lib.optional osConfig.desktop.niri "niri/workspaces";
 
         modules-right = [
           "pulseaudio"
@@ -31,14 +29,6 @@
           "battery"
           "clock"
         ];
-
-        "hyprland/workspaces" = {
-          disable-scroll = true;
-          all-outputs = true;
-          on-click = "activate";
-          on-scroll-up = "${lib.meta.getExe pkgs.hyprland} dispatch workspace e+1";
-          on-scroll-down = "${lib.meta.getExe pkgs.hyprland} dispatch workspace e-1";
-        };
 
         "niri/workspaces" = {
           format = "{value}";

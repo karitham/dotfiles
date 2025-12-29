@@ -16,7 +16,6 @@ in {
       lib.mkEnableOption "desktop usage"
       // {
         default = lib.lists.any (isTrue: isTrue) [
-          cfg.hyprland
           cfg.niri
         ];
       };
@@ -25,7 +24,6 @@ in {
       type = lib.types.path;
       description = "the wallpaper to use";
     };
-    hyprland = lib.mkEnableOption "enable hyprland";
     niri = lib.mkEnableOption "enable niri";
   };
 
@@ -62,12 +60,6 @@ in {
     };
 
     programs = {
-      hyprland = lib.mkIf cfg.hyprland {
-        enable = true;
-        xwayland.enable = true;
-        withUWSM = true;
-      };
-
       niri = lib.mkIf cfg.niri {
         enable = true;
       };

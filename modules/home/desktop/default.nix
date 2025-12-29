@@ -7,7 +7,6 @@ _: {
     ./easyeffects.nix
     ./fuzzel.nix
     ./ghostty.nix
-    ./hyprland.nix
     ./hyprlock.nix
     ./hyprpaper.nix
     ./niri.nix
