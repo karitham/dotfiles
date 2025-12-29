@@ -2,7 +2,7 @@
   programs.opencode = let
     opencodePkg = pkgs.symlinkJoin {
       name = "opencode-wrapped";
-      paths = [pkgs.opencode];
+      paths = [pkgs.opencode pkgs.nixd];
       buildInputs = [pkgs.makeWrapper];
       postBuild = ''
         wrapProgram $out/bin/opencode \
