@@ -9,12 +9,7 @@
     users.defaultUserShell = pkgs.nushell;
     environment.shells = [pkgs.nushell];
 
-    environment.sessionVariables.EDITOR =
-      lib.mkIf (
-        config ? home-manager
-      )
-      config.home-manager.users.${username}.home.sessionVariables.EDITOR;
-
-    programs.nano.enable = !((config ? home-manager) && config.home-manager.users.${username}.programs.helix.enable);
+    environment.sessionVariables.EDITOR = lib.attrByPath ["home-manager" "users" username "home" "sessionVariables" "EDITOR"] "nano" config;
+    programs.nano.enable = !(lib.attrByPath ["home-manager" "users" username "programs" "helix" "enable"] false config);
   };
 }
