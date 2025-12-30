@@ -21,7 +21,7 @@
           "backlight"
         ];
 
-        modules-center = lib.optional osConfig.desktop.niri "niri/workspaces";
+        modules-center = lib.optional osConfig.desktop.enable "niri/workspaces";
 
         modules-right = [
           "pulseaudio"

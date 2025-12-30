@@ -2,30 +2,24 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
   cfg = config.desktop;
 in {
-  options.desktop = let
-    defaultWallpaper = pkgs.fetchurl {
-      url = "https://raw.githubusercontent.com/HoulFloof/wallpapers/f23c1010b93cb97baa7ad7c94fd552f7601496d2/misc/waves_right_colored.png";
-      hash = "sha256-NqqE+pGnCIWAitH86sxu1EudVEEaSO82y3NqbhtDh9k=";
-    };
-  in {
-    enable =
-      lib.mkEnableOption "desktop usage"
-      // {
-        default = lib.lists.any (isTrue: isTrue) [
-          cfg.niri
-        ];
-      };
+  options.desktop = {
+    enable = lib.mkEnableOption "desktop usage";
     wallpaper = lib.mkOption {
-      default = "${defaultWallpaper}";
+      default = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/HoulFloof/wallpapers/f23c1010b93cb97baa7ad7c94fd552f7601496d2/misc/waves_right_colored.png";
+        hash = "sha256-NqqE+pGnCIWAitH86sxu1EudVEEaSO82y3NqbhtDh9k=";
+      };
       type = lib.types.path;
       description = "the wallpaper to use";
     };
-    niri = lib.mkEnableOption "enable niri";
   };
+
+  imports = [inputs.niri.nixosModules.niri];
 
   config = lib.mkIf cfg.enable {
     hardware = {
@@ -60,7 +54,7 @@ in {
     };
 
     programs = {
-      niri = lib.mkIf cfg.niri {
+      niri = {
         enable = true;
       };
 

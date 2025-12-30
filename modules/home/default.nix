@@ -2,13 +2,15 @@
   config,
   inputs,
   inputs',
-  username,
+  self,
+  self',
   ...
 }: {
-  users.users.${username} =
-    if username != "root"
+  imports = [inputs.home-manager.nixosModules.default];
+  users.users.${config.my.username} =
+    if config.my.username != "root"
     then {
-      home = "/home/${username}";
+      home = "/home/${config.my.username}";
       isNormalUser = true;
       extraGroups = [
         "networkmanager"
@@ -19,10 +21,10 @@
     else {};
 
   home-manager = {
-    extraSpecialArgs = {inherit inputs inputs' username;};
+    extraSpecialArgs = {inherit inputs inputs' self self';};
     backupFileExtension = "bak";
-    users.${username} = {
-      home.username = username;
+    users.${config.my.username} = {
+      home.username = config.my.username;
       home.stateVersion = "25.11";
 
       catppuccin = {

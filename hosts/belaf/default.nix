@@ -4,14 +4,19 @@
   inputs,
   ...
 }: {
-  catppuccin.enable = true;
-  catppuccin.flavor = "macchiato";
-  desktop.niri = true;
-  time.timeZone = "Europe/Paris";
-
-  system = {
-    stateVersion = "25.11";
+  imports = [
+    inputs.lanzaboote.nixosModules.lanzaboote
+    inputs.catppuccin.nixosModules.catppuccin
+    ../../modules/home
+    ./hardware.nix
+  ];
+  catppuccin = {
+    enable = true;
+    flavor = "macchiato";
   };
+  time.timeZone = "Europe/Paris";
+  desktop.enable = true;
+  system.stateVersion = "25.11";
 
   boot = {
     loader.systemd-boot = {
@@ -57,10 +62,4 @@
       data-root = "/docker";
     };
   };
-
-  imports = [
-    inputs.lanzaboote.nixosModules.lanzaboote
-    inputs.catppuccin.nixosModules.catppuccin
-    ./hardware.nix
-  ];
 }

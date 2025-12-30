@@ -2,6 +2,7 @@
   lib,
   pkgs,
   inputs',
+  self',
   ...
 }: let
   jj-patch = pkgs.fetchurl {
@@ -502,7 +503,7 @@ in {
               name = "nu";
               language-servers = ["nu-lsp"];
               formatter = {
-                command = "${lib.getExe inputs'.self.packages.topiary-nu}";
+                command = "${lib.getExe self'.packages.topiary-nu}";
                 args = [
                   "format"
                   "--language"

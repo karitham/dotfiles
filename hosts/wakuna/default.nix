@@ -10,6 +10,7 @@
   ];
 
   sdImage.compressImage = false;
+  
   nixpkgs.hostPlatform = "aarch64-linux";
   system.stateVersion = "24.11";
 

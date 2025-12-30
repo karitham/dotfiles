@@ -1,26 +1,22 @@
 {
   inputs,
-  inputs',
   pkgs,
   ...
 }: {
+  imports = [
+    inputs.catppuccin.nixosModules.catppuccin
+    ../../modules/home
+    ./hardware.nix
+  ];
+
+  yubikey.enable = true;
   catppuccin = {
     enable = true;
     flavor = "macchiato";
   };
-  desktop.niri = true;
-  ipcam.enable = false;
-  yubikey.enable = true;
   time.timeZone = "Europe/Paris";
-
-  system = {
-    stateVersion = "25.05";
-  };
-
-  imports = [
-    inputs.catppuccin.nixosModules.catppuccin
-    ./hardware.nix
-  ];
+  desktop.enable = true;
+  system.stateVersion = "25.11";
 
   home-manager.users.kar.imports = [
     ./home-upf.nix

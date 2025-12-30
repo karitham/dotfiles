@@ -6,7 +6,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
-    systems.url = "github:nix-systems/default";
     catppuccin = {
       url = "github:catppuccin/nix";
     };
@@ -26,118 +25,89 @@
       url = "https://github.com/karitham.keys";
       flake = false;
     };
-
     zjstatus = {
       url = "github:dj95/zjstatus";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     knixpkgs = {
       url = "github:karitham/knixpkgs";
-      inputs.nixpkgs.follows = "nixpkgs"; # use the same mesa as local system
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
     tree-sitter-nu = {
       url = "github:nushell/tree-sitter-nu";
       flake = false;
     };
-
     topiary-nushell = {
       url = "github:blindFS/topiary-nushell";
       flake = false;
     };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
-  outputs = inputs @ {
+  outputs = {
     self,
     nixpkgs,
+    flake-parts,
     ...
-  }: let
-    hasHome = cfg: (cfg ? home) && cfg.home;
+  } @ inputs:
+    flake-parts.lib.mkFlake {inherit inputs;} (
+      {withSystem, ...}: {
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
 
-    # Unified system configuration
-    systems = {
-      belaf = {
-        user = "kar";
-        home = true;
-        arch = "x86_64-linux";
-      };
-      kiwi = {
-        user = "kar";
-        home = true;
-        arch = "x86_64-linux";
-      };
-      reg = {
-        user = "root";
-        arch = "x86_64-linux";
-      };
-      ozen = {
-        user = "nixos";
-        home = true;
-        arch = "x86_64-linux";
-      };
-      wakuna = {
-        user = "root";
-        arch = "aarch64-linux";
-      };
-    };
+        perSystem = {pkgs, ...}: {
+          packages = {
+            pokego = pkgs.callPackage ./pkgs/pokego.nix {};
+            http-nu = pkgs.callPackage ./pkgs/http-nu.nix {};
+            topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix {
+              inherit (inputs) tree-sitter-nu topiary-nushell;
+            };
 
-    # Helper function to create NixOS configurations
-    mkSystem = hostname: cfg:
-      nixpkgs.lib.nixosSystem {
-        specialArgs = let
+            wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
+          };
+          formatter = pkgs.alejandra;
+        };
+
+        flake = let
           inherit (nixpkgs) lib;
         in {
-          inherit inputs;
-          username = cfg.user;
-          inputs' = lib.mapAttrs (_: lib.mapAttrs (_: v: v.${cfg.arch} or v)) inputs;
+          lib = {
+            sdImageFromSystem = system: system.config.system.build.sdImage;
+
+            mkSystem' = system: hostname:
+              withSystem system ({
+                inputs',
+                self',
+                ...
+              }:
+                lib.nixosSystem {
+                  specialArgs = {inherit inputs inputs' self self';};
+                  modules = [
+                    {networking.hostName = hostname;}
+                    ./modules/core.nix
+                    ./modules/nixos
+                    ./hosts/${hostname}
+                  ];
+                });
+
+            mkSystem = system: hostname: {${hostname} = self.lib.mkSystem' system hostname;};
+            mkSystems = system: hosts: lib.mergeAttrsList (map (self.lib.mkSystem system) hosts);
+          };
+
+          nixosConfigurations = inputs.nixpkgs.lib.concatMapAttrs self.lib.mkSystems {
+            "x86_64-linux" = ["ozen" "kiwi" "reg" "belaf"];
+            "aarch64-linux" = ["wakuna"];
+          };
+
+          overlays.default = import ./overlays;
         };
-        modules =
-          [
-            (_: {
-              networking.hostName = hostname;
-              nix.registry = {
-                self.flake = self;
-              };
-            })
-            ./modules/nixos
-            ./hosts/${hostname}
-          ]
-          ++ nixpkgs.lib.optionals (hasHome cfg) [
-            inputs.home-manager.nixosModules.home-manager
-            inputs.niri.nixosModules.niri
-            ./modules/home
-          ];
-      };
-
-    forAllSystems = function:
-      nixpkgs.lib.genAttrs (import inputs.systems) (system: function nixpkgs.legacyPackages.${system});
-  in {
-    nixosConfigurations = nixpkgs.lib.mapAttrs mkSystem systems;
-
-    homeConfigurations = nixpkgs.lib.mapAttrs' (hostname: cfg: {
-      name = "${cfg.user}@${hostname}";
-      value = {
-        config = self.nixosConfigurations.${hostname}.config.home-manager.users.${cfg.user};
-      };
-    }) (nixpkgs.lib.filterAttrs (_: hasHome) systems);
-
-    images = {
-      wakuna = self.nixosConfigurations.wakuna.config.system.build.sdImage;
-    };
-
-    packages = forAllSystems (pkgs: {
-      pokego = pkgs.callPackage ./pkgs/pokego.nix {};
-      http-nu = pkgs.callPackage ./pkgs/http-nu.nix {};
-      topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix {
-        inherit (inputs) tree-sitter-nu topiary-nushell;
-      };
-    });
-
-    overlays.default = import ./overlays;
-  };
+      }
+    );
   nixConfig = {
     warn-dirty = false;
     extra-experimental-features = [

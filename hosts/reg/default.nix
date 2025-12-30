@@ -1,9 +1,11 @@
 {
+  config,
   pkgs,
   inputs,
-  username,
   ...
 }: {
+  my.username = "root";
+
   imports = [
     inputs.sops-nix.nixosModules.sops
     ./hardware.nix
@@ -26,7 +28,7 @@
   };
 
   users.users = {
-    ${username}.openssh.authorizedKeys.keyFiles = [inputs.ssh-keys];
+    ${config.my.username}.openssh.authorizedKeys.keyFiles = [inputs.ssh-keys];
   };
 
   environment.systemPackages = with pkgs; [helix];

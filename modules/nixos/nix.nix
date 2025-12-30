@@ -1,6 +1,5 @@
 {
   inputs,
-  username,
   lib,
   config,
   pkgs,
@@ -11,6 +10,7 @@
       package = pkgs.lix;
 
       registry.nixpkgs.flake = inputs.nixpkgs;
+      registry.self.flake = inputs.self;
       channel.enable = false;
 
       settings = {
@@ -50,7 +50,7 @@
 
     programs.nh = {
       enable = true;
-      flake = "/home/${username}/dotfiles";
+      flake = "/home/${config.my.username}/dotfiles";
     };
   };
 }

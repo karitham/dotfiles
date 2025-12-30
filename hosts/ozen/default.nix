@@ -2,31 +2,30 @@
   inputs,
   pkgs,
   lib,
-  username,
+  config,
   ...
 }: let
   inherit (lib) mkForce;
 in {
+  my.username = "nixos";
+
   imports = [
     inputs.catppuccin.nixosModules.catppuccin
     inputs.nixos-wsl.nixosModules.default
-    {
-      system.stateVersion = "24.11";
-      wsl.enable = true;
-      wsl.defaultUser = "nixos";
-    }
+    ../../modules/home
   ];
 
   catppuccin = {
     enable = true;
     flavor = "macchiato";
   };
+  wsl.enable = true;
+  wsl.defaultUser = config.my.username;
+  system.stateVersion = "25.11";
 
   virtualisation.docker.enable = true;
 
-  programs = {
-    ssh.startAgent = true;
-  };
+  programs.ssh.startAgent = true;
 
   services = {
     smartd.enable = mkForce false;
