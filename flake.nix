@@ -80,27 +80,41 @@
             sdImageFromSystem = system: system.config.system.build.sdImage;
 
             mkSystem' = system: hostname:
-              withSystem system ({
-                inputs',
-                self',
-                ...
-              }:
-                lib.nixosSystem {
-                  specialArgs = {inherit inputs inputs' self self';};
-                  modules = [
-                    {networking.hostName = hostname;}
-                    ./modules/core.nix
-                    ./modules/nixos
-                    ./hosts/${hostname}
-                  ];
-                });
+              withSystem system (
+                {
+                  inputs',
+                  self',
+                  ...
+                }:
+                  lib.nixosSystem {
+                    specialArgs = {
+                      inherit
+                        inputs
+                        inputs'
+                        self
+                        self'
+                        ;
+                    };
+                    modules = [
+                      {networking.hostName = hostname;}
+                      ./modules/core.nix
+                      ./modules/nixos
+                      ./hosts/${hostname}
+                    ];
+                  }
+              );
 
             mkSystem = system: hostname: {${hostname} = self.lib.mkSystem' system hostname;};
             mkSystems = system: hosts: lib.mergeAttrsList (map (self.lib.mkSystem system) hosts);
           };
 
           nixosConfigurations = inputs.nixpkgs.lib.concatMapAttrs self.lib.mkSystems {
-            "x86_64-linux" = ["ozen" "kiwi" "reg" "belaf"];
+            "x86_64-linux" = [
+              "ozen"
+              "kiwi"
+              "reg"
+              "belaf"
+            ];
             "aarch64-linux" = ["wakuna"];
           };
 

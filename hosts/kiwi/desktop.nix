@@ -27,7 +27,12 @@
       sentry = {
         type = "local";
         enabled = true;
-        command = ["${pkgs.bun}/bin/bun" "x" "mcp-remote@latest" "https://mcp.sentry.dev/mcp"];
+        command = [
+          "${pkgs.bun}/bin/bun"
+          "x"
+          "mcp-remote@latest"
+          "https://mcp.sentry.dev/mcp"
+        ];
       };
     };
   };

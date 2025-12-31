@@ -19,7 +19,10 @@
     environmentFiles = [config.sops.secrets.pds.path];
   };
 
-  networking.firewall.allowedTCPPorts = [80 443];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 
   security.acme = {
     defaults.email = "netop@0xf.fr";

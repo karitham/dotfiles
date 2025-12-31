@@ -2,7 +2,11 @@
   programs.opencode = let
     opencodePkg = pkgs.symlinkJoin {
       name = "opencode-wrapped";
-      paths = [pkgs.opencode pkgs.nixd pkgs.alejandra];
+      paths = [
+        pkgs.opencode
+        pkgs.nixd
+        pkgs.alejandra
+      ];
       buildInputs = [pkgs.makeWrapper];
       postBuild = ''
         wrapProgram $out/bin/opencode \
@@ -47,7 +51,10 @@
         gopls = {
           type = "local";
           enabled = true;
-          command = ["gopls" "mcp"];
+          command = [
+            "gopls"
+            "mcp"
+          ];
         };
       };
     };

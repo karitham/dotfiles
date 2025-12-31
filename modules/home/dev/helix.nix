@@ -9,7 +9,9 @@
     url = "https://patch-diff.githubusercontent.com/raw/helix-editor/helix/pull/14519.patch";
     hash = "sha256-e4xaKcOhAKKYbJXhYHbjdFk6CwLubmCp+m7y//MmQFw=";
   };
-  helix = inputs'.helix.packages.default.overrideAttrs (_: {patches = jj-patch;});
+  helix = inputs'.helix.packages.default.overrideAttrs (_: {
+    patches = jj-patch;
+  });
   global-tools = with pkgs; [
     alejandra
     biome
@@ -34,6 +36,7 @@ in {
         vscode-langservers-extracted
         yaml-language-server
         typos-lsp
+        nil
       ]
       ++ global-tools;
 
@@ -63,7 +66,10 @@ in {
           p = ":sh echo %{buffer_name} | ${pkgs.wl-clipboard}/bin/wl-copy";
         };
         goMenu = {
-          "8" = ["move_prev_word_start" "move_next_word_end"];
+          "8" = [
+            "move_prev_word_start"
+            "move_next_word_end"
+          ];
           "c" = caseMenu;
         };
         caseMenu = {
@@ -167,7 +173,10 @@ in {
         };
         nu-lsp = {
           command = "nu";
-          args = ["--lsp" "--no-config-file"];
+          args = [
+            "--lsp"
+            "--no-config-file"
+          ];
         };
         typos = {
           command = "typos-lsp";
@@ -280,7 +289,10 @@ in {
           [
             {
               name = "nix";
-              language-servers = ["nixd"];
+              language-servers = [
+                "nixd"
+                "nil"
+              ];
               formatter = {
                 command = "alejandra";
               };

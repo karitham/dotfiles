@@ -12,7 +12,10 @@
   treeSitterNu = stdenv.mkDerivation {
     name = "tree-sitter-nu";
     src = tree-sitter-nu;
-    buildInputs = [tree-sitter nodejs];
+    buildInputs = [
+      tree-sitter
+      nodejs
+    ];
     buildPhase = ''
       tree-sitter generate
       gcc -o parser.so -Isrc src/parser.c src/scanner.c -shared -fPIC -O2
@@ -46,12 +49,14 @@
     '';
   };
 in
-  runCommand "topiary-nu" {
+  runCommand "topiary-nu"
+  {
     buildInputs = [makeWrapper];
     meta = {
       mainProgram = "topiary-nu";
     };
-  } ''
+  }
+  ''
     mkdir -p $out/bin
     makeWrapper ${lib.getExe topiary} $out/bin/topiary-nu \
       --set TOPIARY_LANGUAGE_DIR "${configDir}/languages" \

@@ -84,7 +84,12 @@ in {
 
   systemd.services.pds-backup = {
     description = "Backup PDS data to S3";
-    path = [pkgs.awscli2 pkgs.coreutils pkgs.gnutar pkgs.gzip];
+    path = [
+      pkgs.awscli2
+      pkgs.coreutils
+      pkgs.gnutar
+      pkgs.gzip
+    ];
     serviceConfig = {
       ExecStart = "${backupScript}";
       Environment = [

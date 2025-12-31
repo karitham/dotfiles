@@ -8,7 +8,26 @@
     users.defaultUserShell = pkgs.nushell;
     environment.shells = [pkgs.nushell];
 
-    environment.sessionVariables.EDITOR = lib.attrByPath ["home-manager" "users" config.my.username "home" "sessionVariables" "EDITOR"] "nano" config;
-    programs.nano.enable = !(lib.attrByPath ["home-manager" "users" config.my.username "programs" "helix" "enable"] false config);
+    environment.sessionVariables.EDITOR =
+      lib.attrByPath [
+        "home-manager"
+        "users"
+        config.my.username
+        "home"
+        "sessionVariables"
+        "EDITOR"
+      ] "nano"
+      config;
+    programs.nano.enable =
+      !(lib.attrByPath [
+          "home-manager"
+          "users"
+          config.my.username
+          "programs"
+          "helix"
+          "enable"
+        ]
+        false
+        config);
   };
 }

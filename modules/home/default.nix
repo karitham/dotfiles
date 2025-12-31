@@ -21,7 +21,14 @@
     else {};
 
   home-manager = {
-    extraSpecialArgs = {inherit inputs inputs' self self';};
+    extraSpecialArgs = {
+      inherit
+        inputs
+        inputs'
+        self
+        self'
+        ;
+    };
     backupFileExtension = "bak";
     users.${config.my.username} = {
       home.username = config.my.username;

@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  config,
   ...
 }: {
   imports = [
@@ -18,7 +19,7 @@
   desktop.enable = true;
   system.stateVersion = "25.11";
 
-  home-manager.users.kar.imports = [
+  home-manager.users.${config.my.username}.imports = [
     ./home-upf.nix
     ./desktop.nix
   ];
@@ -34,15 +35,15 @@
     };
   };
 
-  hardware = {
-    keyboard.qmk.enable = true;
-  };
+  hardware.keyboard.qmk.enable = true;
 
   networking.networkmanager.enable = true;
 
   services = {
-    tailscale.enable = true;
-    tailscale.useRoutingFeatures = "client";
+    tailscale = {
+      enable = true;
+      useRoutingFeatures = "client";
+    };
     touchegg.enable = true;
     blueman.enable = true;
     auto-cpufreq.enable = true;
