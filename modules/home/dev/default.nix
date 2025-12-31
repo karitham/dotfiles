@@ -8,7 +8,6 @@ _: {
     ./mise.nix
     ./nushell.nix
     ./opencode.nix
-    ./prr.nix
     ./starship.nix
     ./utils.nix
     ./yazi.nix
