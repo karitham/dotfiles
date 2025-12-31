@@ -41,7 +41,7 @@
       useACMEHost = "0xf.fr";
       forceSSL = true;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:${builtins.toString config.services.bluesky-pds.settings.PDS_PORT}";
+        proxyPass = "http://127.0.0.1:${toString config.services.bluesky-pds.settings.PDS_PORT}";
         proxyWebsockets = true;
       };
     };
