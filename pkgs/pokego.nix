@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{ pkgs, ... }:
 pkgs.buildGoModule {
   pname = "pokego";
   version = "devel";
@@ -11,7 +11,7 @@ pkgs.buildGoModule {
 
   vendorHash = "sha256-Eykg/qGqWA+qxeFPAhd0BERHtLj5X7kMQo/IPp1yRU4=";
   env.CGO_ENABLED = 0;
-  flags = ["-trimpath"];
+  flags = [ "-trimpath" ];
   ldflags = [
     "-s"
     "-w"
@@ -23,6 +23,6 @@ pkgs.buildGoModule {
     homepage = "https://github.com/karitham/pokego";
     mainProgram = "pokego";
     license = licenses.gpl3;
-    maintainers = with maintainers; [karitham];
+    maintainers = with maintainers; [ karitham ];
   };
 }

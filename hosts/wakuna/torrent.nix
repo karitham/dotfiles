@@ -1,6 +1,7 @@
-{config, ...}: {
+{ config, ... }:
+{
   systemd.services.flood.serviceConfig = {
-    SupplementaryGroups = [config.services.rtorrent.group];
+    SupplementaryGroups = [ config.services.rtorrent.group ];
   };
   services = {
     flood = {

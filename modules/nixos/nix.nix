@@ -4,7 +4,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   config = lib.mkIf (!config.server) {
     nix = {
       package = pkgs.lix;
@@ -16,8 +17,8 @@
       settings = {
         auto-optimise-store = true;
         builders-use-substitutes = true;
-        allowed-users = ["@wheel"];
-        trusted-users = ["@wheel"];
+        allowed-users = [ "@wheel" ];
+        trusted-users = [ "@wheel" ];
         commit-lockfile-summary = "chore: Update flake.lock";
         accept-flake-config = true;
         keep-derivations = true;
@@ -45,6 +46,8 @@
       overlays = [
         inputs.self.overlays.default
         inputs.niri.overlays.niri
+        inputs.ghostty.overlays.default
+        inputs.knixpkgs.overlays.default
       ];
     };
 

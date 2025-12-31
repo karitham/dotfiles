@@ -2,15 +2,17 @@
   inputs,
   lib,
   modulesPath,
+  config,
   ...
-}: {
+}:
+{
   imports = [
     (modulesPath + "/installer/sd-card/sd-image-aarch64-installer.nix")
     ./torrent.nix
   ];
 
   sdImage.compressImage = false;
-
+  my.username = "root";
   nixpkgs.hostPlatform = "aarch64-linux";
   system.stateVersion = "24.11";
 
@@ -23,14 +25,7 @@
     ];
   };
 
-  users.users.root.openssh.authorizedKeys.keyFiles = [inputs.ssh-keys];
-  services.openssh = {
-    enable = true;
-    settings.PermitRootLogin = "yes";
-  };
+  users.users.${config.my.username}.openssh.authorizedKeys.keyFiles = [ inputs.ssh-keys ];
 
-  services.tailscale = {
-    enable = true;
-    useRoutingFeatures = "server";
-  };
+  services.openssh.settings.PermitRootLogin = "yes";
 }

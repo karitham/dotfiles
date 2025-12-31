@@ -48,6 +48,21 @@
         "type": "github"
       }
     },
+    "easy-hosts": {
+      "locked": {
+        "lastModified": 1755470564,
+        "narHash": "sha256-KB1ZryVDoQcbIsItOf4WtxkHhh3ppj+XwMpSnt/2QHc=",
+        "owner": "tgirlcloud",
+        "repo": "easy-hosts",
+        "rev": "d0422bc7b3db26268982aa15d07e60370e76ee1d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tgirlcloud",
+        "repo": "easy-hosts",
+        "type": "github"
+      }
+    },
     "fenix": {
       "inputs": {
         "nixpkgs": [
@@ -585,6 +600,7 @@
     "root": {
       "inputs": {
         "catppuccin": "catppuccin",
+        "easy-hosts": "easy-hosts",
         "flake-parts": "flake-parts",
         "ghostty": "ghostty",
         "helix": "helix",

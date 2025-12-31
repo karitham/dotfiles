@@ -1,8 +1,5 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{ config, pkgs, ... }:
+let
   restoreScript = pkgs.writeShellScriptBin "pds-restore" ''
     set -e
 
@@ -74,13 +71,14 @@
 
     echo "$(date): Backup completed." >> "$LOG_FILE"
   '';
-in {
+in
+{
   sops.secrets.s3 = {
     format = "dotenv";
     sopsFile = ../../secrets/pds-backup-s3.env;
   };
 
-  environment.systemPackages = [restoreScript];
+  environment.systemPackages = [ restoreScript ];
 
   systemd.services.pds-backup = {
     description = "Backup PDS data to S3";
@@ -98,14 +96,14 @@ in {
         "TAR_CMD=${pkgs.gnutar}/bin/tar"
         "AWS_CMD=${pkgs.awscli2}/bin/aws"
       ];
-      EnvironmentFile = [config.sops.secrets.s3.path];
+      EnvironmentFile = [ config.sops.secrets.s3.path ];
       User = "root";
       Type = "oneshot";
     };
   };
 
   systemd.timers.pds-backup = {
-    wantedBy = ["timers.target"];
+    wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "daily";
       Persistent = true;

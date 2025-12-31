@@ -25,9 +25,7 @@ rustPlatform.buildRustPackage rec {
 
   doCheck = false;
 
-  buildInputs = [
-    sqlite
-  ];
+  buildInputs = [ sqlite ];
 
   meta = {
     description = "The surprisingly performant, Nushell-scriptable HTTP server that fits in your back pocket";

@@ -1,24 +1,15 @@
 {
-  inputs,
   pkgs,
   lib,
   config,
   ...
-}: let
+}:
+let
   inherit (lib) mkForce;
-in {
+in
+{
   my.username = "nixos";
 
-  imports = [
-    inputs.catppuccin.nixosModules.catppuccin
-    inputs.nixos-wsl.nixosModules.default
-    ../../modules/home
-  ];
-
-  catppuccin = {
-    enable = true;
-    flavor = "macchiato";
-  };
   wsl.enable = true;
   wsl.defaultUser = config.my.username;
   system.stateVersion = "25.11";
@@ -40,7 +31,7 @@ in {
 
   environment = {
     variables.BROWSER = mkForce "wsl-open";
-    systemPackages = [pkgs.wsl-open];
+    systemPackages = [ pkgs.wsl-open ];
   };
 
   nixpkgs.hostPlatform = "x86_64-linux";

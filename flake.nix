@@ -46,46 +46,52 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     flake-parts.url = "github:hercules-ci/flake-parts";
+    easy-hosts.url = "github:tgirlcloud/easy-hosts";
   };
-  outputs = {
-    self,
-    nixpkgs,
-    flake-parts,
-    ...
-  } @ inputs:
-    flake-parts.lib.mkFlake {inherit inputs;} (
-      {withSystem, ...}: {
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-parts,
+      ...
+    }@inputs:
+    flake-parts.lib.mkFlake { inherit inputs; } (
+      { withSystem, config, ... }:
+      {
         systems = [
           "x86_64-linux"
           "aarch64-linux"
         ];
 
-        perSystem = {pkgs, ...}: {
-          packages = {
-            pokego = pkgs.callPackage ./pkgs/pokego.nix {};
-            http-nu = pkgs.callPackage ./pkgs/http-nu.nix {};
-            topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix {
-              inherit (inputs) tree-sitter-nu topiary-nushell;
+        imports = [ ./systems/default.nix ];
+
+        perSystem =
+          { pkgs, ... }:
+          {
+            packages = {
+              pokego = pkgs.callPackage ./pkgs/pokego.nix { };
+              http-nu = pkgs.callPackage ./pkgs/http-nu.nix { };
+              topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix {
+                inherit (inputs) tree-sitter-nu topiary-nushell;
+              };
+
+              wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
             };
-
-            wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
+            formatter = pkgs.nixfmt-rfc-style;
           };
-          formatter = pkgs.alejandra;
-        };
 
-        flake = let
-          inherit (nixpkgs) lib;
-        in {
-          lib = {
-            sdImageFromSystem = system: system.config.system.build.sdImage;
+        flake =
+          let
+            inherit (nixpkgs) lib;
+          in
+          {
+            lib = {
+              sdImageFromSystem = system: system.config.system.build.sdImage;
 
-            mkSystem' = system: hostname:
-              withSystem system (
-                {
-                  inputs',
-                  self',
-                  ...
-                }:
+              mkSystem' =
+                system: hostname:
+                withSystem system (
+                  { inputs', self', ... }:
                   lib.nixosSystem {
                     specialArgs = {
                       inherit
@@ -96,30 +102,32 @@
                         ;
                     };
                     modules = [
-                      {networking.hostName = hostname;}
+                      { networking.hostName = hostname; }
                       ./modules/core.nix
                       ./modules/nixos
                       ./hosts/${hostname}
+                      config.flake.nixosModules.dev
+                      config.flake.nixosModules.desktop
                     ];
                   }
-              );
+                );
 
-            mkSystem = system: hostname: {${hostname} = self.lib.mkSystem' system hostname;};
-            mkSystems = system: hosts: lib.mergeAttrsList (map (self.lib.mkSystem system) hosts);
+              mkSystem = system: hostname: { ${hostname} = self.lib.mkSystem' system hostname; };
+              mkSystems = system: hosts: lib.mergeAttrsList (map (self.lib.mkSystem system) hosts);
+            };
+
+            overlays.default = import ./overlays;
+
+            homeModules = {
+              dev = import ./modules/dev/home.nix;
+              desktop = import ./modules/desktop/home.nix;
+            };
+
+            nixosModules = {
+              dev = import ./modules/dev/nixos.nix;
+              desktop = import ./modules/desktop/nixos.nix;
+            };
           };
-
-          nixosConfigurations = inputs.nixpkgs.lib.concatMapAttrs self.lib.mkSystems {
-            "x86_64-linux" = [
-              "ozen"
-              "kiwi"
-              "reg"
-              "belaf"
-            ];
-            "aarch64-linux" = ["wakuna"];
-          };
-
-          overlays.default = import ./overlays;
-        };
       }
     );
   nixConfig = {

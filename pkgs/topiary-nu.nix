@@ -8,7 +8,8 @@
   nodejs,
   tree-sitter-nu,
   topiary-nushell,
-}: let
+}:
+let
   treeSitterNu = stdenv.mkDerivation {
     name = "tree-sitter-nu";
     src = tree-sitter-nu;
@@ -49,9 +50,9 @@
     '';
   };
 in
-  runCommand "topiary-nu"
+runCommand "topiary-nu"
   {
-    buildInputs = [makeWrapper];
+    buildInputs = [ makeWrapper ];
     meta = {
       mainProgram = "topiary-nu";
     };

@@ -1,28 +1,25 @@
 {
-  inputs,
-  pkgs,
   config,
+  pkgs,
+  lib,
   ...
-}: {
-  imports = [
-    inputs.catppuccin.nixosModules.catppuccin
-    ../../modules/home
-    ./hardware.nix
-  ];
+}:
+{
+  imports = [ ./hardware.nix ];
 
-  yubikey.enable = true;
-  catppuccin = {
-    enable = true;
-    flavor = "macchiato";
-  };
-  time.timeZone = "Europe/Paris";
-  desktop.enable = true;
   system.stateVersion = "25.11";
 
-  home-manager.users.${config.my.username}.imports = [
-    ./home-upf.nix
-    ./desktop.nix
-  ];
+  home-manager.users.${config.my.username} = {
+    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "hayase" ];
+
+    home.packages = [
+      pkgs.signal-desktop-bin
+      pkgs.obs-studio
+      pkgs.hayase
+    ];
+
+    programs.waybar.settings.mainBar.battery.bat = lib.mkForce "BAT0";
+  };
 
   boot = {
     # https://gitlab.freedesktop.org/drm/amd/-/issues/3925
@@ -34,28 +31,4 @@
       configurationLimit = 10;
     };
   };
-
-  hardware.keyboard.qmk.enable = true;
-
-  networking.networkmanager.enable = true;
-
-  services = {
-    tailscale = {
-      enable = true;
-      useRoutingFeatures = "client";
-    };
-    touchegg.enable = true;
-    blueman.enable = true;
-    auto-cpufreq.enable = true;
-    udev.packages = [pkgs.via];
-  };
-
-  security = {
-    sudo.wheelNeedsPassword = false;
-    rtkit.enable = true;
-  };
-
-  virtualisation.docker.enable = true;
-
-  programs._1password.enable = true;
 }

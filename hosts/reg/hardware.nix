@@ -1,5 +1,6 @@
-{modulesPath, ...}: {
-  imports = [(modulesPath + "/profiles/qemu-guest.nix")];
+{ modulesPath, ... }:
+{
+  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
   boot.loader.grub = {
     efiSupport = true;
     efiInstallAsRemovable = true;
@@ -15,7 +16,7 @@
     "xen_blkfront"
     "vmw_pvscsi"
   ];
-  boot.initrd.kernelModules = ["nvme"];
+  boot.initrd.kernelModules = [ "nvme" ];
   fileSystems."/" = {
     device = "/dev/sda1";
     fsType = "ext4";
