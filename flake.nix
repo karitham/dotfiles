@@ -74,6 +74,7 @@
               topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix {
                 inherit (inputs) tree-sitter-nu topiary-nushell;
               };
+              atproto-lastfm-importer = pkgs.callPackage ./pkgs/atproto-lastfm-importer.nix { };
 
               wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
             };
