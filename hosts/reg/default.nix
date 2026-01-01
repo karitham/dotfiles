@@ -12,6 +12,7 @@
     ./hardware.nix
     ./pds.nix
     ./pds-backup.nix
+    ./multi-scrobbler.nix
   ];
 
   boot.tmp.cleanOnBoot = true;

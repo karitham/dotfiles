@@ -75,6 +75,7 @@
                 inherit (inputs) tree-sitter-nu topiary-nushell;
               };
               atproto-lastfm-importer = pkgs.callPackage ./pkgs/atproto-lastfm-importer.nix { };
+              multi-scrobbler = pkgs.callPackage ./pkgs/multi-scrobbler.nix { };
 
               wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
             };
@@ -130,6 +131,7 @@
             nixosModules = {
               dev = import ./modules/dev/nixos.nix;
               desktop = import ./modules/desktop/nixos.nix;
+              multi-scrobbler = import ./modules/nixos/services/multi-scrobbler.nix;
             };
           };
       }
