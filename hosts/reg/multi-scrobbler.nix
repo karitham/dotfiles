@@ -13,5 +13,5 @@
     restartUnits = [ "multi-scrobbler.service" ];
   };
 
-  services.multi-scrobbler.enable = true;
+  services.multi-scrobbler.enable = false;
 }
