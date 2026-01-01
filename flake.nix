@@ -79,6 +79,9 @@
               wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
             };
             formatter = pkgs.nixfmt-rfc-style;
+            devShells.default = pkgs.mkShell {
+              packages = with pkgs; [ sops ];
+            };
           };
 
         flake =

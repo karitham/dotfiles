@@ -28,5 +28,6 @@ in
     environment.shells = mkIf (cfg.enable || cfg.shell.enable) [ pkgs.nushell ];
 
     programs.nano.enable = mkDefault (!(cfg.enable || cfg.editor.enable));
+    environment.sessionVariables.EDITOR = mkIf cfg.editor.enable "hx";
   };
 }
