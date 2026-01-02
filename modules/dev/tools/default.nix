@@ -31,6 +31,5 @@
   imports = [
     ./direnv.nix
     ./opencode.nix
-    ./yazi.nix
   ];
 }

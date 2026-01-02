@@ -1,13 +1,29 @@
 {
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } { imports = [ ./modules ]; };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # https://deer.social/profile/did:plc:mojgntlezho4qt7uvcfkdndg/post/3loogwsoqok2w
+    nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
     home-manager = {
-      url = "github:nix-community/home-manager";
+      type = "github";
+      owner = "nix-community";
+      repo = "home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-wsl = {
+      type = "github";
+      owner = "nix-community";
+      repo = "NixOS-WSL";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "";
+      };
+    };
     catppuccin = {
-      url = "github:catppuccin/nix";
+      type = "github";
+      owner = "catppuccin";
+      repo = "nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     helix = {
       url = "github:helix-editor/helix";
@@ -45,97 +61,14 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts = {
+      type = "github";
+      owner = "hercules-ci";
+      repo = "flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
     easy-hosts.url = "github:tgirlcloud/easy-hosts";
   };
-  outputs =
-    {
-      self,
-      nixpkgs,
-      flake-parts,
-      ...
-    }@inputs:
-    flake-parts.lib.mkFlake { inherit inputs; } (
-      { withSystem, config, ... }:
-      {
-        systems = [
-          "x86_64-linux"
-          "aarch64-linux"
-        ];
-
-        imports = [ ./systems/default.nix ];
-
-        perSystem =
-          { pkgs, ... }:
-          {
-            packages = {
-              pokego = pkgs.callPackage ./pkgs/pokego.nix { };
-              http-nu = pkgs.callPackage ./pkgs/http-nu.nix { };
-              topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix {
-                inherit (inputs) tree-sitter-nu topiary-nushell;
-              };
-              atproto-lastfm-importer = pkgs.callPackage ./pkgs/atproto-lastfm-importer.nix { };
-              multi-scrobbler = pkgs.callPackage ./pkgs/multi-scrobbler.nix { };
-
-              wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
-            };
-            formatter = pkgs.nixfmt-rfc-style;
-            devShells.default = pkgs.mkShell {
-              packages = with pkgs; [ sops ];
-            };
-          };
-
-        flake =
-          let
-            inherit (nixpkgs) lib;
-          in
-          {
-            lib = {
-              sdImageFromSystem = system: system.config.system.build.sdImage;
-
-              mkSystem' =
-                system: hostname:
-                withSystem system (
-                  { inputs', self', ... }:
-                  lib.nixosSystem {
-                    specialArgs = {
-                      inherit
-                        inputs
-                        inputs'
-                        self
-                        self'
-                        ;
-                    };
-                    modules = [
-                      { networking.hostName = hostname; }
-                      ./modules/core.nix
-                      ./modules/nixos
-                      ./hosts/${hostname}
-                      config.flake.nixosModules.dev
-                      config.flake.nixosModules.desktop
-                    ];
-                  }
-                );
-
-              mkSystem = system: hostname: { ${hostname} = self.lib.mkSystem' system hostname; };
-              mkSystems = system: hosts: lib.mergeAttrsList (map (self.lib.mkSystem system) hosts);
-            };
-
-            overlays.default = import ./overlays;
-
-            homeModules = {
-              dev = import ./modules/dev/home.nix;
-              desktop = import ./modules/desktop/home.nix;
-            };
-
-            nixosModules = {
-              dev = import ./modules/dev/nixos.nix;
-              desktop = import ./modules/desktop/nixos.nix;
-              multi-scrobbler = import ./modules/nixos/services/multi-scrobbler.nix;
-            };
-          };
-      }
-    );
   nixConfig = {
     warn-dirty = false;
     extra-experimental-features = [
