@@ -49,14 +49,6 @@
       url = "github:karitham/knixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    tree-sitter-nu = {
-      url = "github:nushell/tree-sitter-nu";
-      flake = false;
-    };
-    topiary-nushell = {
-      url = "github:blindFS/topiary-nushell";
-      flake = false;
-    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";

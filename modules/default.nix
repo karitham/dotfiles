@@ -20,7 +20,7 @@
       packages = {
         pokego = pkgs.callPackage ./pkgs/pokego.nix { };
         http-nu = pkgs.callPackage ./pkgs/http-nu.nix { };
-        topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix { inherit (inputs) tree-sitter-nu topiary-nushell; };
+        topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix { };
         atproto-lastfm-importer = pkgs.callPackage ./pkgs/atproto-lastfm-importer.nix { };
         multi-scrobbler = pkgs.callPackage ./pkgs/multi-scrobbler.nix { };
 
