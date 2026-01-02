@@ -41,10 +41,6 @@
       url = "https://github.com/karitham.keys";
       flake = false;
     };
-    zjstatus = {
-      url = "github:dj95/zjstatus";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     knixpkgs = {
       url = "github:karitham/knixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";

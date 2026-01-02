@@ -1,9 +1,15 @@
 {
-  inputs',
+  pkgs,
   lib,
   config,
   ...
 }:
+let
+  zjstatus = pkgs.fetchurl {
+    url = "https://github.com/dj95/zjstatus/releases/download/v0.22.0/zjstatus.wasm";
+    sha256 = "0lyxah0pzgw57wbrvfz2y0bjrna9bgmsw9z9f898dgqw1g92dr2d";
+  };
+in
 lib.mkIf config.dev.shell.enable {
   programs.zellij = {
     enable = true;
@@ -51,7 +57,7 @@ lib.mkIf config.dev.shell.enable {
         default_tab_template {
             children
             pane size=1 borderless=true {
-                plugin location="file://${inputs'.zjstatus.packages.default}/bin/zjstatus.wasm" {
+                plugin location="file://${zjstatus}" {
                   color_rosewater "#f4dbd6"
                   color_flamingo "#f0c6c6"
                   color_pink "#f5bde6"
