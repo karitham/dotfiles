@@ -1,6 +1,10 @@
-{ config, ... }:
+{ config, self, ... }:
 {
-  imports = [ ../../modules/nixos/services/acme-nginx.nix ];
+  imports = [
+    self.nixosModules.pds-backup
+    ../../modules/nixos/services/acme-nginx.nix
+  ];
+
   sops = {
     secrets.pds = {
       format = "dotenv";
@@ -11,14 +15,20 @@
       format = "dotenv";
       sopsFile = ../../secrets/cloudflare-api.env;
     };
+    secrets.pds-s3 = {
+      format = "dotenv";
+      sopsFile = ../../secrets/pds-backup-s3.env;
+    };
   };
 
-  services.bluesky-pds = {
+  services.pds-backup = {
     enable = true;
-    settings = {
+    pdsSecretsFile = config.sops.secrets.pds.path;
+    s3CredentialsFile = config.sops.secrets.pds-s3.path;
+
+    pdsSettings = {
       PDS_HOSTNAME = "0xf.fr";
     };
-    environmentFiles = [ config.sops.secrets.pds.path ];
   };
 
   services.acme-nginx = {

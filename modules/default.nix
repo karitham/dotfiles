@@ -77,6 +77,7 @@
         dev = import ./dev/nixos.nix;
         desktop = import ./desktop/nixos.nix;
         multi-scrobbler = import ./nixos/services/multi-scrobbler.nix;
+        pds-backup = import ./nixos/services/pds.nix;
       };
     };
 }

@@ -14,4 +14,20 @@ _: prev: {
     };
     vendorHash = "sha256-UZNYHx5y+kRp3AJq6s4Wy+k789GDG7FBTSzCTorVjgg=";
   });
+
+  # build failing because of sqlite3 node-gyp
+  bluesky-pds = prev.bluesky-pds.override { nodejs = prev.nodejs_22; };
+
+  # https://github.com/benbjohnson/litestream/issues/912
+  litestream = prev.litestream.overrideAttrs (old: {
+    version = "devel";
+    src = prev.fetchFromGitHub {
+      owner = "benbjohnson";
+      repo = "litestream";
+      rev = "92fc139923d2b13909ba8b0e5df8b63d45a91648";
+      sha256 = "sha256-UDyI4pcd8fUdVzvuLBFKifVORYto0yvtMc1pEUY2OaU=";
+    };
+    vendorHash = "sha256-MFKyECRWvhHwV0NZuuUQ0OYHpyTjRg0vKHuDNzaZJ7c=";
+    patches = [ ];
+  });
 }
