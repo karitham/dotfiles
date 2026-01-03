@@ -1,1 +1,9 @@
-{ imports = [ ../nixos/server-common.nix ]; }
+_: {
+  services = {
+    tailscale = {
+      enable = true;
+      useRoutingFeatures = "server";
+    };
+    openssh.enable = true;
+  };
+}

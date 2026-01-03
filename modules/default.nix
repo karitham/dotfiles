@@ -1,6 +1,5 @@
 {
   withSystem,
-  config,
   self,
   nixpkgs,
   inputs,
@@ -54,7 +53,6 @@
               modules = [
                 { networking.hostName = hostname; }
                 ./core.nix
-                ./nixos
                 ./systems/${hostname}
               ];
             }
@@ -74,8 +72,8 @@
       nixosModules = {
         dev = import ./dev/nixos.nix;
         desktop = import ./desktop/nixos.nix;
-        multi-scrobbler = import ./nixos/services/multi-scrobbler.nix;
-        pds-backup = import ./nixos/services/pds.nix;
+        multi-scrobbler = import ./services/multi-scrobbler.nix;
+        pds-backup = import ./services/pds.nix;
       };
     };
 }

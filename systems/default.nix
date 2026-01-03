@@ -4,10 +4,7 @@
 
   config.easy-hosts = {
     shared = {
-      modules = [
-        ../modules/core.nix
-        ../modules/nixos
-      ];
+      modules = [ ../modules/core.nix ];
 
       specialArgs = { inherit inputs self; };
     };

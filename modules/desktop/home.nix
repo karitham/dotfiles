@@ -2,21 +2,14 @@
   lib,
   osConfig ? { },
   pkgs,
+  config,
   ...
 }:
 let
   inherit (lib) mkEnableOption mkOption types;
 in
 {
-  config.desktop = {
-    inherit (osConfig.desktop or { })
-      enable
-      wm
-      terminal
-      audio
-      apps
-      ;
-  };
+  config.dev = lib.intersectAttrs config.dev (osConfig.dev or { });
   options.desktop = {
     enable = mkEnableOption "all desktop tools";
 

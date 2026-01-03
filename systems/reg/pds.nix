@@ -2,7 +2,7 @@
 {
   imports = [
     self.nixosModules.pds-backup
-    ../../modules/nixos/services/acme-nginx.nix
+    ../../modules/services/acme-nginx.nix
   ];
 
   sops = {
