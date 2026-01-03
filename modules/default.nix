@@ -25,6 +25,10 @@
 
         wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
       };
+      checks = {
+        pds-simple = pkgs.callPackage ./pds/pds-recovery-simple.nix { inherit (inputs) nixpkgs; };
+        pds-full = pkgs.callPackage ./pds/pds-recovery-full.nix { inherit (inputs) nixpkgs; };
+      };
       formatter = pkgs.nixfmt-rfc-style;
       devShells.default = pkgs.mkShell { packages = with pkgs; [ sops ]; };
     };
@@ -73,7 +77,7 @@
         dev = import ./dev/nixos.nix;
         desktop = import ./desktop/nixos.nix;
         multi-scrobbler = import ./services/multi-scrobbler.nix;
-        pds-backup = import ./services/pds.nix;
+        pds = import ./pds/nixos.nix;
       };
     };
 }

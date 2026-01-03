@@ -1,7 +1,7 @@
 { config, self, ... }:
 {
   imports = [
-    self.nixosModules.pds-backup
+    self.nixosModules.pds
     ../../modules/services/acme-nginx.nix
   ];
 
@@ -15,19 +15,17 @@
       format = "dotenv";
       sopsFile = ../../secrets/cloudflare-api.env;
     };
-    secrets.pds-s3 = {
-      format = "dotenv";
-      sopsFile = ../../secrets/pds-backup-s3.env;
-    };
   };
 
-  services.pds-backup = {
+  services.pds-with-backups = {
     enable = true;
-    pdsSecretsFile = config.sops.secrets.pds.path;
-    s3CredentialsFile = config.sops.secrets.pds-s3.path;
+    domain = "0xf.fr";
+    secretsFiles = [ config.sops.secrets.pds.path ];
+    s3Prefix = "backups";
 
     pdsSettings = {
-      PDS_HOSTNAME = "0xf.fr";
+      PDS_PORT = 3000;
+      PDS_BLOBSTORE_DISK_LOCATION = null;
     };
   };
 

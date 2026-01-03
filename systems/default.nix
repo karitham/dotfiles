@@ -4,7 +4,10 @@
 
   config.easy-hosts = {
     shared = {
-      modules = [ ../modules/core.nix ];
+      modules = [
+        ../modules/core.nix
+        { nixpkgs.overlays = [ self.overlays.default ]; }
+      ];
 
       specialArgs = { inherit inputs self; };
     };
