@@ -56,8 +56,6 @@
                 ./core.nix
                 ./nixos
                 ./systems/${hostname}
-                config.flake.nixosModules.dev
-                config.flake.nixosModules.desktop
               ];
             }
           );

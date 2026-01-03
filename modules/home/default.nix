@@ -12,6 +12,8 @@
     inputs.catppuccin.nixosModules.catppuccin
   ];
 
+  documentation.enable = false;
+
   catppuccin = {
     enable = true;
     flavor = "macchiato";
@@ -43,6 +45,12 @@
         inputs.ghostty.overlays.default
         inputs.knixpkgs.overlays.default
       ];
+
+      manual = {
+        html.enable = false;
+        json.enable = false;
+        manpages.enable = false;
+      };
     };
   };
 }
