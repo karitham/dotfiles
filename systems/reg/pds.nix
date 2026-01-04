@@ -10,6 +10,8 @@
       format = "dotenv";
       sopsFile = ../../secrets/pds.env;
       restartUnits = [ "bluesky-pds.service" ];
+      owner = "pds";
+      group = "pds";
     };
     secrets.cloudflare-api = {
       format = "dotenv";
@@ -19,12 +21,9 @@
 
   services.pds-with-backups = {
     enable = true;
-    domain = "0xf.fr";
     secretsFiles = [ config.sops.secrets.pds.path ];
-    s3Prefix = "backups";
-
-    pdsSettings = {
-      PDS_PORT = 3000;
+    settings = {
+      PDS_HOSTNAME = "0xf.fr";
       PDS_BLOBSTORE_DISK_LOCATION = null;
     };
   };

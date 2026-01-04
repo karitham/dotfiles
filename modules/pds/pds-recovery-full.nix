@@ -13,7 +13,7 @@ _pkgs.testers.runNixOSTest {
   nodes.machine =
     { pkgs, ... }:
     {
-      imports = [ ./default.nix ];
+      imports = [ ./nixos.nix ];
 
       services.minio = {
         enable = true;
@@ -22,24 +22,19 @@ _pkgs.testers.runNixOSTest {
 
       systemd.tmpfiles.rules = [
         "f /tmp/minio-credentials 0600 root root - MINIO_ROOT_USER=minioadmin\\nMINIO_ROOT_PASSWORD=minioadmin123"
-        "f /run/secrets/s3.env 0600 root root - AWS_ACCESS_KEY_ID=minioadmin\\nAWS_SECRET_ACCESS_KEY=minioadmin123\\nAWS_ENDPOINT_URL=http://127.0.0.1:9000\\nS3_BUCKET=pds-test-bucket"
-        "f /run/secrets/pds.env 0600 root root - PDS_JWT_SECRET=test-jwt-secret-for-full-testing\\nPDS_ADMIN_PASSWORD=test-admin-password\\nPDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX=1111111111111111111111111111111111111111111111111111111111111111"
+        "f /run/secrets/s3.env 0600 pds pds - AWS_ACCESS_KEY_ID=minioadmin\\nAWS_SECRET_ACCESS_KEY=minioadmin123\\nAWS_ENDPOINT_URL=http://127.0.0.1:9000\\nS3_BUCKET=pds-test-bucket"
+        "f /run/secrets/pds.env 0600 pds pds - PDS_JWT_SECRET=test-jwt-secret-for-full-testing\\nPDS_ADMIN_PASSWORD=test-admin-password\\nPDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX=1111111111111111111111111111111111111111111111111111111111111111"
       ];
 
       services.pds-with-backups = {
         enable = true;
-        domain = "test.example.com";
-        pdsDataDir = "/var/lib/pds";
         secretsFiles = [
           "/run/secrets/pds.env"
           "/run/secrets/s3.env"
         ];
-        s3Bucket = "pds-test-bucket";
-        s3Prefix = "pds-replica";
-        enableStatelessBlobs = false;
-        pdsSettings = {
-          PDS_PORT = 3000;
-          PDS_DISABLE_PHONE_VERIFICATION = "true";
+        backupS3Prefix = "pds-replica";
+        settings = {
+          PDS_HOSTNAME = "advanced.example.com";
         };
       };
 
@@ -62,7 +57,6 @@ _pkgs.testers.runNixOSTest {
     print("\n--- Setting up MinIO ---")
     machine.wait_for_unit("minio.service")
     machine.wait_for_open_port(9000)
-    machine.succeed("sleep 5")
 
     machine.succeed("test -f /tmp/minio-credentials")
     machine.succeed("test -f /run/secrets/s3.env")
@@ -80,8 +74,6 @@ _pkgs.testers.runNixOSTest {
     machine.wait_for_unit("bluesky-pds.service")
     machine.wait_for_open_port(3000)
 
-    machine.succeed("sleep 30")
-
     health_response = machine.succeed("curl -s http://127.0.0.1:3000/xrpc/_health")
     try:
         health_data = json.loads(health_response)
@@ -97,7 +89,6 @@ _pkgs.testers.runNixOSTest {
     print("  [PASS] Litestream service is running")
 
     print("\n--- Test 3: Database creation ---")
-    machine.succeed("sleep 30")
     pds_files = machine.succeed("ls -la /var/lib/pds/")
     print(f"  Files in /var/lib/pds: {pds_files}")
 
@@ -127,7 +118,6 @@ _pkgs.testers.runNixOSTest {
     machine.succeed("systemctl start bluesky-pds")
     machine.wait_for_unit("bluesky-pds.service")
     machine.wait_for_open_port(3000)
-    machine.succeed("sleep 30")
 
     health_response2 = machine.succeed("curl -s http://127.0.0.1:3000/xrpc/_health")
     try:
@@ -140,7 +130,6 @@ _pkgs.testers.runNixOSTest {
     print("\n--- Test 7: Litestream resumption ---")
     machine.succeed("systemctl start litestream-pds")
     machine.wait_for_unit("litestream-pds.service")
-    machine.succeed("sleep 10")
 
     final_minio = machine.succeed("mc ls local/pds-test-bucket/pds-replica/ --recursive 2>/dev/null")
     assert ".sqlite" in final_minio, "Expected ongoing replication"
@@ -148,7 +137,6 @@ _pkgs.testers.runNixOSTest {
 
     print("\n--- Test 8: Health check service ---")
     machine.succeed("systemctl start pds-healthcheck")
-    machine.succeed("sleep 2")
     health_log = machine.succeed("journalctl -u pds-healthcheck.service -o cat 2>/dev/null || true")
     assert "All services healthy" in health_log, f"Expected health check message, got: {health_log}"
     print("  [PASS] Health check service working")

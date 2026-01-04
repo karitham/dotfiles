@@ -13,28 +13,23 @@ _pkgs.testers.runNixOSTest {
   nodes.machine =
     { pkgs, lib, ... }:
     {
-      imports = [ ./default.nix ];
+      imports = [ ./nixos.nix ];
 
       services.pds-with-backups = {
         enable = true;
-        domain = "test.example.com";
-        pdsDataDir = "/var/lib/pds";
         secretsFiles = [
           "/run/secrets/pds.env"
           "/run/secrets/s3.env"
         ];
-        s3Bucket = "test-bucket";
-        s3Prefix = "test-pds";
-        enableStatelessBlobs = false;
-        pdsSettings = {
-          PDS_PORT = 3000;
-          PDS_DISABLE_PHONE_VERIFICATION = "true";
+        backupS3Prefix = "test-pds";
+        settings = {
+          PDS_HOSTNAME = "example.com";
         };
       };
 
       systemd.tmpfiles.rules = [
-        "f /run/secrets/pds.env 0644 root root - PDS_JWT_SECRET=test-jwt-secret\nPDS_ADMIN_PASSWORD=test-password\nPDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX=0000000000000000000000000000000000000000000000000000000000000000"
-        "f /run/secrets/s3.env 0644 root root - AWS_ACCESS_KEY_ID=test-key\nAWS_SECRET_ACCESS_KEY=test-secret\nAWS_ENDPOINT_URL=https://s3.test.example.com\nS3_BUCKET=test-bucket"
+        "f /run/secrets/pds.env 0644 pds pds - PDS_JWT_SECRET=test-jwt-secret\nPDS_ADMIN_PASSWORD=test-password\nPDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX=0000000000000000000000000000000000000000000000000000000000000000"
+        "f /run/secrets/s3.env 0644 pds pds - AWS_ACCESS_KEY_ID=test-key\nAWS_SECRET_ACCESS_KEY=test-secret\nAWS_ENDPOINT_URL=https://s3.test.example.com\nS3_BUCKET=test-bucket"
       ];
 
       services.bluesky-pds.enable = true;

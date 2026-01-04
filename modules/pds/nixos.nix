@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  options,
   ...
 }:
 let
@@ -23,13 +24,13 @@ let
 
   litestreamConfig = pkgs.writeText "litestream-pds-config.yml" ''
     dbs:
-      - dir: ${cfg.pdsDataDir}
+      - dir: ${cfg.dataDir}
         pattern: "*.sqlite"
         recursive: true
         watch: true
         replica:
           type: s3
-          path: ${cfg.s3Prefix}
+          path: ${cfg.backupS3Prefix}
           bucket: ''${S3_BUCKET}
   '';
 
@@ -74,7 +75,7 @@ let
         fi
 
         s3Bucket="''${S3_BUCKET}"
-        s3Prefix="${cfg.s3Prefix}"
+        s3Prefix="${cfg.backupS3Prefix}"
 
         run_aws() {
           local envArgs=()
@@ -127,11 +128,11 @@ let
         echo "$databases"
         echo ""
 
-        mkdir -p "${cfg.pdsDataDir}"
+        mkdir -p "${cfg.dataDir}"
 
         local restoredCount=0
         for db in $databases; do
-          local localPath="${cfg.pdsDataDir}/$db"
+          local localPath="${cfg.dataDir}/$db"
           local s3DbPath="$s3Prefix/$db"
           local s3DbUrl="s3://$s3Bucket/$s3DbPath"
 
@@ -176,7 +177,7 @@ let
       exit 1
     fi
 
-    if [ -f "${cfg.pdsDataDir}/primary.sqlite" ]; then
+    if [ -f "${cfg.dataDir}/primary.sqlite" ]; then
       if ! systemctl is-active --quiet litestream-pds; then
         echo "[PDS HealthCheck] Litestream service is not running"
         exit 1
@@ -191,14 +192,8 @@ in
   options.services.pds-with-backups = {
     enable = mkEnableOption "Zero-Touch Recovery PDS with Litestream and S3 blob storage";
 
-    domain = mkOption {
-      type = types.str;
-      description = "PDS domain name (e.g., bsky.example.com).";
-      example = "bsky.example.com";
-    };
-
-    pdsDataDir = mkOption {
-      type = types.str;
+    dataDir = mkOption {
+      type = types.path;
       default = "/var/lib/pds";
       description = "PDS data directory for SQLite databases.";
     };
@@ -215,27 +210,28 @@ in
       example = [ "/run/secrets/pds.env" ];
     };
 
-    s3Prefix = mkOption {
+    backupS3Prefix = mkOption {
       type = types.strMatching "[^/].*[^/]";
-      default = "pds";
+      default = "backups";
       description = "S3 directory prefix for Litestream replicas.";
       example = "pds-backups";
-    };
-
-    pdsSettings = mkOption {
-      type = types.attrs;
-      default = { };
-      description = "Additional settings to pass to bluesky-pds.";
-      example = {
-        PDS_PORT = 3000;
-        PDS_DISABLE_PHONE_VERIFICATION = "true";
-      };
     };
 
     backupLogDir = mkOption {
       type = types.path;
       default = "/var/log/pds-backup";
       description = "Directory for backup and restore logs.";
+      internal = true;
+    };
+
+    settings = mkOption {
+      type = options.services.bluesky-pds.settings.type;
+      default = { };
+      description = "Additional settings to pass to bluesky-pds:\n\n" ++ options.services.bluesky-pds.settings.description;
+      example = {
+        PDS_PORT = 3000;
+        PDS_HOSTNAME = "hi.example.com";
+      };
     };
   };
 
@@ -244,11 +240,10 @@ in
       enable = mkDefault true;
       settings = mkMerge [
         {
-          PDS_HOSTNAME = cfg.domain;
           PDS_SQLITE_DISABLE_WAL_AUTO_CHECKPOINT = "true";
-          PDS_DATA_DIRECTORY = cfg.pdsDataDir;
+          PDS_DATA_DIRECTORY = cfg.dataDir;
         }
-        cfg.pdsSettings
+        cfg.settings
       ];
       environmentFiles = secretsFiles;
     };
@@ -261,7 +256,7 @@ in
     users.groups.${pdsGroup} = { };
 
     systemd.tmpfiles.rules = [
-      "d ${cfg.pdsDataDir} 0755 ${pdsUser} ${pdsGroup} -"
+      "d ${cfg.dataDir} 0755 ${pdsUser} ${pdsGroup} -"
       "d ${cfg.backupLogDir} 0755 ${pdsUser} ${pdsGroup} -"
     ];
 
@@ -284,8 +279,8 @@ in
         Type = "oneshot";
         ExecStart = "${restoreScript}/bin/pds-litestream-restore";
         EnvironmentFile = secretsFiles;
-        User = "root";
-        Group = "root";
+        User = pdsUser;
+        Group = pdsGroup;
         RemainAfterExit = true;
 
         NoNewPrivileges = true;
@@ -318,7 +313,7 @@ in
         ProtectSystem = "strict";
         ProtectHome = true;
         ReadWritePaths = [
-          cfg.pdsDataDir
+          cfg.dataDir
           cfg.backupLogDir
         ];
         RestrictRealtime = true;
@@ -337,8 +332,8 @@ in
       serviceConfig = {
         Type = "oneshot";
         ExecStart = healthCheckScript;
-        User = "root";
-        Group = "root";
+        User = pdsUser;
+        Group = pdsGroup;
 
         NoNewPrivileges = true;
         ProtectSystem = "strict";
