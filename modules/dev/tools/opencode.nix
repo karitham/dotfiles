@@ -4,69 +4,44 @@
   pkgs,
   ...
 }:
+let
+  opencodePkg = pkgs.symlinkJoin {
+    name = "opencode.wrapped";
+    paths = [
+      pkgs.opencode
+      pkgs.nixd
+    ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/opencode \
+        --set SHELL ${lib.getExe pkgs.bash}
+    '';
+  };
+in
 {
   config = lib.mkIf config.dev.tools.enable {
-    programs.opencode =
-      let
-        opencodePkg = pkgs.symlinkJoin {
-          name = "opencode-wrapped";
-          paths = [
-            pkgs.opencode
-            pkgs.nixd
-            pkgs.alejandra
-          ];
-          buildInputs = [ pkgs.makeWrapper ];
-          postBuild = ''
-            wrapProgram $out/bin/opencode \
-              --set SHELL ${pkgs.bash}/bin/bash
-          '';
-        };
-      in
-      {
-        enable = true;
-        package = opencodePkg;
-        enableMcpIntegration = true;
-        settings = {
-          theme = "catppuccin-macchiato";
-          formatter = {
-            alejandra = {
-              command = [ "alejandra" ];
-              extensions = [ ".nix" ];
-            };
-          };
-          agent = {
-            stack-analyst = {
-              description = "Analyzes stack traces to map errors to code paths and identify root causes";
-              prompt = "You are a stack trace analyst. Analyze the provided stack trace to identify the root cause and suggest fixes.";
-              mode = "primary";
-              tools = {
-                read = true;
-                glob = true;
-                grep = true;
-                write = true;
-                edit = false;
-                bash = true;
-              };
-              permissions = {
-                bash = {
-                  "git status" = "allow";
-                  "git log" = "allow";
-                  "*" = "ask";
-                };
-              };
-            };
-          };
-          mcp = {
-            gopls = {
-              type = "local";
-              enabled = true;
-              command = [
-                "gopls"
-                "mcp"
-              ];
-            };
+    xdg.configFile."opencode/agent" = {
+      source = ./opencode-agents;
+      recursive = true;
+    };
+
+    programs.opencode = {
+      enable = true;
+      package = opencodePkg;
+      enableMcpIntegration = true;
+      settings = {
+        theme = "catppuccin-macchiato";
+        mcp = {
+          gopls = {
+            type = "local";
+            enabled = true;
+            command = [
+              "gopls"
+              "mcp"
+            ];
           };
         };
       };
+    };
   };
 }
