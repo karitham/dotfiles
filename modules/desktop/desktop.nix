@@ -10,7 +10,7 @@ let
 in
 {
   imports = [ inputs.niri.nixosModules.niri ];
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf cfg.wm.enable {
     environment = {
       systemPackages = with pkgs; [
         wl-clipboard

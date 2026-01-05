@@ -23,7 +23,7 @@
           "application/x-extension-xht" = browser;
           "x-scheme-handler/about" = browser;
           "x-scheme-handler/unknown" = browser;
-          "x-scheme-handler/discord" = "legcord.desktop";
+          "x-scheme-handler/discord" = "vesktop.desktop";
           "text/markdown" = editor;
           "text/plain" = editor;
         };

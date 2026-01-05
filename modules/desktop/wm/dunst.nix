@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, ... }:
 {
-  services.dunst = lib.mkIf config.desktop.wm.enable { enable = true; };
+  services.dunst.enable = config.desktop.wm.enable;
 }

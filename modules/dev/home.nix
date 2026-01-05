@@ -1,14 +1,19 @@
 {
-  osConfig ? { },
+  osConfig ? {},
   lib,
-  config,
   ...
-}:
-let
+}: let
   inherit (lib) mkEnableOption;
-in
-{
-  config.dev = lib.intersectAttrs config.dev (osConfig.dev or { });
+in {
+  config.dev = {
+    inherit
+      (osConfig.dev or {})
+      shell
+      editor
+      vcs
+      tools
+      ;
+  };
   options.dev = {
     enable = mkEnableOption "all development tools";
 

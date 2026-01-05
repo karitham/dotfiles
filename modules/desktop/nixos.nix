@@ -30,7 +30,6 @@ in
     desktop.terminal.enable = mkIf cfg.enable true;
     desktop.audio.enable = mkIf cfg.enable true;
     desktop.apps.enable = mkIf cfg.enable true;
-    desktop.ipcam.enable = mkIf cfg.enable true;
     desktop.yubikey.enable = mkIf cfg.enable true;
     desktop.locale.enable = mkIf cfg.enable true;
   };
