@@ -1,14 +1,15 @@
 {
   lib,
-  osConfig ? {},
+  osConfig ? { },
   pkgs,
   ...
-}: let
+}:
+let
   inherit (lib) mkEnableOption mkOption types;
-in {
+in
+{
   config.desktop = {
-    inherit
-      (osConfig.desktop or {})
+    inherit (osConfig.desktop or { })
       enable
       wm
       terminal

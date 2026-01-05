@@ -1,13 +1,14 @@
 {
-  osConfig ? {},
+  osConfig ? { },
   lib,
   ...
-}: let
+}:
+let
   inherit (lib) mkEnableOption;
-in {
+in
+{
   config.dev = {
-    inherit
-      (osConfig.dev or {})
+    inherit (osConfig.dev or { })
       shell
       editor
       vcs

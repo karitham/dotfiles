@@ -278,13 +278,7 @@ lib.mkIf config.dev.editor.enable {
           defaults = [ "typos" ];
         in
         map
-          (
-            lang:
-            lang
-            // {
-              language-servers = if lang ? language-servers then lang.language-servers ++ defaults else defaults;
-            }
-          )
+          (lang: lang // { language-servers = if lang ? language-servers then lang.language-servers ++ defaults else defaults; })
           (
             [
               {
