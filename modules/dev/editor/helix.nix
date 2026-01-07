@@ -15,7 +15,7 @@ let
     patches = jj-patch;
   });
   global-tools = with pkgs; [
-    nixfmt-rfc-style
+    nixfmt
     biome
     golangci-lint
     gotools

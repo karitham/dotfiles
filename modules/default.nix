@@ -29,7 +29,7 @@
         pds-simple = pkgs.callPackage ./pds/pds-recovery-simple.nix { inherit (inputs) nixpkgs; };
         pds-full = pkgs.callPackage ./pds/pds-recovery-full.nix { inherit (inputs) nixpkgs; };
       };
-      formatter = pkgs.nixfmt-rfc-style;
+      formatter = pkgs.nixfmt;
       devShells.default = pkgs.mkShell { packages = with pkgs; [ sops ]; };
     };
 
