@@ -32,4 +32,6 @@ in
     programs.nano.enable = mkDefault (!(cfg.enable || cfg.editor.enable));
     environment.sessionVariables.EDITOR = mkIf cfg.editor.enable "hx";
   };
+
+  imports = [ ./docker ];
 }
