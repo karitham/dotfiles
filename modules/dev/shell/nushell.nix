@@ -18,9 +18,7 @@
           show_banner: false,
         }
 
-        if ("~/.profile.nu" | path exists) {
-          source-env "~/.profile.nu"
-        }
+        source-env (if ("~/.profile.nu" | path exists) {"~/.profile.nu"} else null)
 
         ${lib.meta.getExe pkgs.pokego} -l french
       '';

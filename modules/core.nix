@@ -9,6 +9,7 @@
   config = lib.mkIf (config.my.username != "root") {
     users.users.${config.my.username} = {
       home = "/home/${config.my.username}";
+      initialPassword = "";
       isNormalUser = true;
       extraGroups = [
         "networkmanager"
