@@ -15,9 +15,6 @@ _: prev: {
     vendorHash = "sha256-UZNYHx5y+kRp3AJq6s4Wy+k789GDG7FBTSzCTorVjgg=";
   });
 
-  # build failing because of sqlite3 node-gyp
-  bluesky-pds = prev.bluesky-pds.override { nodejs = prev.nodejs_22; };
-
   # https://github.com/benbjohnson/litestream/issues/912
   litestream = prev.litestream.overrideAttrs (old: {
     version = "devel";

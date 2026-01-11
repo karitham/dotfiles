@@ -9,7 +9,7 @@
 let
   jj-patch = pkgs.fetchurl {
     url = "https://patch-diff.githubusercontent.com/raw/helix-editor/helix/pull/14519.patch";
-    hash = "sha256-e4xaKcOhAKKYbJXhYHbjdFk6CwLubmCp+m7y//MmQFw=";
+    hash = "sha256-L+dcrYNApgNdMH5iWDhgGnmmtmKG2s/DnxOa7Ug/dsw=";
   };
   helix = inputs'.helix.packages.default.overrideAttrs (_: {
     patches = jj-patch;
@@ -133,11 +133,14 @@ lib.mkIf config.dev.editor.enable {
             "mode"
             "spacer"
             "diagnostics"
-            "version-control"
             "file-name"
             "read-only-indicator"
             "file-modification-indicator"
             "spinner"
+          ];
+          center = [
+            "version-control"
+            "file-name"
           ];
           right = [
             "file-encoding"
