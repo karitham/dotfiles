@@ -84,11 +84,15 @@
           }
         ];
 
-        outputs = rec {
+        outputs = {
           eDP-1 = {
-            mode = null;
+            # defaults for kiwi
+            mode = {
+              width = 1920;
+              height = 1200;
+            };
             position = {
-              x = HDMI-A-1.mode.width;
+              x = 0;
               y = 0;
             };
           };
@@ -98,7 +102,7 @@
               height = 1440;
             };
             position = {
-              x = 0;
+              x = config.programs.niri.settings.outputs.eDP-1.mode.width;
               y = 0;
             };
           };

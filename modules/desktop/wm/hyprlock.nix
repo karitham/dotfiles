@@ -100,7 +100,7 @@
           hide_input = false;
           check_color = "$accent";
           fail_color = "$red";
-          fail_text = ''<i>$FAIL <b>($ATTEMPTS)</b></i>'';
+          fail_text = "<i>$FAIL <b>($ATTEMPTS)</b></i>";
           capslock_color = "$yellow";
           position = "0, -47";
           halign = "center";

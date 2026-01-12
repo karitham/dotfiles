@@ -91,7 +91,7 @@
         };
         custom = {
           jj = {
-            command = ''${lib.getExe' inputs'.starship-jj.packages.default "starship-jj"} --ignore-working-copy starship prompt'';
+            command = "${lib.getExe' inputs'.starship-jj.packages.default "starship-jj"} --ignore-working-copy starship prompt";
             format = "[$symbol](blue bold) $output";
             symbol = "󱗆";
             when = "jj root --ignore-working-copy";
