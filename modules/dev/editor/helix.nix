@@ -133,13 +133,13 @@ lib.mkIf config.dev.editor.enable {
             "mode"
             "spacer"
             "diagnostics"
-            "file-name"
             "read-only-indicator"
             "file-modification-indicator"
             "spinner"
           ];
           center = [
             "version-control"
+            "spacer"
             "file-name"
           ];
           right = [
