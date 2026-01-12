@@ -6,6 +6,7 @@
 }:
 {
   config = lib.mkIf config.dev.shell.enable {
+    home.packages = [ pkgs.moreutils ]; # vipe, chronic, pee
     programs.nushell = {
       enable = true;
       shellAliases = {
