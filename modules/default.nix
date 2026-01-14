@@ -20,7 +20,7 @@
         pokego = pkgs.callPackage ./pkgs/pokego.nix { };
         http-nu = pkgs.callPackage ./pkgs/http-nu.nix { };
         topiary-nu = pkgs.callPackage ./pkgs/topiary-nu.nix { };
-        atproto-lastfm-importer = pkgs.callPackage ./pkgs/atproto-lastfm-importer.nix { };
+        malachite = pkgs.callPackage ./pkgs/malachite.nix { };
         multi-scrobbler = pkgs.callPackage ./pkgs/multi-scrobbler.nix { };
 
         wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
