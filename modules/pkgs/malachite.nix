@@ -10,12 +10,12 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "malachite";
-  version = "0.6.2";
+  version = "0.7.0";
 
   src = fetchgit {
-    url = "https://tangled.org/ewancroft.uk/atproto-lastfm-importer";
-    rev = "10ae8f794a2066702ddbbcd11326664ede844879";
-    hash = "sha256-do2B348lUIkSaQfMCoVMcpi031BdfpzUXetyY2S17nI=";
+    url = "https://tangled.org/karitham.dev/atproto-lastfm-importer";
+    rev = "HEAD";
+    hash = "sha256-K3k8lTAO/zKijJmqNAPeJS8LMPqcXQYXmDEfwjKsab8=";
     deepClone = false;
   };
 
