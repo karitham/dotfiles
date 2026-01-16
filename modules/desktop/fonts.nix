@@ -8,7 +8,8 @@
   options.fonts = {
     mono = lib.mkOption {
       type = lib.types.str;
-      default = "Lilex Nerd Font Medium";
+      # default = "Lilex Nerd Font Medium";
+      default = "MonaspiceNe Nerd Font Propo";
       description = "Global mono font";
     };
   };
@@ -19,6 +20,7 @@
         lexend
         nerd-fonts.jetbrains-mono
         nerd-fonts.lilex
+        nerd-fonts.monaspace
         noto-fonts
         noto-fonts-cjk-sans
         noto-fonts-color-emoji
