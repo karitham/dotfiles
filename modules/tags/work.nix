@@ -15,7 +15,7 @@
       linear = {
         type = "remote";
         url = "https://mcp.linear.app/mcp";
-        enabled = true;
+        enabled = false; # disable by default because it breaks google models
         headers = {
           Authorization = "Bearer {env:LINEAR_API_KEY}";
         };
