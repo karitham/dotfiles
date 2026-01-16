@@ -29,6 +29,7 @@
           "branchesandheads" = "branches | (heads(trunk()::) & mine())";
           "curbranch" = "latest(branches::@- & branches)";
           "nextbranch" = "roots(@:: & branchesandheads)";
+          "top" = "heads(mine())";
         };
         ui = {
           default-command = [
