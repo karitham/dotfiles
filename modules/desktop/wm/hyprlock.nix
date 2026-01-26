@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.desktop.wm.enable {
+  config = lib.mkIf config.desktop.hyprlock.enable {
     services.hypridle = {
       enable = true;
       settings = {
@@ -45,7 +45,7 @@
 
         background = {
           monitor = "";
-          path = "${config.desktop.wallpaper}";
+          path = "${config.desktop.wallpaper.image}";
           blur_passes = 0;
           color = "$base";
         };

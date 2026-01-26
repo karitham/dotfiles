@@ -1,4 +1,4 @@
 { config, ... }:
 {
-  services.dunst.enable = config.desktop.wm.enable;
+  services.dunst.enable = config.desktop.notification.enable;
 }

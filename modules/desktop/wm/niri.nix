@@ -48,7 +48,7 @@
           };
         };
 
-        spawn-at-startup = [ { command = [ "systemctl --user restart waybar.service" ]; } ];
+        spawn-at-startup = [ ];
 
         layout = {
           gaps = 16;
@@ -168,7 +168,6 @@
           {
             "Mod+O".action = show-hotkey-overlay;
             "Mod+Q".action.spawn = "${lib.getExe pkgs.ghostty}";
-            "Mod+R".action.spawn = "${lib.getExe pkgs.fuzzel}";
             "Mod+C".action.close-window = [ ];
 
             "Mod+Comma".action = consume-window-into-column;

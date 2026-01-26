@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.desktop.wm.enable {
+  config = lib.mkIf config.desktop.wallpaper.enable {
     services.swww = {
       enable = true;
     };
@@ -15,7 +15,7 @@
         command = [
           (lib.getExe' pkgs.swww "swww")
           "img"
-          "${config.desktop.wallpaper}"
+          "${config.desktop.wallpaper.image}"
         ];
       }
     ];
