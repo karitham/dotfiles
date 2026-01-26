@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 {
   desktop.yubikey.enable = true;
   programs._1password.enable = true;
@@ -19,16 +19,6 @@
         headers = {
           Authorization = "Bearer {env:LINEAR_API_KEY}";
         };
-      };
-      sentry = {
-        type = "local";
-        enabled = true;
-        command = [
-          "${pkgs.bun}/bin/bun"
-          "x"
-          "mcp-remote@latest"
-          "https://mcp.sentry.dev/mcp"
-        ];
       };
     };
   };
