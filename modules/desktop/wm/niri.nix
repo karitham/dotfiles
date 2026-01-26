@@ -111,7 +111,6 @@
         binds =
           with config.lib.niri.actions;
           let
-            # programs.niri.settings.binds."Mod+Q".action.close-window = []
             toAction =
               act: dir:
               (lib.mapAttrs' (

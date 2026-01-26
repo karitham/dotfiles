@@ -6,6 +6,7 @@
     ./hyprlock.nix
     ./wallpaper.nix
     ./niri.nix
+    ./noctalia.nix
     ./waybar.nix
     ./xdg.nix
   ];

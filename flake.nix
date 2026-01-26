@@ -37,6 +37,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri.url = "github:sodiboo/niri-flake?ref=main";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     starship-jj.url = "gitlab:lanastara_foss/starship-jj";
     ssh-keys = {
       url = "https://github.com/karitham.keys";

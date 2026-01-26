@@ -12,6 +12,7 @@ in
     inherit (osConfig.desktop or { })
       enable
       wm
+      noctalia
       waybar
       hyprlock
       wallpaper
@@ -26,6 +27,7 @@ in
     enable = mkEnableOption "all desktop tools";
 
     wm.enable = mkEnableOption "window manager and interface tools";
+    noctalia.enable = mkEnableOption "Noctalia Shell";
     waybar.enable = mkEnableOption "Waybar status bar";
     hyprlock.enable = mkEnableOption "Hyprlock screen locker";
     wallpaper.enable = mkEnableOption "Wallpaper management";

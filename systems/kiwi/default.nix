@@ -9,6 +9,7 @@
 
   system.stateVersion = "25.11";
 
+  desktop.noctalia.enable = true;
   home-manager.users.${config.my.username} = {
     nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "hayase" ];
 
