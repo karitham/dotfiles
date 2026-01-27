@@ -44,7 +44,7 @@ in
       };
 
       hyprlock = {
-        enable = true;
+        enable = cfg.hyprlock.enable;
       };
     };
 
