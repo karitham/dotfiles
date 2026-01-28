@@ -20,6 +20,10 @@
 
         screenshot-path = null;
         prefer-no-csd = true;
+        hotkey-overlay = {
+          skip-at-startup = true;
+          hide-not-bound = true;
+        };
 
         input = {
           focus-follows-mouse = {
@@ -47,8 +51,6 @@
             click-method = "clickfinger";
           };
         };
-
-        spawn-at-startup = [ ];
 
         layout = {
           gaps = 16;
