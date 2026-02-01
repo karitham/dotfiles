@@ -12,7 +12,7 @@
       shellAliases = {
         k = "kubectl";
         fg = "job unfreeze";
-        nn = "exec $env.EDITOR ~/notes";
+        nn = "nu -c $'exec $env.EDITOR ~/notes'";
       };
       configFile.text = ''
         $env.config = {
