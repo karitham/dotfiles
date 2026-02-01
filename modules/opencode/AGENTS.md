@@ -1,0 +1,7 @@
+- **READ BEFORE WRITE**: Always read a file before editing.
+- **ERROR HANDLING**: No panics/crashes on bad input.
+- **SECURITY**: Validate inputs, parameterized queries, no hardcoded secrets.
+- **NO DEAD CODE**: Remove or complete incomplete code.
+- **FAMILIAR CODE**: All code you write should be familiar to other writers of the codebase. Reuse the existing patterns.
+- Be concise, both in code, comments and human interactions.
+- Skip "Here is the code" / "Let me..." / "I'll now..."

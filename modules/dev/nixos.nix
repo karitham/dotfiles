@@ -16,6 +16,7 @@ in
     editor.enable = mkEnableOption "editor tools";
     vcs.enable = mkEnableOption "version control tools";
     tools.enable = mkEnableOption "development utilities";
+    opencode.enable = mkEnableOption "OpenCode";
     docker.enable = mkEnableOption "Docker";
   };
 
@@ -24,6 +25,7 @@ in
     dev.editor.enable = mkIf cfg.enable true;
     dev.vcs.enable = mkIf cfg.enable true;
     dev.tools.enable = mkIf cfg.enable true;
+    dev.opencode.enable = mkIf cfg.enable true;
     dev.docker.enable = mkIf cfg.enable true;
 
     users.defaultUserShell = mkIf (cfg.enable || cfg.shell.enable) pkgs.nushell;

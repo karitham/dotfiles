@@ -5,14 +5,10 @@ tools:
   read: true
   glob: true
   grep: true
-  write: true
-  edit: false
+  edit: true
   bash: true
-permissions:
-  bash:
-    "git status": allow
-    "git log": allow
-    "*": ask
+  todowrite: false
+  todoread: false
 ---
 
 # Stack Trace Analyst

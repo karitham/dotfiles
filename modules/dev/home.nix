@@ -13,8 +13,10 @@ in
       editor
       vcs
       tools
+      opencode
       ;
   };
+
   options.dev = {
     enable = mkEnableOption "all development tools";
 
@@ -28,5 +30,6 @@ in
     ./editor
     ./vcs
     ./tools
+    ../opencode/home.nix
   ];
 }

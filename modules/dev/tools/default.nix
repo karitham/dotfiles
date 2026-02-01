@@ -30,6 +30,5 @@
 
   imports = [
     ./direnv.nix
-    ./opencode.nix
   ];
 }
