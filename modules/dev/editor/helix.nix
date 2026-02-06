@@ -102,6 +102,10 @@ lib.mkIf config.dev.editor.enable {
             "+" = plusMenu;
             "-" = runMenu;
             "g" = goMenu;
+            "C-e" = [
+              "goto_file_end"
+              "open_below"
+            ];
           }
           // scrollFast;
           select = {

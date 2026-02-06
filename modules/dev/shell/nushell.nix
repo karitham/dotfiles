@@ -34,14 +34,9 @@
               let msg = $"Log update: ($now | format date '%F %T')"
 
               if (jj log --no-graph -r $"@- & files\('logs')" | is-not-empty) {
-                jj squash --ignore-immutable
-                jj describe -r @- -m $msg
-
-                # After squash, the valid commit is @- (the working copy becomes empty/new)
+                jj squash --ignore-immutable --message $msg
                 jj bookmark set main -r @-
                 jj git push -b main
-
-                return
               } else {
                 jj describe -m $msg
                 jj bookmark set main -r @
