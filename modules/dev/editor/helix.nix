@@ -1,7 +1,7 @@
 {
   lib,
   pkgs,
-  inputs',
+  # inputs',
   self',
   config,
   ...
@@ -11,9 +11,9 @@ let
   #   url = "https://patch-diff.githubusercontent.com/raw/helix-editor/helix/pull/14519.patch";
   #   hash = "sha256-dx+VPXB3iSx8J5X4C8hutwBMwMrxpmoFxGzDRK7EZOs=";
   # };
-  helix = inputs'.helix.packages.default.overrideAttrs (_: {
-    # patches = jj-patch;
-  });
+  # helix = inputs'.helix.packages.default.overrideAttrs (_: {
+  #   # patches = jj-patch;
+  # });
   global-tools = with pkgs; [
     nixfmt
     biome
@@ -29,7 +29,7 @@ lib.mkIf config.dev.editor.enable {
   programs.helix = {
     enable = true;
     defaultEditor = true;
-    package = helix;
+    # package = helix;
     extraPackages =
       with pkgs;
       [
