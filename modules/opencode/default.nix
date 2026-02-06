@@ -34,7 +34,7 @@ lib.mkIf cfg.enable {
     enableMcpIntegration = cfg.enableMcp;
     settings = {
       theme = cfg.theme;
-      plugin = [ "file:///home/kar/code/langrules-opencode/src/index.ts" ];
+      plugin = [ "git@tangled.org:karitham.dev/langrules-opencode" ];
       permission = {
         todoread = "deny";
         todowrite = "deny";
