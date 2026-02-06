@@ -12,14 +12,31 @@
       shellAliases = {
         k = "kubectl";
         fg = "job unfreeze";
-        nn = "nu -c $'exec $env.EDITOR ~/notes'";
+        nn = "run-external $env.EDITOR ($env.HOME)/notes";
       };
       configFile.text = ''
-        $env.config = {
-          show_banner: false,
-        }
+        $env.config = {show_banner: false}
 
-        source-env (if ("~/.profile.nu" | path exists) {"~/.profile.nu"} else null)
+        source-env (if ("~/.profile.nu" | path exists) { "~/.profile.nu" } else null)
+
+        def log [] {
+          let now = date now
+          let log_dir = $"($env.HOME)/notes/logs/($now | format date "%Y/%m")"
+
+          if not ($log_dir | path exists) { mkdir $log_dir }
+
+          cd $log_dir
+
+          run-external $env.EDITOR $"($now | format date "%d").md"
+
+          job spawn {
+            do {
+              jj bookmark set main -r @
+              jj describe -m $"Log update: ($now | format date '%F %T')"
+              jj git push -b main
+            } | complete
+          } | ignore
+        }
 
         ${lib.meta.getExe pkgs.pokego} -l french
       '';
