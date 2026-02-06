@@ -31,14 +31,29 @@
 
           job spawn {
             do {
-              jj bookmark set main -r @
-              jj describe -m $"Log update: ($now | format date '%F %T')"
-              jj git push -b main
+              let msg = $"Log update: ($now | format date '%F %T')"
+
+              if (jj log --no-graph -r $"@- & files\('logs')" | is-not-empty) {
+                jj squash --ignore-immutable
+                jj describe -r @- -m $msg
+
+                # After squash, the valid commit is @- (the working copy becomes empty/new)
+                jj bookmark set main -r @-
+                jj git push -b main
+
+                return
+              } else {
+                jj describe -m $msg
+                jj bookmark set main -r @
+                jj git push -b main
+              }
+
+              ${lib.getExe' pkgs.libnotify "notify-send"} "Log Synced" $"Updates pushed to git.\n($msg)"
             } | complete
           } | ignore
         }
 
-        ${lib.meta.getExe pkgs.pokego} -l french
+        ${lib.getExe pkgs.pokego} -l french
       '';
 
       extraLogin = ''
