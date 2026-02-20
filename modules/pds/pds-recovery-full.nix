@@ -2,7 +2,7 @@
 let
   _pkgs = import nixpkgs {
     config = { };
-    system = pkgs.stdenv.hostPlatform.system;
+    inherit (pkgs.stdenv.hostPlatform) system;
     overlays = [ (import ../overlays) ];
   };
 in

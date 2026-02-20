@@ -33,8 +33,8 @@ lib.mkIf cfg.enable {
     package = opencodePkg;
     enableMcpIntegration = cfg.enableMcp;
     settings = {
-      theme = cfg.theme;
-      plugin = [ "git@tangled.org:karitham.dev/langrules-opencode" ];
+      inherit (cfg) theme;
+      # plugin = [ "git@tangled.org:karitham.dev/langrules-opencode" ];
       permission = {
         todoread = "deny";
         todowrite = "deny";

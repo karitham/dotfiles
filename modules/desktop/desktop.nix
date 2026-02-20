@@ -14,16 +14,13 @@ in
     environment = {
       systemPackages = with pkgs; [
         wl-clipboard
-        wlroots
         xdg-utils
         pavucontrol
-        killall
         playerctl
         brightnessctl
         upower
         pulseaudio
         gnome-themes-extra
-        mpv
       ];
 
       etc = {
@@ -39,13 +36,8 @@ in
     };
 
     programs = {
-      niri = {
-        enable = true;
-      };
-
-      hyprlock = {
-        enable = cfg.hyprlock.enable;
-      };
+      niri.enable = true;
+      hyprlock.enable = cfg.hyprlock.enable;
     };
 
     services = {

@@ -20,7 +20,7 @@ let
   pdsUser = "pds";
   pdsGroup = "pds";
 
-  secretsFiles = cfg.secretsFiles;
+  inherit (cfg) secretsFiles;
 
   litestreamConfig = pkgs.writeText "litestream-pds-config.yml" ''
     dbs:
@@ -225,7 +225,7 @@ in
     };
 
     settings = mkOption {
-      type = options.services.bluesky-pds.settings.type;
+      inherit (options.services.bluesky-pds.settings) type;
       default = { };
       description = "Additional settings to pass to bluesky-pds:\n\n" ++ options.services.bluesky-pds.settings.description;
       example = {

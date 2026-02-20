@@ -59,7 +59,7 @@ in
   config = lib.mkIf cfg.enable {
     users.users.${cfg.user} = {
       isSystemUser = true;
-      group = cfg.group;
+      inherit (cfg) group;
       description = "Multi-Scrobbler service user";
     };
 
