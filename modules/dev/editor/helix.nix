@@ -1,7 +1,7 @@
 {
   lib,
   pkgs,
-  inputs',
+  # inputs',
   self',
   config,
   ...
@@ -22,7 +22,7 @@ lib.mkIf config.dev.editor.enable {
   programs.helix = {
     enable = true;
     defaultEditor = true;
-    package = inputs'.helix.packages.default;
+    # package = inputs'.helix.packages.default;
     extraPackages =
       with pkgs;
       [
