@@ -22,6 +22,7 @@ in
       pkgs.sd
       pkgs.fd
       pkgs.uutils-coreutils-noprefix
+      pkgs.libnotify
       scripts
     ];
 
