@@ -38,6 +38,7 @@ lib.mkIf cfg.enable {
       permission = {
         todoread = "deny";
         todowrite = "deny";
+        external_directory = lib.genAttrs [ "~/go/pkg/mod/**" ] (_: "allow");
       };
       mcp = lib.mkIf cfg.enableMcp {
         gopls = {
