@@ -6,7 +6,7 @@
 }:
 {
   nix = {
-    package = pkgs.lix;
+    # package = pkgs.lix;
 
     registry.nixpkgs.flake = inputs.nixpkgs;
     registry.self.flake = inputs.self;
