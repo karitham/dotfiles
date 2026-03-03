@@ -49,6 +49,14 @@ lib.mkIf cfg.enable {
             "mcp"
           ];
         };
+        github = {
+          type = "remote";
+          url = "https://api.githubcopilot.com/mcp/";
+          headers = {
+            Authorization = "Bearer {env:GITHUB_TOKEN}";
+          };
+          enabled = false;
+        };
       };
     };
   };
