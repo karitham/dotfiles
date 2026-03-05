@@ -5,16 +5,13 @@
   ...
 }:
 let
-  rulesDir = ./rules;
-
   opencodePkg = pkgs.symlinkJoin {
     name = "opencode.wrapped";
     paths = [ pkgs.opencode ];
     buildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
       wrapProgram $out/bin/opencode \
-        --set SHELL ${lib.getExe pkgs.bash} \
-        --set-default LANGRULES_DIR ${rulesDir}
+        --set SHELL ${lib.getExe pkgs.bash}
     '';
   };
 
@@ -34,7 +31,6 @@ lib.mkIf cfg.enable {
     enableMcpIntegration = cfg.enableMcp;
     settings = {
       inherit (cfg) theme;
-      # plugin = [ "git@tangled.org:karitham.dev/langrules-opencode" ];
       permission = {
         todoread = "deny";
         todowrite = "deny";
