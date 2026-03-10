@@ -14,7 +14,7 @@
     nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "hayase" ];
 
     home.packages = [
-      pkgs.signal-desktop-bin
+      pkgs.signal-desktop
       pkgs.obs-studio
       pkgs.hayase
     ];
