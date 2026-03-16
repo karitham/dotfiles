@@ -41,7 +41,6 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    starship-jj.url = "gitlab:lanastara_foss/starship-jj";
     ssh-keys = {
       url = "https://github.com/karitham.keys";
       flake = false;
