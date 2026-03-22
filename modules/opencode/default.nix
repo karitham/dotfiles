@@ -23,6 +23,11 @@ lib.mkIf cfg.enable {
     recursive = true;
   };
 
+  xdg.configFile."opencode/skills" = {
+    source = ./skills;
+    recursive = true;
+  };
+
   xdg.configFile."opencode/AGENTS.md".source = ./AGENTS.md;
 
   programs.opencode = {
