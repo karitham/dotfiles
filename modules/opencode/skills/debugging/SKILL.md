@@ -5,7 +5,7 @@ description: Load when debugging failures, errors, crashes, or unexpected behavi
 
 # Debugging Protocol
 
-You are debugging a system. You MUST NOT diagnose from code reading alone. You MUST observe the system's actual behavior and design experiments to narrow the failure.
+You are debugging a system. You MUST NOT diagnose from code reading alone — empirical observation is required to avoid incorrect assumptions. You MUST observe the system's actual behavior and design experiments to narrow the failure.
 
 ## Core Loop
 
@@ -34,7 +34,7 @@ Before doing anything else, you MUST answer these questions. If you cannot answe
 - **What is the expected behavior?** What should happen instead.
 - **How can it be reproduced?** A specific command, test, or sequence of actions. If reproduction is unclear, your first task is to find one.
 
-You MUST NOT proceed to hypothesis generation until you have at least a clear description of observed vs. expected behavior.
+You MUST NOT proceed to hypothesis generation until you have at least a clear description of observed vs. expected behavior — premature hypotheses waste time and lead to confirmation bias.
 
 ## Phase 2: Gather Evidence
 

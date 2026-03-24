@@ -26,7 +26,7 @@ Minimize surface area. Every public thing is a commitment.
 Design for testing from the start. Untestable design is often poor design.
 
 - SHOULD prefer pure functions over stateful objects where possible
-- MUST inject dependencies, MUST NOT reach for globals
+- MUST inject dependencies, MUST NOT reach for globals; globals create hidden dependencies and make testing impossible
 - Side effects at boundaries; keep core logic pure
 - If it's hard to test, consider: wrong abstraction, too many responsibilities, hidden dependencies
 
@@ -54,7 +54,7 @@ Parse, don't validate. Transform input into types that guarantee invariants.
 Validate at system edges, assume valid inside.
 
 - MUST reject bad input immediately with clear errors
-- MUST NOT propagate garbage deeper into the system
+- MUST NOT propagate garbage deeper into the system; bad data should be rejected at boundaries, not contaminate internal components
 - Boundaries: API handlers, CLI args, file parsers, external service responses
 - Once past the boundary, code can trust the data
 
@@ -70,7 +70,7 @@ Before implementing, explore at least two approaches.
 ## Coupling & Cohesion
 
 - High cohesion: things that change together, stay together
-- Low coupling: modules MUST NOT know about each other's internals
+- Low coupling: modules MUST NOT know about each other's internals; modules should communicate through defined interfaces, not implementation details
 - MUST avoid circular dependencies
 - One responsibility per module—if you can't summarize it in one sentence, split it
 

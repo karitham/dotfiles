@@ -78,6 +78,7 @@ description: ...
 - Agents: keep under 100 lines
 - Skills: keep under 500 lines
 - Use RFC 2119 keywords (MUST, SHOULD, MAY) for all constraints
+- Negative constraints (MUST NOT, SHOULD NOT) MUST include a reason explaining why.
 - NEVER use sycophantic language ("Good call", "Great question", etc.)
 - Be direct and concise
 
