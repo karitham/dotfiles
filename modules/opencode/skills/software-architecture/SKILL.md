@@ -7,10 +7,10 @@ description: Load BEFORE implementing new features, refactoring, adding abstract
 
 Hide complexity behind simple interfaces. A module's value is what it hides, not what it exposes.
 
-- Interface should be smaller than implementation
-- Users shouldn't need to understand internals
-- If callers must understand your code to use it, the abstraction has failed
-- Prefer few powerful primitives over many specific ones
+- Interface SHOULD be smaller than implementation
+- Users SHOULD NOT need to understand internals
+- If callers MUST understand your code to use it, the abstraction has failed
+- SHOULD prefer few powerful primitives over many specific ones
 
 ## Small Interfaces
 
@@ -19,14 +19,14 @@ Minimize surface area. Every public thing is a commitment.
 - Fewer parameters, fewer methods, fewer exports
 - What isn't exposed can be changed freely
 - When in doubt, hide it
-- Seal internal details: unexported types, private fields, package-internal functions
+- MUST seal internal details: unexported types, private fields, package-internal functions
 
 ## Testability
 
 Design for testing from the start. Untestable design is often poor design.
 
-- Pure functions over stateful objects where possible
-- Inject dependencies, don't reach for globals
+- SHOULD prefer pure functions over stateful objects where possible
+- MUST inject dependencies, MUST NOT reach for globals
 - Side effects at boundaries; keep core logic pure
 - If it's hard to test, consider: wrong abstraction, too many responsibilities, hidden dependencies
 
@@ -34,27 +34,27 @@ Design for testing from the start. Untestable design is often poor design.
 
 From DDIA: systems fail in unexpected ways. Design for failure.
 
-- Assume components will crash, networks will partition, disks will fill
-- Prefer immutable data and append-only structures
-- Make invariants explicit and enforce them at boundaries
-- Think about consistency guarantees upfront—eventual vs strong vs none
-- Schema changes should be backward and forward compatible
+- MUST assume components will crash, networks will partition, disks will fill
+- SHOULD prefer immutable data and append-only structures
+- MUST make invariants explicit and enforce them at boundaries
+- MUST think about consistency guarantees upfront—eventual vs strong vs none
+- Schema changes MUST be backward and forward compatible
 
 ## Make Illegal States Unrepresentable
 
 Parse, don't validate. Transform input into types that guarantee invariants.
 
 - If a value exists, it's valid—no downstream checks needed
-- Use sum types, newtypes, and enums to constrain possible values
-- Bad states should be compiler errors, not runtime bugs
+- SHOULD use sum types, newtypes, and enums to constrain possible values
+- Bad states SHOULD be compiler errors, not runtime bugs
 - Example: `PositiveInt` not `int` with a check; `Pending | Approved | Rejected` not `string status`
 
 ## Fail Fast at Boundaries
 
 Validate at system edges, assume valid inside.
 
-- Reject bad input immediately with clear errors
-- Don't propagate garbage deeper into the system
+- MUST reject bad input immediately with clear errors
+- MUST NOT propagate garbage deeper into the system
 - Boundaries: API handlers, CLI args, file parsers, external service responses
 - Once past the boundary, code can trust the data
 
@@ -70,8 +70,8 @@ Before implementing, explore at least two approaches.
 ## Coupling & Cohesion
 
 - High cohesion: things that change together, stay together
-- Low coupling: modules should not know about each other's internals
-- Avoid circular dependencies
+- Low coupling: modules MUST NOT know about each other's internals
+- MUST avoid circular dependencies
 - One responsibility per module—if you can't summarize it in one sentence, split it
 
 ## Before You Code

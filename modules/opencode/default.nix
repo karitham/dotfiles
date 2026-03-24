@@ -36,6 +36,7 @@ lib.mkIf cfg.enable {
     enableMcpIntegration = cfg.enableMcp;
     settings = {
       inherit (cfg) theme;
+      default_agent = "orchestrator";
       permission = {
         todoread = "deny";
         todowrite = "deny";
