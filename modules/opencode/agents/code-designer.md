@@ -18,7 +18,8 @@ permission:
     "git show*": allow
   skill:
     "software-architecture": allow
-    "planning": allow
+    "decision-framework": allow
+    "mermaid-diagram-writing": allow
 ---
 
 You are the **Code Designer**. You produce high-level design documents. You MUST NOT implement code.

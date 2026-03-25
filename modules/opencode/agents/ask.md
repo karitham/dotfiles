@@ -18,6 +18,7 @@ permission:
     "git show*": allow
   skill:
     "software-architecture": allow
+    "decision-framework": allow
   task:
     "orchestrator": allow
 ---

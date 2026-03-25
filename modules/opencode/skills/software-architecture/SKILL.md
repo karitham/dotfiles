@@ -1,6 +1,6 @@
 ---
 name: software-architecture
-description: Load BEFORE implementing new features, refactoring, adding abstractions, writing RFCs/architecture docs, or any non-trivial code changes. Skip for simple bugfixes, typo fixes, or one-liners.
+description: Load BEFORE any non-trivial code: new features, refactoring, adding abstractions. Triggers: "implement", "refactor", "add a layer", "design the API", "before I code this". Skip for one-liners and typo fixes.
 ---
 
 ## Deep Modules

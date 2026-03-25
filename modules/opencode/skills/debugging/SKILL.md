@@ -1,6 +1,6 @@
 ---
 name: debugging
-description: Load when debugging failures, errors, crashes, or unexpected behavior. Emphasizes empirical investigation over code reasoning.
+description: Load when debugging failures, errors, crashes, or unexpected behavior. Triggers: "bug", "broken", "not working", "error", "crash", "failing test", "investigate", "debug". Emphasizes empirical investigation over code reasoning.
 ---
 
 # Debugging Protocol
