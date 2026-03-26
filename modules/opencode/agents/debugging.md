@@ -1,7 +1,6 @@
 ---
 description: Debugging specialist for investigating failures, errors, and crashes.
 mode: subagent
-temperature: 0.1
 permission:
   edit: deny
   bash: "*": allow

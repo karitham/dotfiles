@@ -1,7 +1,6 @@
 ---
 description: Implements code from design documents and task descriptions. Use after code-designer produces a design.
 mode: subagent
-temperature: 0.1
 permission:
   edit: allow
   bash:

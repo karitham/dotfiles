@@ -1,7 +1,6 @@
 ---
 description: Produces design documents from task descriptions. Use for API/module design before implementation.
 mode: subagent
-temperature: 0.1
 permission:
   edit: deny
   bash: "*": allow

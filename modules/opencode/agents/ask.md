@@ -1,7 +1,6 @@
 ---
 description: Exploratory read-only agent for searching, analyzing, and asking questions about the codebase.
 mode: subagent
-temperature: 0.1
 permission:
   edit: deny
   bash: "*": allow

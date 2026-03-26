@@ -6,6 +6,7 @@ description: Load when creating new opencode agents or skills. Provides naming c
 ## Naming Conventions
 
 ### Skills
+
 - 1-64 characters
 - Lowercase alphanumeric with single hyphens only
 - NO leading or trailing hyphens
@@ -13,17 +14,20 @@ description: Load when creating new opencode agents or skills. Provides naming c
 - MUST match the folder name
 
 ### Agents
+
 - Filename determines agent name (e.g., `orchestrator.md` creates `orchestrator` agent)
 - MUST use `.md` extension
 
 ## Description Requirements
 
 MUST include:
+
 1. WHAT the skill/agent does
 2. WHEN to use it
 3. Trigger phrases users would say
 
 MUST NOT:
+
 - Exceed 1024 characters
 - Contain XML angle brackets (`<` or `>`) in frontmatter
 
@@ -39,6 +43,7 @@ MUST NOT:
 ```
 
 OR in project root:
+
 ```
 .opencode/
 ├── skills/<skill-name>/SKILL.md
@@ -48,11 +53,12 @@ OR in project root:
 ## Frontmatter
 
 ### Agents
+
 ```yaml
 ---
 description: ...
 mode: primary|subagent
-temperature: 0.1
+
 permission:
   edit: allow|deny|ask
   bash:
@@ -66,6 +72,7 @@ permission:
 ```
 
 ### Skills
+
 ```yaml
 ---
 name: skill-name
@@ -85,17 +92,20 @@ description: ...
 ## Trigger Phrases
 
 Example triggers for a skill:
+
 - "Create a new agent for..."
 - "I need a skill that..."
 - "How do I add a new..."
 
 Example triggers for an agent:
+
 - "Use the orchestrator agent"
 - "Delegate to subagent"
 
 ## Validation Checklist
 
 Before committing:
+
 - [ ] SKILL.md exists (case-sensitive)
 - [ ] Frontmatter has required fields
   - Skills: `name` + `description`

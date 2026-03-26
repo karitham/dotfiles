@@ -1,7 +1,6 @@
 ---
 description: Coordinates multi-step tasks by decomposing work and delegating to specialized subagents.
 mode: primary
-temperature: 0.1
 permission:
   edit: deny
   bash: "*": allow
