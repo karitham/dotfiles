@@ -1,6 +1,6 @@
 ---
 name: software-architecture
-description: Load BEFORE any non-trivial code: new features, refactoring, adding abstractions. Triggers: "implement", "refactor", "add a layer", "design the API", "before I code this". Skip for one-liners and typo fixes.
+description: Load BEFORE any non-trivial design work. Triggers: "design", "architecture", "design the API", "how should this work". Skip for one-liners and typo fixes.
 ---
 
 ## Deep Modules
@@ -21,25 +21,6 @@ Minimize surface area. Every public thing is a commitment.
 - When in doubt, hide it
 - MUST seal internal details: unexported types, private fields, package-internal functions
 
-## Testability
-
-Design for testing from the start. Untestable design is often poor design.
-
-- SHOULD prefer pure functions over stateful objects where possible
-- MUST inject dependencies, MUST NOT reach for globals; globals create hidden dependencies and make testing impossible
-- Side effects at boundaries; keep core logic pure
-- If it's hard to test, consider: wrong abstraction, too many responsibilities, hidden dependencies
-
-## Data & Reliability
-
-From DDIA: systems fail in unexpected ways. Design for failure.
-
-- MUST assume components will crash, networks will partition, disks will fill
-- SHOULD prefer immutable data and append-only structures
-- MUST make invariants explicit and enforce them at boundaries
-- MUST think about consistency guarantees upfront—eventual vs strong vs none
-- Schema changes MUST be backward and forward compatible
-
 ## Make Illegal States Unrepresentable
 
 Parse, don't validate. Transform input into types that guarantee invariants.
@@ -54,7 +35,7 @@ Parse, don't validate. Transform input into types that guarantee invariants.
 Validate at system edges, assume valid inside.
 
 - MUST reject bad input immediately with clear errors
-- MUST NOT propagate garbage deeper into the system; bad data should be rejected at boundaries, not contaminate internal components
+- MUST NOT propagate garbage deeper into the system
 - Boundaries: API handlers, CLI args, file parsers, external service responses
 - Once past the boundary, code can trust the data
 
@@ -70,9 +51,17 @@ Before implementing, explore at least two approaches.
 ## Coupling & Cohesion
 
 - High cohesion: things that change together, stay together
-- Low coupling: modules MUST NOT know about each other's internals; modules should communicate through defined interfaces, not implementation details
+- Low coupling: modules MUST NOT know about each other's internals
 - MUST avoid circular dependencies
 - One responsibility per module—if you can't summarize it in one sentence, split it
+
+## Compression-Oriented Design
+
+Write the direct solution first without abstracting. After the code exists, look for repeated _shapes_ of logic.
+
+- An abstraction is only valid if it reduces total code
+- Do not recognize a pattern from elsewhere and apply it to the current problem
+- Interfaces SHOULD be general-purpose rather than special-purpose—but do not design general-purpose interfaces upfront
 
 ## Before You Code
 
@@ -80,4 +69,5 @@ Before implementing, explore at least two approaches.
 2. What's the simplest interface that covers the use case?
 3. What can go wrong? How does the system recover?
 4. How would you test this?
-5. What will be hard to change later? Make that explicit.
+5. Will this be testable?
+6. What will be hard to change later? Make that explicit.

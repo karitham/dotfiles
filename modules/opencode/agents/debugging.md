@@ -4,18 +4,7 @@ mode: subagent
 temperature: 0.1
 permission:
   edit: deny
-  bash:
-    "*": ask
-    "ls *": allow
-    "cat *": allow
-    "grep *": allow
-    "find *": allow
-    "rg *": allow
-    "fd *": allow
-    "git diff*": allow
-    "git log*": allow
-    "git status": allow
-    "git show*": allow
+  bash: "*": allow
   skill:
     "*": allow
 ---

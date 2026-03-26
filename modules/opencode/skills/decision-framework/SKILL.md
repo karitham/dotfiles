@@ -52,65 +52,15 @@ You MUST help the user see what they're trading.
 
 ### 5. Produce a Decision Document
 
-When analysis is complete, synthesize findings into an RFC-style document.
+When analysis is complete, synthesize findings into a concise document.
 
-**Structure:**
-```markdown
-## Title
+## Output
 
----
-
-### Status
-
-**Accepted** | Proposed | Deprecated
-
----
-
-### Background
-
-Context and motivation. Link to related issues/tickets.
-
----
-
-### Problem Statement
-
-What specific problem does this solve?
-
----
-
-### Decision Table
-
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-
----
-
-### Implementation
-
-Code references, API contracts, sequence diagrams if helpful.
-
----
-
-### Acceptance Criteria
-
-- [ ] Criteria 1
-- [ ] Criteria 2
-
----
-
-### Unresolved
-
-| Question | Owner |
-|----------|-------|
-| Open question | Team |
-
----
-
-### References
-
-- Related documents
-- Code links (use full GitHub URLs)
-```
+When ready, provide a concise document covering:
+- The problem being solved
+- 2-3 alternatives considered
+- Tradeoffs of the chosen approach
+- Open questions remaining
 
 ## Proactive Skill Loading
 

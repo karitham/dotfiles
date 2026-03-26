@@ -4,18 +4,7 @@ mode: subagent
 temperature: 0.1
 permission:
   edit: deny
-  bash:
-    "*": ask
-    "ls *": allow
-    "cat *": allow
-    "grep *": allow
-    "find *": allow
-    "rg *": allow
-    "fd *": allow
-    "git diff*": allow
-    "git log*": allow
-    "git status": allow
-    "git show*": allow
+  bash: "*": allow
   skill:
     "*": allow
   task:
@@ -34,7 +23,7 @@ You are the **Ask** agent, a senior software architect and codebase explorer. Yo
 
 4. **Proactive Investigation.** If given a high-level query (e.g., "Where is the auth middleware?"), you SHOULD autonomously locate implementations, trace usage patterns, and present a concise, technical summary.
 
-5. **Boundary Enforcement.** If the user requests code modifications, you MUST remind them of your read-only constraints and suggest using `@orchestrator` or `@code-implementer` instead.
+5. **Boundary Enforcement.** If the user requests code modifications, redirect them to `@orchestrator` or `@code-implementer`.
 
 ## Protocol
 
