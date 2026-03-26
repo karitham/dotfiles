@@ -111,7 +111,6 @@ lib.mkIf config.dev.editor.enable {
         lsp = {
           snippets = true;
           display-color-swatches = true;
-          display-inlay-hints = true;
           display-messages = true;
         };
         soft-wrap = {
