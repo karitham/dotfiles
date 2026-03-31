@@ -1,10 +1,6 @@
 ---
 name: code-writing
-description: |
-  Load when writing or refactoring code. Enforces guard clauses,
-  early returns, pure functions, and clean conventions. Use for any code
-  implementation task. Triggers: "implement", "refactor", "write function",
-  "edit code", "fix bug in".
+description: Enforces clean coding conventions for any implementation task. Covers guard clauses and early returns, happy-path left-alignment, pure functions separated from I/O, hexagonal architecture, error handling without panics, input validation at boundaries, parameterized queries, no hardcoded secrets, removing dead code, matching existing project patterns, and keeping functions small and single-responsibility. Use when writing new code, refactoring, fixing bugs, or reviewing code for quality.
 ---
 
 ## Guard Clauses

@@ -1,6 +1,6 @@
 ---
 name: software-architecture
-description: Load BEFORE any non-trivial design work. Triggers: "design", "architecture", "design the API", "how should this work". Skip for one-liners and typo fixes.
+description: Design principles for non-trivial software design work. Covers deep modules, small interfaces, making illegal states unrepresentable, fail fast at boundaries, exploring alternatives before implementing, coupling and cohesion, compression-oriented design, and pre-implementation questions. Use when designing new components, refactoring existing systems, adding abstractions, or planning API surfaces.
 ---
 
 ## Deep Modules

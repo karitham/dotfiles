@@ -1,6 +1,6 @@
 ---
 name: mermaid-diagram-writing
-description: Load when writing ANY Mermaid diagram. Triggers: "sequence diagram", "flowchart", "visualize the flow", "draw the architecture", "show me how X works", "diagram", "mermaid".
+description: Guidelines for creating clear, readable Mermaid diagrams. Covers minimal styling, preferring many small focused diagrams over one large diagram, participant naming, structured flow control with alt/else/loop/opt, consistent message patterns, and common patterns for API endpoints and error handling. Use when creating sequence diagrams, flowcharts, architecture diagrams, or any visual representation of system behavior.
 ---
 
 # Mermaid Diagram Writing

@@ -1,6 +1,6 @@
 ---
 name: decision-framework
-description: Load BEFORE implementing when you need to explore alternatives, surface blind spots, or produce a decision document. Triggers: "help me decide", "what are the options", "tradeoffs", "RFC", "design doc", "before I build this", "not sure which approach".
+description: Structured thinking process for exploring alternatives before committing to an implementation. Covers probing the real problem vs symptoms, surfacing multiple alternatives, finding blind spots like dependencies and failure modes, making tradeoffs visible, and producing a concise decision document. Use when facing architectural choices, evaluating multiple approaches, writing RFCs or design docs, or when unsure which direction to take.
 ---
 
 ## Your Role

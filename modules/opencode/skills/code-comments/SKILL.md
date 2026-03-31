@@ -1,6 +1,6 @@
 ---
 name: code-comments
-description: Guide writing high-quality code comments following Ousterhout's principles. Use when writing, reviewing, or improving comments in code. Triggers: "add comments", "how should I comment", "comment this code", "review comments"
+description: Guide writing high-quality code comments following Ousterhout's principles. Covers what comments are for (capturing information code cannot express), what to comment (why decisions were made, units, ranges, invariants, edge cases), interface vs implementation comments, and comment-driven development where interface comments are written before implementation. Use when adding comments to code, reviewing existing comments, improving documentation quality, or establishing commenting conventions.
 ---
 
 ## What comments are for

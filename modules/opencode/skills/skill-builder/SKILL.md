@@ -1,6 +1,6 @@
 ---
 name: skill-builder
-description: Load when creating new opencode agents or skills. Provides naming conventions, structure requirements, frontmatter formats, and validation checklist.
+description: Complete guide for creating new opencode skills and agents. Covers naming conventions, description requirements, directory structure for global and project-local skills, frontmatter formats with permission settings, content guidelines including line limits and RFC 2119 language, and a validation checklist. Use when building a new skill, creating a new agent, or setting up skill/agent directories.
 ---
 
 ## Naming Conventions

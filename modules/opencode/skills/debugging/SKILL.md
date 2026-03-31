@@ -1,6 +1,6 @@
 ---
 name: debugging
-description: Load when debugging failures, errors, crashes, or unexpected behavior. Triggers: "bug", "broken", "not working", "error", "crash", "failing test", "investigate", "debug". Emphasizes empirical investigation over code reasoning.
+description: Systematic debugging protocol emphasizing empirical investigation over code reasoning. Covers the observe-hypothesize-experiment-narrow loop, establishing failure conditions, gathering evidence from logs and git history, forming specific testable hypotheses, designing experiments that distinguish between alternatives, and fixing with minimal changes. Use when investigating crashes, test failures, unexpected behavior, or any situation where the system is not doing what it should.
 ---
 
 # Debugging Protocol
