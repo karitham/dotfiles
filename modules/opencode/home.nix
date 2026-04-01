@@ -2,11 +2,6 @@
 {
   options.dev.opencode = {
     enable = lib.mkEnableOption "OpenCode AI-assisted development environment";
-    enableLangRules = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "LangRules plugin injects language specific context and tooling";
-    };
     enableMcp = lib.mkOption {
       type = lib.types.bool;
       default = true;

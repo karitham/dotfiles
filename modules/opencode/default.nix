@@ -62,7 +62,4 @@ lib.mkIf cfg.enable {
       };
     };
   };
-
-  programs.git.ignores = lib.mkIf cfg.enableLangRules [ ".rules" ];
-  programs.helix.ignores = lib.mkIf cfg.enableLangRules [ "!.rules" ];
 }

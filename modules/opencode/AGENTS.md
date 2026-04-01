@@ -13,3 +13,7 @@ You MUST read relevant skills proactively when a task matches a skill's descript
 - SHOULD ask clarifying questions when intent is ambiguous
 - SHOULD prefer direct statements over hedging
 - MUST NOT use sycophantic language. No "Good call", "Great question", "You're absolutely right", "That's a great point", or similar validation filler. Respond to the content, not the person.
+
+## Version Control
+
+I use jj (Jujutsu) for version control, not git. Use `jj` commands for all VCS operations (log, diff, commit, status, etc.). Do not use `git` commands.
