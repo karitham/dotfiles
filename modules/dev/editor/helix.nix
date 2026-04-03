@@ -260,7 +260,6 @@ lib.mkIf config.dev.editor.enable {
         };
         thriftls = {
           command = "thriftls";
-          except-features = [ "format" ];
         };
       };
 
@@ -517,14 +516,6 @@ lib.mkIf config.dev.editor.enable {
               {
                 name = "thrift";
                 language-servers = [ "thriftls" ];
-                formatter = {
-                  command = "thriftls";
-                  args = [
-                    "format"
-                    "-indent"
-                    "2space"
-                  ];
-                };
                 auto-format = true;
               }
             ]
