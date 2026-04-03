@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  self',
   ...
 }:
 let
@@ -37,6 +38,56 @@ lib.mkIf cfg.enable {
     settings = {
       inherit (cfg) theme;
       default_agent = "orchestrator";
+      formatter = {
+        nixfmt = {
+          command = [
+            "nixfmt"
+            "-s"
+            "-w"
+            "120"
+            "$FILE"
+          ];
+          extensions = [ ".nix" ];
+        };
+        gofmt = {
+          disabled = true;
+        };
+        goimports = {
+          command = [
+            "goimports"
+            "-w"
+            "$FILE"
+          ];
+          extensions = [ ".go" ];
+        };
+        sql-formatter = {
+          command = [
+            "sql-formatter"
+            "-c"
+            (builtins.toJSON {
+              keywordCase = "upper";
+              functionCase = "upper";
+              dataTypeCase = "upper";
+              identifierCase = "lower";
+              language = "postgresql";
+              expressionWidth = 80;
+              tabWidth = 2;
+            })
+            "$FILE"
+          ];
+          extensions = [ ".sql" ];
+        };
+        topiary-nu = {
+          command = [
+            "${lib.getExe self'.packages.topiary-nu}"
+            "format"
+            "--language"
+            "nu"
+            "$FILE"
+          ];
+          extensions = [ ".nu" ];
+        };
+      };
       permission = {
         todoread = "deny";
         todowrite = "deny";
