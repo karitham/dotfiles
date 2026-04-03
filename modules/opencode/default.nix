@@ -31,11 +31,15 @@ lib.mkIf cfg.enable {
 
   xdg.configFile."opencode/AGENTS.md".source = ./AGENTS.md;
 
+  # Notifier config omitted — plugin uses all defaults.
+  # If customization is needed, add xdg.configFile."opencode/opencode-notifier.json".text = builtins.toJSON { ... };
+
   programs.opencode = {
     enable = true;
     package = opencodePkg;
     enableMcpIntegration = cfg.enableMcp;
     settings = {
+      plugin = [ "@mohak34/opencode-notifier@latest" ];
       inherit (cfg) theme;
       default_agent = "orchestrator";
       formatter = {
