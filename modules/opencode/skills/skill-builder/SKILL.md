@@ -20,33 +20,33 @@ You are creating a skill or agent for opencode. A skill is a folder containing a
 - File MUST be named exactly `SKILL.md` (case-sensitive)
 - Folder MUST use kebab-case: lowercase, hyphens only, no spaces/capitals/underscores
 - MUST NOT include a README.md inside skill folders, because SKILL.md is the single entrypoint and a README creates ambiguity about which file is authoritative
-- Skills live at `~/.config/opencode/skills/<name>/` (global) or `.opencode/skills/<name>/` (project-local)
 
 ## 2. Frontmatter Reference
 
 ```yaml
 ---
-name: my-skill              # required
-description: ...            # required
-license: MIT                # optional
-compatibility: ...          # optional
-metadata:                   # optional
+name: my-skill # required
+description: ... # required
+license: MIT # optional
+compatibility: ... # optional
+metadata: # optional
   author: jane
   version: "1.0"
-allowed-tools: Bash Read    # optional, space-delimited
+allowed-tools: Bash Read # optional, space-delimited
 ---
 ```
 
-| Field | Constraints |
-|---|---|
-| `name` | 1-64 chars. Lowercase alphanumeric + hyphens. No leading/trailing/consecutive hyphens. MUST match folder name. |
-| `description` | 1-1024 chars. No XML angle brackets. See §3. |
-| `license` | Short license identifier (e.g., MIT, Apache-2.0). |
-| `compatibility` | 1-500 chars. Environment requirements (OS, runtime, tools). |
-| `metadata` | Key-value string map. |
-| `allowed-tools` | Space-delimited tool names pre-approved for this skill. |
+| Field           | Constraints                                                                                                    |
+| --------------- | -------------------------------------------------------------------------------------------------------------- |
+| `name`          | 1-64 chars. Lowercase alphanumeric + hyphens. No leading/trailing/consecutive hyphens. MUST match folder name. |
+| `description`   | 1-1024 chars. No XML angle brackets. See §3.                                                                   |
+| `license`       | Short license identifier (e.g., MIT, Apache-2.0).                                                              |
+| `compatibility` | 1-500 chars. Environment requirements (OS, runtime, tools).                                                    |
+| `metadata`      | Key-value string map.                                                                                          |
+| `allowed-tools` | Space-delimited tool names pre-approved for this skill.                                                        |
 
 Security constraints:
+
 - MUST NOT use XML angle brackets (`<` `>`) in any frontmatter value, because frontmatter is injected into XML-structured system prompts and unescaped brackets break parsing
 - `name` MUST NOT contain "claude" or "anthropic" (reserved)
 
@@ -107,11 +107,11 @@ Ask the agent: _"When would you use the [skill name] skill?"_ If it cannot answe
 
 Skills load in three levels to minimize context cost:
 
-| Level | What loads | When | Budget |
-|---|---|---|---|
-| 1. Frontmatter | `name` + `description` | Always (system prompt) | ~100 tokens per skill |
-| 2. SKILL.md body | Core instructions | Agent triggers the skill | Keep under 500 lines |
-| 3. Linked files | references/, scripts/, assets/ | Agent reads explicitly | No cost until accessed |
+| Level            | What loads                     | When                     | Budget                 |
+| ---------------- | ------------------------------ | ------------------------ | ---------------------- |
+| 1. Frontmatter   | `name` + `description`         | Always (system prompt)   | ~100 tokens per skill  |
+| 2. SKILL.md body | Core instructions              | Agent triggers the skill | Keep under 500 lines   |
+| 3. Linked files  | references/, scripts/, assets/ | Agent reads explicitly   | No cost until accessed |
 
 Practical guidance:
 
@@ -148,9 +148,11 @@ Provide output format templates. Mark required vs. optional sections.
 
 ```markdown
 ## Summary
+
 [required — 1-2 sentences]
 
 ## Details
+
 [optional — supporting context]
 ```
 
@@ -197,7 +199,7 @@ Agents are standalone `.md` files. The filename determines the agent name (`orch
 
 ### Location
 
-- Global: `~/.config/opencode/agents/<name>.md`
+- Global: `~/dotfiles/modules/opencode/agents/<name>.md`
 - Project: `.opencode/agents/<name>.md`
 
 ### Frontmatter
@@ -219,11 +221,11 @@ permission:
 ---
 ```
 
-| Field | Required | Notes |
-|---|---|---|
-| `description` | Yes | Same rules as skill descriptions (§3). |
-| `mode` | No | `primary` (top-level) or `subagent` (delegated to). |
-| `permission` | No | Tool permission overrides. Pattern-matched, most specific wins. |
+| Field         | Required | Notes                                                           |
+| ------------- | -------- | --------------------------------------------------------------- |
+| `description` | Yes      | Same rules as skill descriptions (§3).                          |
+| `mode`        | No       | `primary` (top-level) or `subagent` (delegated to).             |
+| `permission`  | No       | Tool permission overrides. Pattern-matched, most specific wins. |
 
 ### Content
 
@@ -233,11 +235,13 @@ Agent body defines role, protocol, and constraints. Keep under 100 lines.
 You are the **Code Reviewer**. You review pull requests for correctness and style.
 
 ## Protocol
+
 1. Read the diff
 2. Check against project conventions
 3. Report issues with file:line references
 
 ## Constraints
+
 - MUST NOT suggest style changes that contradict existing patterns
 - MUST NOT approve without reading every changed file
 ```
@@ -258,11 +262,11 @@ You are the **Code Reviewer**. You review pull requests for correctness and styl
 
 ### Iteration
 
-| Problem | Fix |
-|---|---|
+| Problem          | Fix                                                  |
+| ---------------- | ---------------------------------------------------- |
 | Under-triggering | Add more keywords and trigger phrases to description |
-| Over-triggering | Be more specific, add negative triggers |
-| Wrong output | Add examples, tighten constraints |
+| Over-triggering  | Be more specific, add negative triggers              |
+| Wrong output     | Add examples, tighten constraints                    |
 
 Debug with: _"When would you use the [skill name] skill?"_
 
