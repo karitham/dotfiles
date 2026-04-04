@@ -1,73 +1,62 @@
 ---
 name: software-architecture
-description: Design principles for non-trivial software design work. Covers deep modules, small interfaces, making illegal states unrepresentable, fail fast at boundaries, exploring alternatives before implementing, coupling and cohesion, compression-oriented design, and pre-implementation questions. Use when designing new components, refactoring existing systems, adding abstractions, or planning API surfaces.
+description: >
+  Technical protocol for designing and refactoring non-trivial software. Focuses on the Impure-Pure-Impure sandwich, lifting I/O, and resource-aware orchestration. Use when the user asks to "design a component," "structure code," "refactor a service," or "handle side effects." Keywords: functional core, imperative shell, dependency rejection, deep modules, short-circuiting.
 ---
 
-## Deep Modules
+# Software Architecture Protocol
 
-Hide complexity behind simple interfaces. A module's value is what it hides, not what it exposes.
+This skill provides a systematic framework for managing complexity and side effects in software systems.
 
-- Interface SHOULD be smaller than implementation
-- Users SHOULD NOT need to understand internals
-- If callers MUST understand your code to use it, the abstraction has failed
-- SHOULD prefer few powerful primitives over many specific ones
+## 1. The "Impure-Pure-Impure" Sandwich Pattern
 
-## Small Interfaces
+All non-trivial operations MUST follow this sequential workflow to isolate side effects from business logic.
 
-Minimize surface area. Every public thing is a commitment.
+### Workflow
 
-- Fewer parameters, fewer methods, fewer exports
-- What isn't exposed can be changed freely
-- When in doubt, hide it
-- MUST seal internal details: unexported types, private fields, package-internal functions
+1.  **Gather (Impure Boundary):** Fetch all external state required for the decision.
+    - _Examples:_ DB queries, API calls, reading system time, generating UUIDs.
+2.  **Process (Functional Core):** Pass the gathered data into a pure function.
+    - _Constraint:_ This function MUST be deterministic. It MUST NOT perform I/O or access global state. It MUST return data or a "Result" struct.
+3.  **Commit (Impure Boundary):** Persist the output of the Functional Core.
+    - _Examples:_ DB writes, sending HTTP responses, logging.
 
-## Make Illegal States Unrepresentable
+## 2. Resource-Aware Orchestration
 
-Parse, don't validate. Transform input into types that guarantee invariants.
+Operations MUST be ordered to minimize the surface area of high-latency or locking operations.
 
-- If a value exists, it's valid—no downstream checks needed
-- SHOULD use sum types, newtypes, and enums to constrain possible values
-- Bad states SHOULD be compiler errors, not runtime bugs
-- Example: `PositiveInt` not `int` with a check; `Pending | Approved | Rejected` not `string status`
+- **Short-Circuiting:** Cheap local checks (logic/time guards) MUST occur before expensive remote checks (Network/API).
+- **Lock Minimization:** Database transactions (`WithTx`) SHOULD only wrap the final "Commit" phase.
+- **Dependency Rejection:** Business logic SHOULD accept raw data structures (e.g., `[]int`) rather than behavioral interfaces (e.g., `UserStore`) to avoid unnecessary "Interface Soup."
 
-## Fail Fast at Boundaries
+## 3. Structural Standards
 
-Validate at system edges, assume valid inside.
+### Module Depth (Ousterhout's Principle)
 
-- MUST reject bad input immediately with clear errors
-- MUST NOT propagate garbage deeper into the system
-- Boundaries: API handlers, CLI args, file parsers, external service responses
-- Once past the boundary, code can trust the data
+- Modules MUST be "Deep": simple interfaces hiding significant internal complexity.
+- If an interface is as complex as its implementation, the abstraction SHOULD be removed (Compression-Oriented Design).
 
-## Design It Twice
+### State Integrity (Parse, Don't Validate)
 
-Before implementing, explore at least two approaches.
+- Invariants MUST be enforced via the type system (e.g., `NewUserID(string)` vs a raw `string`).
+- Invalid states SHOULD be unrepresentable. Use Enums/Sum types instead of multiple dependent Booleans.
 
-- First idea is rarely the best—bias toward familiar patterns
-- Sketch alternatives, compare tradeoffs
-- Consider: complexity, performance, extensibility, testability
-- Pick the simplest one that solves the real problem
+## 4. Feedback Loop: Refactoring Pattern
 
-## Coupling & Cohesion
+When refactoring existing code to this standard:
 
-- High cohesion: things that change together, stay together
-- Low coupling: modules MUST NOT know about each other's internals
-- MUST avoid circular dependencies
-- One responsibility per module—if you can't summarize it in one sentence, split it
+1.  **Identify Side Effects:** Find all hidden I/O (e.g., `time.Now()`, `db.Get`).
+2.  **Lift I/O:** Move those calls to the caller or the entry point of the function.
+3.  **Purify:** Convert the remaining logic into a pure function that accepts the lifted data as parameters.
+4.  **Verify:** The core logic MUST be unit-testable without a mocking framework.
 
-## Compression-Oriented Design
+---
 
-Write the direct solution first without abstracting. After the code exists, look for repeated _shapes_ of logic.
+## Validation Checklist
 
-- An abstraction is only valid if it reduces total code
-- Do not recognize a pattern from elsewhere and apply it to the current problem
-- Interfaces SHOULD be general-purpose rather than special-purpose—but do not design general-purpose interfaces upfront
-
-## Before You Code
-
-1. What changes and what stays the same? Put them in different places.
-2. What's the simplest interface that covers the use case?
-3. What can go wrong? How does the system recover?
-4. How would you test this?
-5. Will this be testable?
-6. What will be hard to change later? Make that explicit.
+- [ ] **Sandwich:** Is there a clear line where I/O ends and logic begins?
+- [ ] **Purity:** Does any business logic function take a `Context` or an interface that performs I/O? (It shouldn't).
+- [ ] **Ordering:** Are network calls happening inside a database transaction? (They shouldn't).
+- [ ] **Guard Clauses:** Is the code calling an external API before checking simple local requirements?
+- [ ] **Types:** Are we using primitives where a domain-specific type could prevent a bug?
+- [ ] **Mocks:** Can this logic be tested with simple value assertions?
