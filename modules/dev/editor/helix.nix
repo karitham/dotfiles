@@ -14,7 +14,7 @@ let
     gotools
     gopls
     sql-formatter
-    nodePackages.prettier
+    prettier
   ];
 in
 lib.mkIf config.dev.editor.enable {
@@ -29,7 +29,7 @@ lib.mkIf config.dev.editor.enable {
         golangci-lint-langserver
         nixd
         marksman
-        nodePackages.typescript-language-server
+        typescript-language-server
         vscode-langservers-extracted
         yaml-language-server
         typos-lsp
