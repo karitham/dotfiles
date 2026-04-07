@@ -86,29 +86,47 @@
           }
         ];
 
-        outputs = {
-          eDP-1 = {
-            # defaults for kiwi
-            mode = {
-              width = 1920;
-              height = 1200;
-            };
-            position = {
-              x = 0;
-              y = 0;
-            };
-          };
-          HDMI-A-1 = {
-            mode = {
+        outputs =
+          let
+            lg = {
               width = 2560;
               height = 1440;
             };
-            position = {
-              x = config.programs.niri.settings.outputs.eDP-1.mode.width;
-              y = 0;
+            benq = {
+              width = 2560;
+              height = 1440;
+            };
+            edp = {
+              width = 1920;
+              height = 1200;
+            };
+          in
+          {
+            "LG Electronics LG ULTRAGEAR 511NTCZHB395" = {
+              mode = lg;
+              transform = {
+                rotation = 90;
+              };
+              position = {
+                x = 0;
+                y = 0;
+              };
+            };
+            "PNP(BNQ) BenQ EX2710R ETF9M01632SL0" = {
+              mode = benq;
+              position = {
+                x = lg.height;
+                y = 0;
+              };
+            };
+            eDP-1 = {
+              mode = edp;
+              position = {
+                x = lg.height;
+                y = benq.height;
+              };
             };
           };
-        };
 
         binds =
           with config.lib.niri.actions;
