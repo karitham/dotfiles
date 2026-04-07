@@ -4,7 +4,7 @@ mode: primary
 permission:
   edit: deny
   bash:
-    "*": allow
+    "*": deny
   task:
     "code-designer": allow
     "code-implementer": allow
