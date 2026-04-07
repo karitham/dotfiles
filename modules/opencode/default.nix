@@ -97,6 +97,7 @@ lib.mkIf cfg.enable {
         todowrite = "deny";
         external_directory = {
           "~/*" = "allow"; # yolo.
+          "/tmp/*" = "allow";
         };
       };
       mcp = lib.mkIf cfg.enableMcp {

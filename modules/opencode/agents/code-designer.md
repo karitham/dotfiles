@@ -3,6 +3,7 @@ description: Produces design documents from task descriptions. Use for API/modul
 mode: subagent
 permission:
   edit: deny
+  write: allow # may want to write documents, just let it.
   bash:
     "*": allow
 ---
