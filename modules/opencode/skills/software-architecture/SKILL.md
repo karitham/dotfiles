@@ -18,15 +18,13 @@ effects in software systems.
 
 ## 0. Continuous Improvement
 
-The goal of software architecture is to make the code more resilient to change
-over time. You MUST suggest architectural improvements even when you cannot
-implement them directly (e.g., out of scope for the current task, too large a
-change, or outside the current file).
+You SHOULD suggest architectural improvements when they are directly relevant to
+the task at hand. Do not lecture on bounded contexts when asked to fix a typo.
 
-- Flag architectural debt when you see it, even if you are only fixing a bug.
-- Suggest the ideal structure alongside the pragmatic fix.
+- Flag architectural debt when you encounter it during legitimate work
+- Suggest the ideal structure alongside the pragmatic fix
 - Small improvements compound: a single well-placed extraction or boundary is
-  better than waiting for a perfect refactor.
+  better than waiting for a perfect refactor
 
 ## 1. Design Protocol
 
@@ -45,8 +43,8 @@ When approaching any architecture decision, follow this sequence:
 
 ## 2. The Impure-Pure-Impure Sandwich
 
-All non-trivial operations MUST follow this sequential workflow to isolate side
-effects from business logic.
+When an operation mixes I/O with business logic, you MUST follow this sequential
+workflow to isolate side effects from decision-making.
 
 ### Workflow
 
@@ -58,6 +56,61 @@ effects from business logic.
    state. It MUST return data or a Result struct.
 3. **Commit (Impure Boundary):** Persist the output of the Functional Core.
    Examples: DB writes, sending HTTP responses, logging.
+
+### Example
+
+BEFORE — logic mixed with I/O:
+
+    func CreateOrder(db *sql.DB, req OrderRequest) error {
+        user, err := db.GetUser(req.UserID)
+        if err != nil { return err }
+
+        if user.Suspended {
+            return ErrSuspended
+        }
+
+        total := calculateTotal(req.Items)
+        if total > user.CreditLimit {
+            return ErrOverLimit
+        }
+
+        return db.SaveOrder(Order{
+            UserID: user.ID,
+            Items:  req.Items,
+            Total:  total,
+        })
+    }
+
+AFTER — sandwich applied:
+
+    func CreateOrderHandler(db *sql.DB, req OrderRequest) error {
+        // Gather
+        user, err := db.GetUser(req.UserID)
+        if err != nil { return err }
+
+        // Process (pure)
+        result := ValidateAndBuildOrder(user, req)
+
+        // Commit
+        if result.Err != nil { return result.Err }
+        return db.SaveOrder(result.Order)
+    }
+
+    // Pure function — no I/O, deterministic, testable with simple values
+    func ValidateAndBuildOrder(user User, req OrderRequest) OrderResult {
+        if user.Suspended {
+            return OrderResult{Err: ErrSuspended}
+        }
+        total := calculateTotal(req.Items)
+        if total > user.CreditLimit {
+            return OrderResult{Err: ErrOverLimit}
+        }
+        return OrderResult{Order: Order{
+            UserID: user.ID,
+            Items:  req.Items,
+            Total:  total,
+        }}
+    }
 
 ## 3. Bounded Contexts
 
@@ -85,8 +138,7 @@ other.
 
 ## 5. Event-Driven Patterns
 
-Kleppmann, _DDIA_ / Newman, _Building Microservices_: Events decouple producers
-from consumers in time and space.
+Events decouple producers from consumers in time and space.
 
 - Event sourcing: persist state changes as a sequence of immutable events. The
   current state is a projection of the event log.
@@ -121,21 +173,14 @@ Modules MUST be deep: simple interfaces hiding significant internal complexity.
 If an interface is as complex as its implementation, the abstraction SHOULD be
 removed.
 
+Design the interface first. A module whose interface is hard to describe
+clearly is not deep — it is shallow. Shallow modules add indirection without
+abstraction.
+
 ### State Integrity
 
 Invariants MUST be enforced via the type system. Invalid states SHOULD be
 unrepresentable.
-
-### Compression-Oriented Design
-
-Do not abstract prematurely. Extract a shared abstraction only after the second
-use case appears and the commonality is clear.
-
-### Database Per Service
-
-Newman, _Building Microservices_: Each service owns its data. No other service
-MUST access another service's database directly. Data sharing happens through
-APIs or events.
 
 ### API Backward Compatibility
 
@@ -145,7 +190,7 @@ immediate breaking change.
 
 ### Resilience Patterns
 
-Kleppmann, _DDIA_: Services fail. The system must survive.
+Services fail. The system must survive.
 
 - Circuit breaker: stop calling a failing service after repeated failures.
 - Retry with backoff: transient failures are normal, but retry storms are not.

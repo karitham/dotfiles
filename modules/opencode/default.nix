@@ -54,7 +54,7 @@ lib.mkIf cfg.enable {
     settings = {
       plugin = [ "@mohak34/opencode-notifier@latest" ];
       inherit (cfg) theme;
-      default_agent = "generic";
+      default_agent = "orchestrator";
       formatter = {
         nixfmt = {
           command = [

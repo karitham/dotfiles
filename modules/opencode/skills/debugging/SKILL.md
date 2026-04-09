@@ -1,6 +1,6 @@
 ---
 name: debugging
-description: Systematic debugging protocol emphasizing empirical investigation over code reasoning. Covers the observe-hypothesize-experiment-narrow loop, establishing failure conditions, gathering evidence from logs and git history, forming specific testable hypotheses, designing experiments that distinguish between alternatives, and fixing with minimal changes. Use when investigating crashes, test failures, unexpected behavior, or any situation where the system is not doing what it should.
+description: Systematic debugging protocol emphasizing empirical investigation over code reasoning. Covers the observe-hypothesize-experiment-narrow loop, establishing failure conditions, gathering evidence from logs and VCS history, forming specific testable hypotheses, and designing experiments that distinguish between alternatives. Use when investigating crashes, test failures, unexpected behavior, or any situation where the system is not doing what it should.
 ---
 
 # Debugging Protocol
@@ -42,7 +42,7 @@ Collect information empirically. You SHOULD do as many of these as your environm
 
 - Run the failing test, command, or program. Capture full output including stderr.
 - Check version information: language runtime, dependencies, OS, tool versions.
-- Look at recent changes: `git log`, `git diff`, recent file modifications.
+- Look at recent changes: `jj log`, `jj diff`, recent file modifications.
 - Check environment variables, configuration files, feature flags.
 - Inspect actual data: file contents, database state, network responses, API outputs.
 
@@ -95,15 +95,6 @@ Some experiments require production access, credentials, specific hardware, runn
 4. You SHOULD NOT say "try running the tests." You SHOULD say: run `go test -v -run TestFoo ./pkg/bar/ 2>&1` and paste the full output.
 
 Be specific about what you need. The user is your hands when you cannot use your own.
-
-## Phase 4: Fix and Verify
-
-Once you have identified the root cause:
-
-- Make the smallest change that fixes the problem.
-- You MUST verify the fix by running the failing test or reproduction case.
-- You SHOULD check that you have not introduced regressions. Run the broader test suite if available.
-- If the fix is complex, consider whether a simpler fix addresses the root cause rather than the symptom.
 
 ## Common Anti-patterns
 
