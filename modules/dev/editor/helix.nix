@@ -49,7 +49,7 @@ lib.mkIf config.dev.editor.enable {
         let
           plusMenu = {
             g = ''
-              :sh ${./copy-remote-path.nu} "%{file_path_absolute}" --line-start "%{selection_line_start}" --line-end "%{selection_line_end}"
+              :sh ${./copy-remote-path.nu} "%{buffer_name}" --line-start "%{selection_line_start}" --line-end "%{selection_line_end}"
             '';
             b = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}";
             p = ":sh echo %{buffer_name} | ${pkgs.wl-clipboard}/bin/wl-copy";
@@ -72,7 +72,7 @@ lib.mkIf config.dev.editor.enable {
           };
           runMenu = {
             f = [
-              ":sh golangci-lint run --issues-exit-code=0 --fix %{buffer_name}"
+              ":sh golangci-lint run --issues-exit-code=0 --fix --new-from-rev HEAD"
               ":reload"
             ];
           };

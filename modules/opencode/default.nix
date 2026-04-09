@@ -16,16 +16,29 @@ let
     '';
   };
 
+  mergedSkills = pkgs.runCommand "strands-sops-skills-merged" { } ''
+    mkdir $out
+    cp -r ${self'.packages.strands-sops-skills}/* $out/
+    cp -r ${./skills}/* $out/
+  '';
+
   cfg = config.dev.opencode;
 in
 lib.mkIf cfg.enable {
+  home.packages = [ self'.packages.strands-agents-sops ];
+
   xdg.configFile."opencode/agents" = {
     source = ./agents;
     recursive = true;
   };
 
   xdg.configFile."opencode/skills" = {
-    source = ./skills;
+    source = mergedSkills;
+    recursive = true;
+  };
+
+  xdg.configFile."opencode/commands" = {
+    source = self'.packages.strands-sops-commands;
     recursive = true;
   };
 

@@ -14,7 +14,12 @@
   imports = [ ../systems/default.nix ];
 
   perSystem =
-    { pkgs, ... }:
+    {
+      pkgs,
+      lib,
+      self',
+      ...
+    }:
     {
       packages = {
         pokego = pkgs.callPackage ./pkgs/pokego.nix { };
@@ -24,6 +29,21 @@
         multi-scrobbler = pkgs.callPackage ./pkgs/multi-scrobbler.nix { };
 
         wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
+
+        strands-agents-sops = pkgs.callPackage ./pkgs/strands-agents-sops.nix { };
+
+        strands-sops-skills = pkgs.runCommand "strands-sops-skills" { } ''
+          mkdir $out
+          ${lib.getExe self'.packages.strands-agents-sops} skills --output-dir $out
+        '';
+
+        strands-sops-commands = pkgs.runCommand "strands-sops-commands" { } ''
+          mkdir $out
+          ${lib.getExe self'.packages.strands-agents-sops} commands --type cursor --output-dir $out
+          for f in $out/*.sop.md; do
+            [ -f "$f" ] && mv "$f" "''${f%.sop.md}.md"
+          done
+        '';
       };
       checks = {
         pds-simple = pkgs.callPackage ./pds/pds-recovery-simple.nix { inherit (inputs) nixpkgs; };
