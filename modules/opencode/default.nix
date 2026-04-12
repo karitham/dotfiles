@@ -7,12 +7,30 @@
 }:
 let
   opencodePkg = pkgs.symlinkJoin {
-    name = "opencode.wrapped";
+    name = "opencode-wrapped";
     paths = [ pkgs.opencode ];
-    buildInputs = [ pkgs.makeWrapper ];
+
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+
     postBuild = ''
       wrapProgram $out/bin/opencode \
-        --set SHELL ${lib.getExe pkgs.bash}
+        --set OPENCODE_EXPERIMENTAL_LSP_TOOL true \
+        --set OPENCODE_DISABLE_LSP_DOWNLOAD true \
+        --set OPENCODE_DISABLE_AUTOUPDATE true \
+        --set OPENCODE_EXPERIMENTAL_MARKDOWN true \
+        --set SHELL "${lib.getExe pkgs.bash}" \
+        --prefix PATH : "${
+          lib.makeBinPath [
+            pkgs.golangci-lint-langserver
+            pkgs.nixd
+            pkgs.marksman
+            pkgs.typescript-language-server
+            pkgs.vscode-langservers-extracted
+            pkgs.yaml-language-server
+            pkgs.typos-lsp
+            pkgs.nil
+          ]
+        }"
     '';
   };
 
@@ -52,7 +70,10 @@ lib.mkIf cfg.enable {
     package = opencodePkg;
     enableMcpIntegration = cfg.enableMcp;
     settings = {
-      plugin = [ "@mohak34/opencode-notifier@latest" ];
+      plugin = [ "@mohak34/opencode-notifier@0.2.2" ];
+      experimental = {
+        batch_tool = true;
+      };
       inherit (cfg) theme;
       default_agent = "orchestrator";
       formatter = {
@@ -114,14 +135,6 @@ lib.mkIf cfg.enable {
         };
       };
       mcp = lib.mkIf cfg.enableMcp {
-        gopls = {
-          type = "local";
-          enabled = true;
-          command = [
-            "gopls"
-            "mcp"
-          ];
-        };
         github = {
           type = "remote";
           url = "https://api.githubcopilot.com/mcp/";
