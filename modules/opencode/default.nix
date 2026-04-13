@@ -34,12 +34,6 @@ let
     '';
   };
 
-  mergedSkills = pkgs.runCommand "strands-sops-skills-merged" { } ''
-    mkdir $out
-    cp -r ${self'.packages.strands-sops-skills}/* $out/
-    cp -r ${./skills}/* $out/
-  '';
-
   cfg = config.dev.opencode;
 in
 lib.mkIf cfg.enable {
@@ -51,12 +45,24 @@ lib.mkIf cfg.enable {
   };
 
   xdg.configFile."opencode/skills" = {
-    source = mergedSkills;
+    source = pkgs.symlinkJoin {
+      name = "opencode-skills";
+      paths = [
+        self'.packages.strands-sops-skills
+        ./skills
+      ];
+    };
     recursive = true;
   };
 
   xdg.configFile."opencode/commands" = {
-    source = self'.packages.strands-sops-commands;
+    source = pkgs.symlinkJoin {
+      name = "opencode-commands";
+      paths = [
+        self'.packages.strands-sops-commands
+        ./commands
+      ];
+    };
     recursive = true;
   };
 
