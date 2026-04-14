@@ -36,14 +36,6 @@
           mkdir $out
           ${lib.getExe self'.packages.strands-agents-sops} skills --output-dir $out
         '';
-
-        strands-sops-commands = pkgs.runCommand "strands-sops-commands" { } ''
-          mkdir $out
-          ${lib.getExe self'.packages.strands-agents-sops} commands --type cursor --output-dir $out
-          for f in $out/*.sop.md; do
-            [ -f "$f" ] && mv "$f" "''${f%.sop.md}.md"
-          done
-        '';
       };
       checks = {
         pds-simple = pkgs.callPackage ./pds/pds-recovery-simple.nix { inherit (inputs) nixpkgs; };

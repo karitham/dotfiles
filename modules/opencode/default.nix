@@ -58,10 +58,7 @@ lib.mkIf cfg.enable {
   xdg.configFile."opencode/commands" = {
     source = pkgs.symlinkJoin {
       name = "opencode-commands";
-      paths = [
-        self'.packages.strands-sops-commands
-        ./commands
-      ];
+      paths = [ ./commands ];
     };
     recursive = true;
   };
