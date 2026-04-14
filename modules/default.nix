@@ -37,10 +37,6 @@
           ${lib.getExe self'.packages.strands-agents-sops} skills --output-dir $out
         '';
       };
-      checks = {
-        pds-simple = pkgs.callPackage ./pds/pds-recovery-simple.nix { inherit (inputs) nixpkgs; };
-        pds-full = pkgs.callPackage ./pds/pds-recovery-full.nix { inherit (inputs) nixpkgs; };
-      };
       formatter = pkgs.nixfmt;
       devShells.default = pkgs.mkShell { packages = with pkgs; [ sops ]; };
     };
@@ -89,7 +85,6 @@
         dev = import ./dev/nixos.nix;
         desktop = import ./desktop/nixos.nix;
         multi-scrobbler = import ./services/multi-scrobbler.nix;
-        pds = import ./pds/nixos.nix;
       };
     };
 }

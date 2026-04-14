@@ -1,7 +1,12 @@
-{ config, self, ... }:
+{ config, lib, ... }:
+let
+  inherit (lib)
+    mkMerge
+    mkDefault
+    ;
+in
 {
   imports = [
-    self.nixosModules.pds
     ../../modules/services/acme-nginx.nix
   ];
 
@@ -19,13 +24,17 @@
     };
   };
 
-  services.pds-with-backups = {
-    enable = true;
-    secretsFiles = [ config.sops.secrets.pds.path ];
-    settings = {
-      PDS_HOSTNAME = "0xf.fr";
-      PDS_BLOBSTORE_DISK_LOCATION = null;
-    };
+  services.bluesky-pds = {
+    enable = mkDefault true;
+    environmentFiles = [ config.sops.secrets.pds.path ];
+    settings = mkMerge [
+      {
+        PDS_SQLITE_DISABLE_WAL_AUTO_CHECKPOINT = "true";
+        PDS_DATA_DIRECTORY = "/var/lib/pds";
+        PDS_HOSTNAME = "0xf.fr";
+        PDS_BLOBSTORE_DISK_LOCATION = null;
+      }
+    ];
   };
 
   services.acme-nginx = {
