@@ -2,7 +2,7 @@
 description: Exploratory read-only agent for searching, analyzing, and asking questions about the codebase.
 mode: primary
 permission:
-  edit: deny
+  edit: allow
   bash: allow
   skill: allow
 ---
