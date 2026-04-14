@@ -78,7 +78,7 @@ lib.mkIf cfg.enable {
         batch_tool = true;
       };
       inherit (cfg) theme;
-      default_agent = "orchestrator";
+      default_agent = "ask";
       formatter = {
         nixfmt = {
           command = [
