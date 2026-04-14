@@ -108,6 +108,11 @@ lib.mkIf config.dev.editor.enable {
         color-modes = true;
         auto-format = true;
         auto-save = true;
+
+        jump-label-alphabet = "jklfdsauiohnmretcgwvpyqxbz";
+        file-picker.hidden = false;
+        smart-tab.enable = false;
+
         lsp = {
           snippets = true;
           display-color-swatches = true;
