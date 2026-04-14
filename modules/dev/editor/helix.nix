@@ -221,6 +221,29 @@ lib.mkIf config.dev.editor.enable {
           command = "rubocop";
           args = [ "--lsp" ];
         };
+        tinymist = {
+          command = "tinymist";
+          config = {
+            formatterMode = "typstyle";
+            formatterProseWrap = true;
+            formatterPrintWidth = 120;
+            formatterIndentSize = 4;
+            lint = {
+              enabled = true;
+            };
+            preview = {
+              background.args = [
+                "--data-plane-host=127.0.0.1:23635"
+                "--invert-colors=never"
+              ];
+              browsing.args = [
+                "--data-plane-host=127.0.0.1:0"
+                "--invert-colors=never"
+                "--open"
+              ];
+            };
+          };
+        };
         ruby-lsp = {
           command = "ruby-lsp";
           config = {
@@ -459,6 +482,7 @@ lib.mkIf config.dev.editor.enable {
               {
                 name = "typst";
                 language-servers = [ "tinymist" ];
+                auto-format = true;
               }
               {
                 name = "markdown";
