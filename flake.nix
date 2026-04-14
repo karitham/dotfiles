@@ -26,9 +26,12 @@
       repo = "nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # helix = {
-    #   url = "github:helix-editor/helix";
-    # };
+    helix = {
+      url = "github:mattwparas/helix/steel-event-system";
+    };
+    helix-plugins = {
+      url = "github:karitham/helix-plugins/b544922ff2fc55c7bd80ae90f9409b0e8a9aac5c";
+    };
     ghostty = {
       url = "github:ghostty-org/ghostty";
     };

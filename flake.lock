@@ -147,6 +147,42 @@
         "type": "github"
       }
     },
+    "helix": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2",
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1775225367,
+        "narHash": "sha256-SYie7U6/Iv+ZDiUIaISToWfGko6VqIjuE5PVOiMUutc=",
+        "owner": "mattwparas",
+        "repo": "helix",
+        "rev": "9738d1fd84eff3fb48e29637bf28826ea64a655b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mattwparas",
+        "ref": "steel-event-system",
+        "repo": "helix",
+        "type": "github"
+      }
+    },
+    "helix-plugins": {
+      "locked": {
+        "lastModified": 1776198859,
+        "narHash": "sha256-gE9orcqHU/Jngtfa7kCUjn83hypWpsroVYTTfTWL1cE=",
+        "owner": "karitham",
+        "repo": "helix-plugins",
+        "rev": "b544922ff2fc55c7bd80ae90f9409b0e8a9aac5c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "karitham",
+        "repo": "helix-plugins",
+        "rev": "b544922ff2fc55c7bd80ae90f9409b0e8a9aac5c",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -215,7 +251,7 @@
           "nixpkgs"
         ],
         "pre-commit": "pre-commit",
-        "rust-overlay": "rust-overlay"
+        "rust-overlay": "rust-overlay_2"
       },
       "locked": {
         "lastModified": 1775866084,
@@ -235,7 +271,7 @@
       "inputs": {
         "niri-stable": "niri-stable",
         "niri-unstable": "niri-unstable",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs_3",
         "nixpkgs-stable": "nixpkgs-stable",
         "xwayland-satellite-stable": "xwayland-satellite-stable",
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
@@ -340,6 +376,22 @@
     },
     "nixpkgs_2": {
       "locked": {
+        "lastModified": 1770841267,
+        "narHash": "sha256-9xejG0KoqsoKEGp2kVbXRlEYtFFcDTHjidiuX8hGO44=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "ec7c70d12ce2fc37cb92aff673dcdca89d187bae",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_3": {
+      "locked": {
         "lastModified": 1775710090,
         "narHash": "sha256-ar3rofg+awPB8QXDaFJhJ2jJhu+KqN/PRCXeyuXR76E=",
         "owner": "NixOS",
@@ -354,7 +406,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_3": {
+    "nixpkgs_4": {
       "locked": {
         "lastModified": 1775888245,
         "narHash": "sha256-qTVvODr6edFBLD2lncXPF8yTQeCafZUuKVtpV3Xb3yM=",
@@ -440,18 +492,41 @@
         "easy-hosts": "easy-hosts",
         "flake-parts": "flake-parts",
         "ghostty": "ghostty",
+        "helix": "helix",
+        "helix-plugins": "helix-plugins",
         "home-manager": "home-manager_2",
         "knixpkgs": "knixpkgs",
         "lanzaboote": "lanzaboote",
         "niri": "niri",
         "nixos-wsl": "nixos-wsl",
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs": "nixpkgs_4",
         "noctalia": "noctalia",
         "sops-nix": "sops-nix",
         "ssh-keys": "ssh-keys"
       }
     },
     "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "helix",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1770952264,
+        "narHash": "sha256-CjymNrJZWBtpavyuTkfPVPaZkwzIzGaf0E/3WgcwM14=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "ec6a3d5cdf14bb5a1dd03652bd3f6351004d2188",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "rust-overlay_2": {
       "inputs": {
         "nixpkgs": [
           "lanzaboote",

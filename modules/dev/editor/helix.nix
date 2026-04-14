@@ -1,7 +1,8 @@
 {
   lib,
   pkgs,
-  # inputs',
+  inputs,
+  inputs',
   self',
   config,
   ...
@@ -19,10 +20,22 @@ let
 in
 lib.mkIf config.dev.editor.enable {
   home.packages = global-tools;
+
+  xdg.configFile."helix/init.scm".text = ''
+    (require "plugins.scm")
+  '';
+
   programs.helix = {
     enable = true;
     defaultEditor = true;
-    # package = inputs'.helix.packages.default;
+
+    package = inputs'.helix.packages.helix.overrideAttrs {
+      pname = "helix-steel";
+      cargoBuildFeatures = [ "steel" ];
+    };
+
+    plugins = with inputs.helix-plugins.plugins; [ fake-warp ];
+
     extraPackages =
       with pkgs;
       [
