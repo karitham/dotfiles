@@ -1,208 +1,321 @@
 ---
 name: skill-builder
-description: Guide for creating opencode skills and agents. Covers skill directory structure, SKILL.md frontmatter format, writing effective descriptions with trigger phrases, progressive disclosure across three loading levels, content patterns (templates, workflows, feedback loops), agent file format with permissions, testing strategies, and a validation checklist. Use when building a new skill, creating a new agent, or setting up skill/agent directories.
+description: >
+  SOP for creating opencode skills and agents. Walks through the full authoring
+  workflow from requirements gathering through validation. Covers two skill types:
+  SOP skills (step-by-step processes with parameters, constraints, and validation
+  gates) and reference skills (principle-based guides with bad/good examples).
+  Includes frontmatter spec, description writing, progressive disclosure, and
+  agent authoring. Use when building a new skill, creating a new agent, or setting
+  up skill/agent directories.
 ---
 
 # Skill & Agent Authoring
 
-You are creating a skill or agent for opencode. A skill is a folder containing a `SKILL.md` file. An agent is a standalone `.md` file. Both use YAML frontmatter + markdown body.
+## Overview
 
-## 1. Skill Structure
+This SOP guides you through creating a skill or agent for opencode.
+
+**Skill** — a folder containing a `SKILL.md` file, optionally with `scripts/`, `references/`, and `assets/` subdirectories.
+
+**Agent** — a standalone `.md` file with frontmatter.
+
+Most skills SHOULD be SOPs (step-by-step workflows) rather than reference documents. Reference skills are appropriate only for principle-based guidelines where no sequential process exists.
+
+## Parameters
+
+- **purpose** (required): What the skill should do and when it should trigger. Can be rough.
+- **skill_name** (required): Kebab-case name for the skill. MUST be provided or confirmed by user.
+- **skill_type** (optional): `sop` (default) or `reference`. Determines structure.
+- **target_dir** (optional): Where to create the skill. Defaults to best available location.
+
+**Acquisition constraints:**
+
+- MUST ask for all required parameters upfront in a single prompt
+- MUST support: direct text, file path, or existing skill to improve
+- MUST confirm parameters before proceeding
+- If improving an existing skill, MUST read the current skill first and identify specific gaps
+
+## Steps
+
+### 1. Analyze Requirements
+
+Understand what the skill needs to accomplish and when it should trigger.
+
+**Constraints:**
+
+- MUST ask the user about the skill's purpose and trigger conditions before designing
+- MUST identify: who triggers it (user intent), what it produces (output), what it needs (inputs)
+- MUST determine skill type:
+  - **SOP**: sequential process with steps, validation gates, or decision points
+  - **Reference**: independent principles or conventions with no inherent order
+- SHOULD ask about edge cases, common mistakes, and failure modes
+- MUST NOT skip to writing without understanding the full scope
+
+**Decision guidance:**
+
+| Signal | Type |
+|--------|------|
+| "walk me through..." / "process for..." / "steps to..." | SOP |
+| Has sequential phases, each depends on previous | SOP |
+| Needs parameters the user provides at runtime | SOP |
+| "conventions for..." / "principles of..." / "rules when..." | Reference |
+| Independent guidelines, apply in any order | Reference |
+| Pure lookup (naming rules, style guide) | Reference |
+
+### 2. Draft Description
+
+Write the frontmatter description. This is the most important part — it determines whether the skill fires.
+
+**Constraints:**
+
+- MUST follow: `[What it does] + [When to use it] + [Trigger keywords]`
+- MUST be in third person (injected into system prompts as-is)
+- MUST be 1-1024 characters
+- MUST NOT use XML angle brackets
+- SHOULD include negative triggers when domain overlaps with common tasks
+- MUST present to user for review before proceeding
+
+**BAD:**
 
 ```
-<skill-name>/
-├── SKILL.md          # required — the single entrypoint
-├── scripts/          # optional — bundled scripts for validation, generation
-├── references/       # optional — detailed docs, specs, examples
-└── assets/           # optional — templates, config files
+Helps create opencode skills and agents with proper structure.
 ```
+
+→ Vague. No trigger phrases. Will never fire.
+
+**GOOD:**
+
+```
+SOP for creating opencode skills and agents. Walks through the full
+authoring workflow from requirements through validation. Covers SOP skills
+(step-by-step processes) and reference skills (principle-based guides).
+Use when building a new skill, creating an agent, or setting up
+skill/agent directories.
+```
+
+→ What, when, trigger phrases all present.
+
+### 3. Create Structure
+
+Set up the skill directory and skeleton.
+
+**Constraints:**
 
 - File MUST be named exactly `SKILL.md` (case-sensitive)
-- Folder MUST use kebab-case: lowercase, hyphens only, no spaces/capitals/underscores
-- MUST NOT include a README.md inside skill folders, because SKILL.md is the single entrypoint and a README creates ambiguity about which file is authoritative
+- Folder MUST use kebab-case: lowercase, hyphens only
+- MUST NOT include README.md in skill folders (SKILL.md is the single entrypoint)
+- MUST present planned structure to user before creating files
 
-## 2. Frontmatter Reference
+**SOP skill structure:**
+
+```
+my-skill/
+├── SKILL.md          # Overview → Parameters → Steps → Examples → Troubleshooting
+├── scripts/          # Optional — validation, generation
+├── references/       # Optional — specs, long examples
+└── assets/           # Optional — templates
+```
+
+**SOP body template:**
+
+```markdown
+# [Skill Name]
+
+## Overview
+[1-3 sentences: what this SOP does and when to use it]
+
+## Parameters
+- **param** (required|optional): description
+
+## Steps
+
+### 1. [Step Name]
+[What to do and why]
+
+**Constraints:**
+- MUST / SHOULD / MAY rules
+
+### 2. [Step Name]
+...
+
+## Examples
+
+### Example Input
+...
+
+### Example Output
+...
+
+## Troubleshooting
+
+### [Problem]
+[Fix]
+```
+
+**Reference skill structure:**
+
+```
+my-conventions/
+├── SKILL.md          # Principles with Bad/Good pairs
+└── references/       # Optional — lookup tables, long examples
+```
+
+**Reference body template:**
+
+```markdown
+# [Convention Name]
+
+## [Principle 1]
+[Explanation]
+
+BAD:
+    [code]
+
+GOOD:
+    [code]
+
+## [Principle 2]
+...
+```
+
+### 4. Write Content
+
+Fill in the body following type-specific rules.
+
+**Constraints (all types):**
+
+- Default assumption: the agent is already competent. Only add context it lacks.
+- MUST use RFC 2119 keywords (MUST, SHOULD, MAY) for all constraints
+- Negative constraints (MUST NOT, SHOULD NOT) MUST include a reason
+- MUST NOT include time-sensitive information (version numbers, release dates)
+- Use consistent terminology — pick one term, use it throughout
+- Keep SKILL.md under 500 lines — move excess to `references/`
+- Reference files over 100 lines SHOULD include a table of contents
+
+**Constraints (SOP type):**
+
+- Each step MUST have a clear objective the agent can execute
+- Steps with constraints MUST use a `**Constraints:**` subsection
+- MUST include validation gates: points where the agent waits for user confirmation
+- MUST sequence steps so each builds on the previous
+- MUST NOT include steps that are purely informational with no action
+- Each step SHOULD produce visible output (file created, question asked, etc.)
+- Parameters MUST declare: required vs optional, default values, acquisition method
+
+**Constraints (Reference type):**
+
+- Each principle MUST have a concrete Bad/Good pair
+- Examples MUST use real code, not pseudocode, unless language-agnostic
+- Principles SHOULD be ordered by importance or frequency of violation
+- MUST NOT list principles without examples
+
+**Degree of freedom:**
+
+Match specificity to fragility:
+
+- **High freedom** (prose): when multiple valid approaches exist
+- **Low freedom** (exact commands/scripts): when operations are fragile or destructive
+- For critical validations, prefer bundled scripts over prose (code is deterministic)
+
+### 5. Write Examples
+
+Create at least one end-to-end example.
+
+**Constraints:**
+
+- MUST include at least one complete example showing the full workflow
+- Examples MUST use realistic complexity, not trivial cases
+- MUST show what the agent produces, not just describe it
+- SOP examples SHOULD show: trigger → parameter gathering → step execution → final output
+- Reference examples SHOULD show: before/after transformation guided by the principles
+
+**BAD example:**
+
+```
+Input: Create a skill
+Output: Skill created successfully
+```
+
+→ Trivial. Teaches nothing about the interaction pattern.
+
+**GOOD example:**
+
+```
+Input: I want a skill that walks me through writing Postgres migrations safely
+
+[Agent gathers parameters: name, target_dir]
+[Agent drafts description, presents for review]
+[Agent creates structure, shows planned files]
+[Agent writes Steps with Constraints subsections]
+[Agent validates against checklist]
+Output: my-skill/SKILL.md created with 4 steps, 2 examples, passes validation
+```
+
+→ Shows the full interaction arc.
+
+### 6. Validate
+
+Run the checklist and iterate.
+
+**Constraints:**
+
+- MUST validate against the checklist in the Reference section below
+- MUST test trigger accuracy: ask "When would you use the [skill name] skill?"
+- MUST verify the skill does NOT trigger on unrelated tasks
+- MUST present findings to user with specific issues and suggested fixes
+- MUST NOT consider the skill complete until all checklist items pass
+
+## Reference: Frontmatter Spec
 
 ```yaml
 ---
-name: my-skill # required
-description: ... # required
-license: MIT # optional
-compatibility: ... # optional
-metadata: # optional
+name: my-skill        # required
+description: ...      # required
+license: MIT          # optional
+compatibility: ...    # optional
+metadata:             # optional
   author: jane
   version: "1.0"
-allowed-tools: Bash Read # optional, space-delimited
+allowed-tools: Bash Read  # optional, space-delimited
 ---
 ```
 
-| Field           | Constraints                                                                                                    |
-| --------------- | -------------------------------------------------------------------------------------------------------------- |
-| `name`          | 1-64 chars. Lowercase alphanumeric + hyphens. No leading/trailing/consecutive hyphens. MUST match folder name. |
-| `description`   | 1-1024 chars. No XML angle brackets. See §3.                                                                   |
-| `license`       | Short license identifier (e.g., MIT, Apache-2.0).                                                              |
-| `compatibility` | 1-500 chars. Environment requirements (OS, runtime, tools).                                                    |
-| `metadata`      | Key-value string map.                                                                                          |
-| `allowed-tools` | Space-delimited tool names pre-approved for this skill.                                                        |
+| Field | Constraints |
+|-------|------------|
+| `name` | 1-64 chars. Lowercase alphanumeric + hyphens. No leading/trailing/consecutive hyphens. MUST match folder name. |
+| `description` | 1-1024 chars. No XML angle brackets. See Step 2. |
+| `license` | Short identifier (MIT, Apache-2.0). |
+| `compatibility` | 1-500 chars. Environment requirements. |
+| `metadata` | Key-value string map. |
+| `allowed-tools` | Space-delimited tool names. |
 
-Security constraints:
+**Security:** `name` MUST NOT contain "claude" or "anthropic" (reserved). MUST NOT use XML angle brackets in any frontmatter value, because frontmatter is injected into XML-structured system prompts and unescaped brackets break parsing.
 
-- MUST NOT use XML angle brackets (`<` `>`) in any frontmatter value, because frontmatter is injected into XML-structured system prompts and unescaped brackets break parsing
-- `name` MUST NOT contain "claude" or "anthropic" (reserved)
-
-## 3. Writing Effective Descriptions
-
-The description is the most important part of a skill. It determines whether the agent loads the skill. Descriptions are injected into the system prompt as-is, so they MUST be written in third person.
-
-### Structure
-
-```
-[What it does] + [When to use it] + [Key capabilities/keywords]
-```
-
-Front-load the primary use case. Include trigger phrases — the words a user would actually say.
-
-### Good Examples
-
-```
-Systematic debugging protocol emphasizing empirical investigation over code
-reasoning. Covers the observe-hypothesize-experiment-narrow loop, establishing
-failure conditions, gathering evidence from logs and git history. Use when
-investigating crashes, test failures, unexpected behavior, or any situation
-where the system is not doing what it should.
-```
-
-```
-Guide for writing database migrations in PostgreSQL. Covers safe column
-additions, index creation with CONCURRENTLY, data backfills, and rollback
-strategies. Use when creating, modifying, or reviewing database migrations.
-Keywords: schema change, ALTER TABLE, CREATE INDEX.
-```
-
-```
-Enforces clean coding conventions for any implementation task. Covers guard
-clauses, happy-path alignment, pure functions, error handling. Use when writing
-new code, refactoring, fixing bugs, or reviewing code for quality.
-```
-
-### Bad Examples
-
-- `"Helps with projects"` — too vague, no trigger conditions, will never fire
-- `"A comprehensive tool for managing all aspects of deployment"` — no specifics, no keywords
-- `"Use this skill when needed"` — circular, gives the agent nothing to match against
-
-### Preventing Mis-triggers
-
-SHOULD include negative triggers when the skill's domain overlaps with common tasks:
-
-```
-Do NOT use for simple one-off SQL queries — only for schema migrations.
-```
-
-### Debugging Trigger Issues
-
-Ask the agent: _"When would you use the [skill name] skill?"_ If it cannot answer clearly, the description needs work.
-
-## 4. Progressive Disclosure
+## Reference: Progressive Disclosure
 
 Skills load in three levels to minimize context cost:
 
-| Level            | What loads                     | When                     | Budget                 |
-| ---------------- | ------------------------------ | ------------------------ | ---------------------- |
-| 1. Frontmatter   | `name` + `description`         | Always (system prompt)   | ~100 tokens per skill  |
-| 2. SKILL.md body | Core instructions              | Agent triggers the skill | Keep under 500 lines   |
-| 3. Linked files  | references/, scripts/, assets/ | Agent reads explicitly   | No cost until accessed |
+| Level | What loads | When | Budget |
+|-------|-----------|------|--------|
+| 1. Frontmatter | `name` + `description` | Always | ~100 tokens |
+| 2. SKILL.md body | Core instructions | Agent triggers | Under 500 lines |
+| 3. Linked files | references/, scripts/, assets/ | Agent reads explicitly | No cost until accessed |
 
-Practical guidance:
+- Move material over 500 lines to `references/`
+- Keep references one level deep — agents may skip deeply nested trees
+- Reference files over 100 lines SHOULD include a table of contents
 
-- SKILL.md SHOULD contain only core instructions the agent needs on every invocation
-- Move detailed reference material (API specs, long examples, lookup tables) to `references/` and link to them from SKILL.md
-- Keep references one level deep from SKILL.md, because agents may partially read or skip deeply nested file trees
-- Reference files over 100 lines SHOULD include a table of contents at the top
+## Reference: Agent Authoring
 
-## 5. Content Guidelines
+Agents are standalone `.md` files. Filename determines agent name.
 
-Default assumption: the agent is already competent. Only add context it does not already have.
-
-- Be specific and actionable. Not _"handle errors appropriately"_ but _"return errors with context using fmt.Errorf"_
-- Use examples (input/output pairs) to show expected behavior
-- Use RFC 2119 keywords (MUST, SHOULD, MAY) for all constraints
-- Negative constraints (MUST NOT, SHOULD NOT) MUST include a reason explaining why
-- Use consistent terminology — pick one term and use it throughout
-- MUST NOT include time-sensitive information (version numbers, release dates), because skills are not updated on a schedule
-
-### Degree of Freedom
-
-Match instruction specificity to task fragility:
-
-- **High freedom** (prose instructions): when multiple valid approaches exist. _"SHOULD use guard clauses for early returns."_
-- **Low freedom** (exact commands/scripts): when operations are fragile or destructive. _"MUST run `pg_dump` before applying migration."_
-
-For critical validations, prefer bundled scripts over prose instructions, because code is deterministic and prose is interpreted.
-
-## 6. Content Patterns
-
-### Template Pattern
-
-Provide output format templates. Mark required vs. optional sections.
-
-```markdown
-## Summary
-
-[required — 1-2 sentences]
-
-## Details
-
-[optional — supporting context]
-```
-
-### Workflow Pattern
-
-Sequential steps with validation gates.
-
-```
-1. Run linter → MUST pass before proceeding
-2. Run tests → fix failures, repeat step 1
-3. Generate docs → review output
-```
-
-### Feedback Loop Pattern
-
-```
-1. Run validator: `./scripts/validate.sh`
-2. If errors, fix and go to step 1
-3. If clean, proceed
-```
-
-### Conditional Workflow
-
-Decision trees for different paths:
-
-```
-If new table → use CREATE TABLE template
-If adding column → use ALTER TABLE template with NOT NULL + default
-If dropping column → require migration plan review first
-```
-
-### Examples Pattern
-
-Input/output pairs showing expected behavior:
-
-```
-Input:  createUser("jane", "admin")
-Output: { id: 1, name: "jane", role: "admin", createdAt: "..." }
-```
-
-## 7. Agents
-
-Agents are standalone `.md` files. The filename determines the agent name (`orchestrator.md` → `orchestrator`).
-
-### Location
+**Location:**
 
 - Global: `~/dotfiles/modules/opencode/agents/<name>.md`
 - Project: `.opencode/agents/<name>.md`
 
-### Frontmatter
+**Frontmatter:**
 
 ```yaml
 ---
@@ -213,7 +326,6 @@ permission:
   bash:
     "*": ask
     "git *": allow
-    "npm test": allow
   skill:
     "*": allow
   task:
@@ -221,23 +333,31 @@ permission:
 ---
 ```
 
-| Field         | Required | Notes                                                           |
-| ------------- | -------- | --------------------------------------------------------------- |
-| `description` | Yes      | Same rules as skill descriptions (§3).                          |
-| `mode`        | No       | `primary` (top-level) or `subagent` (delegated to).             |
-| `permission`  | No       | Tool permission overrides. Pattern-matched, most specific wins. |
+| Field | Required | Notes |
+|-------|----------|-------|
+| `description` | Yes | Same rules as skill descriptions (Step 2). |
+| `mode` | No | `primary` or `subagent`. |
+| `permission` | No | Pattern-matched, most specific wins. |
 
-### Content
+**Body:** role, protocol, constraints. Keep under 100 lines.
 
-Agent body defines role, protocol, and constraints. Keep under 100 lines.
+**BAD:**
 
 ```markdown
-You are the **Code Reviewer**. You review pull requests for correctness and style.
+You are a helpful assistant that does code review.
+```
+
+→ No protocol, no constraints.
+
+**GOOD:**
+
+```markdown
+You are the **Code Reviewer**. You review PRs for correctness and style.
 
 ## Protocol
 
-1. Read the diff
-2. Check against project conventions
+1. Read the full diff
+2. Check against project conventions (read 3 nearby files)
 3. Report issues with file:line references
 
 ## Constraints
@@ -246,64 +366,65 @@ You are the **Code Reviewer**. You review pull requests for correctness and styl
 - MUST NOT approve without reading every changed file
 ```
 
-## 8. Testing
-
-### Trigger Testing
-
-- Does the skill trigger on direct requests? (_"Create a new skill for..."_)
-- Does it trigger on paraphrased requests? (_"I need to set up an agent"_)
-- Does it stay silent on unrelated tasks? (_"Fix this CSS bug"_)
-
-### Functional Testing
-
-- Does it produce correct output for typical inputs?
-- Does error handling work (missing fields, invalid names)?
-- Are edge cases covered (empty descriptions, long names)?
-
-### Iteration
-
-| Problem          | Fix                                                  |
-| ---------------- | ---------------------------------------------------- |
-| Under-triggering | Add more keywords and trigger phrases to description |
-| Over-triggering  | Be more specific, add negative triggers              |
-| Wrong output     | Add examples, tighten constraints                    |
-
-Debug with: _"When would you use the [skill name] skill?"_
-
-## 9. Validation Checklist
+## Reference: Validation Checklist
 
 ### Skills
 
-- [ ] File is named `SKILL.md` (case-sensitive)
+- [ ] File named `SKILL.md` (case-sensitive)
 - [ ] Folder uses kebab-case
 - [ ] Frontmatter has `name` and `description`
-- [ ] `name` matches folder name exactly
+- [ ] `name` matches folder name
 - [ ] `name` does not contain "claude" or "anthropic"
-- [ ] Description is 1-1024 characters
-- [ ] Description includes what, when, and trigger keywords
-- [ ] Description written in third person
+- [ ] Description: 1-1024 chars, third person, what + when + keywords
 - [ ] No XML angle brackets in frontmatter
 - [ ] No README.md in skill folder
 - [ ] Body under 500 lines
-- [ ] All constraints use RFC 2119 language
-- [ ] Negative constraints include a reason
+- [ ] All constraints use RFC 2119
+- [ ] Negative constraints include reasons
+- [ ] **SOP**: has Parameters, Steps with Constraints, Examples
+- [ ] **SOP**: steps have validation gates
+- [ ] **Reference**: each principle has Bad/Good pair
+- [ ] At least one complete example
 
 ### Agents
 
 - [ ] File uses `.md` extension
 - [ ] Frontmatter has `description`
-- [ ] Description is 1-1024 characters
-- [ ] No XML angle brackets in frontmatter
+- [ ] Description: 1-1024 chars
+- [ ] No XML angle brackets
 - [ ] Body under 100 lines
+- [ ] Has Protocol and Constraints sections
 - [ ] `mode` is `primary` or `subagent` (if specified)
-- [ ] Permission patterns are valid
 
-## 10. Anti-patterns
+## Troubleshooting
 
-- **Vague descriptions** — _"Helps with projects"_ tells the agent nothing
-- **Missing trigger phrases** — skill exists but never fires
-- **Deeply nested references** — agents lose track past one level of nesting
-- **Too many options without a default** — _"you could use A, B, or C"_ without guidance on which to pick
-- **Time-sensitive content** — version numbers and dates go stale silently
-- **Inconsistent terminology** — using "skill", "plugin", and "extension" interchangeably
-- **Backslash paths** — use forward slashes; backslashes break on Unix systems
+### Skill doesn't trigger
+
+- Missing trigger phrases — add the exact words users would say
+- Competing skill with overlapping description — narrow yours
+- XML brackets in frontmatter breaking parsing — remove them
+- Debug: ask the agent "When would you use the [skill name] skill?"
+
+### Skill triggers too broadly
+
+- Add negative triggers: "Do NOT use for X — use Y instead"
+- Narrow the description to specific scope
+- Remove generic keywords matching unrelated tasks
+
+### Agent produces wrong output
+
+- Add concrete input/output examples
+- Tighten constraints with RFC 2119 language
+- Check if wrong skill type (SOP vs reference)
+
+### Skill over 500 lines
+
+- Move lookup tables, API specs, long examples to `references/`
+- Remove content restating what competent agents already know
+- Consolidate overlapping sections
+
+### Examples feel trivial
+
+- Use realistic complexity, not "hello world"
+- Show edge cases, not just happy paths
+- Include the interaction pattern, not just input/output blobs
