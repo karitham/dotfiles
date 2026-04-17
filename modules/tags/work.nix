@@ -20,6 +20,12 @@
           Authorization = "Bearer {env:LINEAR_API_KEY}";
         };
       };
+      sentry = {
+        type = "remote";
+        enabled = false;
+        url = "{env:SENTRY_MCP_URL}";
+        oauth = { };
+      };
     };
   };
 }
