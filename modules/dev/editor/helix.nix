@@ -8,12 +8,23 @@
   ...
 }:
 let
+  # Remove modernize from gopls output since gotools already provides it
+  gopls-cleaned = pkgs.runCommand "gopls" { } ''
+    mkdir -p $out/bin
+    # Copy all bins except modernize
+    for bin in ${pkgs.gopls}/bin/*; do
+      if [[ "$(basename $bin)" != "modernize" ]]; then
+        ln -s $bin $out/bin/
+      fi
+    done
+  '';
+
   global-tools = with pkgs; [
     nixfmt
     biome
     golangci-lint
     gotools
-    gopls
+    gopls-cleaned
     sql-formatter
     prettier
   ];
