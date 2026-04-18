@@ -37,41 +37,21 @@ let
   cfg = config.dev.opencode;
 in
 lib.mkIf cfg.enable {
-  home.packages = [ self'.packages.strands-agents-sops ];
-
-  xdg.configFile."opencode/agents" = {
-    source = ./agents;
-    recursive = true;
+  xdg.configFile."opencode/skills".source = pkgs.symlinkJoin {
+    name = "opencode-skills";
+    paths = [
+      self'.packages.strands-sops-skills
+      ./skills
+    ];
   };
-
-  xdg.configFile."opencode/skills" = {
-    source = pkgs.symlinkJoin {
-      name = "opencode-skills";
-      paths = [
-        self'.packages.strands-sops-skills
-        ./skills
-      ];
-    };
-    recursive = true;
-  };
-
-  xdg.configFile."opencode/commands" = {
-    source = pkgs.symlinkJoin {
-      name = "opencode-commands";
-      paths = [ ./commands ];
-    };
-    recursive = true;
-  };
-
-  xdg.configFile."opencode/AGENTS.md".source = ./AGENTS.md;
-
-  # Notifier config omitted — plugin uses all defaults.
-  # If customization is needed, add xdg.configFile."opencode/opencode-notifier.json".text = builtins.toJSON { ... };
 
   programs.opencode = {
     enable = true;
     package = opencodePkg;
     enableMcpIntegration = cfg.enableMcp;
+    context = ./AGENTS.md;
+    commands = ./commands;
+    agents = ./agents;
     settings = {
       plugin = [ "@mohak34/opencode-notifier@0.2.2" ];
       experimental = {
