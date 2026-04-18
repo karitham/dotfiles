@@ -1,0 +1,14 @@
+[formatter.nix]
+command = "nixfmt"
+options = ["-s", "-w", "120"]
+includes = ["*.nix"]
+
+[formatter.nu]
+command = "nufmt"
+includes = ["*.nu"]
+
+[formatter.json]
+command = "biome"
+options = ["format", "--write", "--indent-style=space", "--indent-width=2"]
+includes = ["*.json"]
+excludes = ["secrets/**", "modules/desktop/audio/**"]

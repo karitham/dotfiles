@@ -1,5 +1,4 @@
 _: prev: {
-  pokego = prev.callPackage ../pkgs/pokego.nix { };
   golangci-lint-langserver = prev.golangci-lint-langserver.overrideAttrs (_: {
     patches = prev.fetchurl {
       url = "https://github.com/karitham/golangci-lint-langserver/commit/4a7b5b7ee99a2260c118442304777a8a92a45765.patch";

@@ -38,7 +38,15 @@
         '';
       };
       formatter = pkgs.nixfmt;
-      devShells.default = pkgs.mkShell { packages = with pkgs; [ sops ]; };
+      devShells.default = pkgs.mkShell {
+        packages = with pkgs; [
+          sops
+          treefmt
+          nixfmt
+          nufmt
+          biome
+        ];
+      };
     };
 
   flake =
