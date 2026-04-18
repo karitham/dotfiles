@@ -118,13 +118,10 @@ lib.mkIf cfg.enable {
           ];
           extensions = [ ".sql" ];
         };
-        topiary-nu = {
+        nufmt = {
           command = [
-            "${lib.getExe self'.packages.topiary-nu}"
-            "format"
-            "--language"
-            "nu"
-            "$FILE"
+            "nufmt"
+            "--stdin"
           ];
           extensions = [ ".nu" ];
         };

@@ -3,7 +3,6 @@
   pkgs,
   inputs,
   inputs',
-  self',
   config,
   ...
 }:
@@ -27,6 +26,7 @@ let
     gopls-cleaned
     sql-formatter
     prettier
+    nufmt
   ];
 in
 lib.mkIf config.dev.editor.enable {
@@ -557,12 +557,8 @@ lib.mkIf config.dev.editor.enable {
                 name = "nu";
                 language-servers = [ "nu-lsp" ];
                 formatter = {
-                  command = "${lib.getExe self'.packages.topiary-nu}";
-                  args = [
-                    "format"
-                    "--language"
-                    "nu"
-                  ];
+                  command = "nufmt";
+                  args = [ "--stdin" ];
                 };
                 auto-format = true;
               }

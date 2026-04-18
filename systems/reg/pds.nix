@@ -1,14 +1,9 @@
 { config, lib, ... }:
 let
-  inherit (lib)
-    mkMerge
-    mkDefault
-    ;
+  inherit (lib) mkMerge mkDefault;
 in
 {
-  imports = [
-    ../../modules/services/acme-nginx.nix
-  ];
+  imports = [ ../../modules/services/acme-nginx.nix ];
 
   sops = {
     secrets.pds = {
