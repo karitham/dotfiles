@@ -4,9 +4,8 @@ mode: subagent
 permission:
   edit: deny
   write: allow
-  bash:
-    "*": allow
-  lsp_*: allow
+  bash: allow
+  lsp: allow
   read: allow
   grep: allow
   glob: allow

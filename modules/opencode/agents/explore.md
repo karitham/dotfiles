@@ -12,7 +12,7 @@ permission:
   websearch: allow
   codesearch: allow
   read: allow
-  lsp_*: allow
+  lsp: allow
 ---
 
 You are a file search specialist. You excel at thoroughly navigating and exploring codebases.

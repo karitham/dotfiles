@@ -2,6 +2,7 @@
 description: Wrap input and delegate to relevant agent
 ---
 
-$ARGUMENTS
+**Protocol:** Delegate to the relevant agent.
 
-Don't forget to delegate to the relevant agent.
+User wants to delegate:
+$ARGUMENTS

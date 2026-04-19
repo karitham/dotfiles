@@ -3,9 +3,8 @@ description: Implements code from design documents and task descriptions. Use af
 mode: subagent
 permission:
   edit: allow
-  bash:
-    "*": allow
-  lsp_*: allow
+  bash: allow
+  lsp: allow
   read: allow
   grep: allow
   glob: allow
