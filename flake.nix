@@ -28,12 +28,10 @@
     };
     helix = {
       url = "github:mattwparas/helix/steel-event-system";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     helix-plugins = {
       url = "github:karitham/helix-plugins/b544922ff2fc55c7bd80ae90f9409b0e8a9aac5c";
-    };
-    ghostty = {
-      url = "github:ghostty-org/ghostty";
     };
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
@@ -74,13 +72,11 @@
       "https://helix.cachix.org"
       "https://niri.cachix.org"
       "https://karitham.cachix.org"
-      "https://ghostty.cachix.org"
     ];
     extra-trusted-public-keys = [
       "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
       "karitham.cachix.org-1:Q0wdHZsCssuepIrtx83gHibE0LTDYLVNnvaV3Nms9U0="
-      "ghostty.cachix.org-1:QB389yTa6gTyneehvqG58y0WnHjQOqgnA+wBnpWWxns="
     ];
   };
 }
