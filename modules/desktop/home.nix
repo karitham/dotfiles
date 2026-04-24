@@ -14,7 +14,7 @@ in
     };
     browser.default = mkOption {
       description = "default browser xdg file";
-      default = "firefox-devedition.desktop";
+      default = "helium.desktop";
       type = types.str;
     };
   };
