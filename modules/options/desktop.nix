@@ -32,23 +32,5 @@ in
     desktop.audio.enable = mkIf cfg.enable true;
     desktop.apps.enable = mkIf cfg.enable true;
 
-    home-manager.sharedModules = [
-      {
-        options.desktop = sharedOptions;
-        config.desktop = {
-          enable = cfg.enable;
-          wm.enable = cfg.wm.enable;
-          noctalia.enable = cfg.noctalia.enable;
-          waybar.enable = cfg.waybar.enable;
-          hyprlock.enable = cfg.hyprlock.enable;
-          wallpaper.enable = cfg.wallpaper.enable;
-          notification.enable = cfg.notification.enable;
-          launcher.enable = cfg.launcher.enable;
-          terminal.enable = cfg.terminal.enable;
-          audio.enable = cfg.audio.enable;
-          apps.enable = cfg.apps.enable;
-        };
-      }
-    ];
   };
 }

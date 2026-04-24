@@ -1,11 +1,12 @@
 {
   config,
+  osConfig,
   lib,
   pkgs,
   ...
 }:
 {
-  config = lib.mkIf config.dev.vcs.enable {
+  config = lib.mkIf osConfig.dev.vcs.enable {
     home.packages = [ pkgs.gh ];
     programs.git = {
       enable = true;

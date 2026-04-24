@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.desktop.terminal.enable {
+  config = lib.mkIf osConfig.desktop.terminal.enable {
     programs.ghostty = {
       enable = true;
       settings = {

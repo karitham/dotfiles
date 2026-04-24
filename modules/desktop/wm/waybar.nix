@@ -6,7 +6,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.desktop.waybar.enable {
+  config = lib.mkIf osConfig.desktop.waybar.enable {
     programs.niri.settings.spawn-at-startup = [ { command = [ "systemctl --user restart waybar.service" ]; } ];
     programs.waybar = {
       enable = true;

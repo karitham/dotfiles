@@ -1,7 +1,7 @@
 {
   pkgs,
   lib,
-  config,
+  osConfig,
   ...
 }:
 let
@@ -10,7 +10,7 @@ let
     sha256 = "0lyxah0pzgw57wbrvfz2y0bjrna9bgmsw9z9f898dgqw1g92dr2d";
   };
 in
-lib.mkIf config.dev.shell.enable {
+lib.mkIf osConfig.dev.shell.enable {
   programs.zellij = {
     enable = true;
     settings = {

@@ -1,12 +1,12 @@
 {
-  config,
+  osConfig,
   lib,
   pkgs,
   self',
   ...
 }:
 {
-  config = lib.mkIf config.dev.shell.enable {
+  config = lib.mkIf osConfig.dev.shell.enable {
     home.packages = [ pkgs.moreutils ]; # vipe, chronic, pee
     programs.nushell = {
       enable = true;

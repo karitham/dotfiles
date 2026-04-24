@@ -1,6 +1,7 @@
 {
   inputs,
   config,
+  osConfig,
   lib,
   ...
 }:
@@ -10,7 +11,7 @@ in
 {
   imports = [ inputs.noctalia.homeModules.default ];
 
-  config = lib.mkIf config.desktop.noctalia.enable {
+  config = lib.mkIf osConfig.desktop.noctalia.enable {
     qt = {
       enable = true;
       style.name = "kvantum";

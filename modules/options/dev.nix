@@ -23,18 +23,5 @@ in
     dev.tools.enable = mkIf cfg.enable true;
     dev.opencode.enable = mkIf cfg.enable true;
 
-    home-manager.sharedModules = [
-      {
-        options.dev = sharedOptions;
-        config.dev = {
-          enable = cfg.enable;
-          shell.enable = cfg.shell.enable;
-          editor.enable = cfg.editor.enable;
-          vcs.enable = cfg.vcs.enable;
-          tools.enable = cfg.tools.enable;
-          opencode.enable = cfg.opencode.enable;
-        };
-      }
-    ];
   };
 }

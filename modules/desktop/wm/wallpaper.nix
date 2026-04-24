@@ -1,11 +1,12 @@
 {
   config,
+  osConfig,
   lib,
   pkgs,
   ...
 }:
 {
-  config = lib.mkIf config.desktop.wallpaper.enable {
+  config = lib.mkIf osConfig.desktop.wallpaper.enable {
     services.swww = {
       enable = true;
     };

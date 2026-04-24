@@ -1,5 +1,5 @@
 {
-  config,
+  osConfig,
   lib,
   pkgs,
   ...
@@ -17,7 +17,7 @@ let
   ];
 in
 {
-  config = lib.mkIf config.dev.tools.enable {
+  config = lib.mkIf osConfig.dev.tools.enable {
     home.packages = [
       pkgs.sd
       pkgs.fd

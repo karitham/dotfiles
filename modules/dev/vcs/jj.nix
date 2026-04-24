@@ -1,6 +1,6 @@
-{ config, lib, ... }:
+{ osConfig, lib, ... }:
 {
-  config = lib.mkIf config.dev.vcs.enable {
+  config = lib.mkIf osConfig.dev.vcs.enable {
     programs.jujutsu = {
       enable = true;
 

@@ -1,6 +1,11 @@
-{ config, lib, ... }:
 {
-  config = lib.mkIf config.desktop.wm.enable {
+  config,
+  lib,
+  osConfig,
+  ...
+}:
+{
+  config = lib.mkIf osConfig.desktop.wm.enable {
     xdg.mimeApps =
       let
         editor = "Helix.desktop";

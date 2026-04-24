@@ -1,11 +1,11 @@
 {
   lib,
-  config,
+  osConfig,
   pkgs,
   ...
 }:
 {
-  config = lib.mkIf config.desktop.apps.enable {
+  config = lib.mkIf osConfig.desktop.apps.enable {
     programs.vesktop.enable = true;
     home.packages = [ pkgs.signal-desktop ];
   };

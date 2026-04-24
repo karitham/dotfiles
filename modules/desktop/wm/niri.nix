@@ -1,11 +1,12 @@
 {
   config,
+  osConfig,
   lib,
   pkgs,
   ...
 }:
 {
-  config = lib.mkIf config.desktop.wm.enable {
+  config = lib.mkIf osConfig.desktop.wm.enable {
     home.packages = [ pkgs.nautilus ]; # xdg-desktop-portal-gnome wants it
     programs.niri = {
       settings = {

@@ -1,11 +1,11 @@
 {
-  config,
+  osConfig,
   pkgs,
   lib,
   ...
 }:
 {
-  config = lib.mkIf config.dev.shell.enable {
+  config = lib.mkIf osConfig.dev.shell.enable {
     home.packages = [ pkgs.jj-starship ];
     programs.starship = {
       enable = true;

@@ -3,6 +3,7 @@
   lib,
   pkgs,
   self',
+  osConfig,
   ...
 }:
 let
@@ -35,8 +36,9 @@ let
   };
 
   cfg = config.dev.opencode;
+  osCfg = osConfig.dev.opencode;
 in
-lib.mkIf cfg.enable {
+lib.mkIf osCfg.enable {
   xdg.configFile."opencode/skills".source = pkgs.symlinkJoin {
     name = "opencode-skills";
     paths = [

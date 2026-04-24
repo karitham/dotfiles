@@ -1,12 +1,13 @@
 {
   lib,
   config,
+  osConfig,
   pkgs,
   inputs',
   ...
 }:
 {
-  config = lib.mkIf config.desktop.apps.enable {
+  config = lib.mkIf osConfig.desktop.apps.enable {
     home = {
       packages = [
         pkgs.firefox-devedition

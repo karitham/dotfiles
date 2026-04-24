@@ -1,11 +1,11 @@
 {
-  config,
+  osConfig,
   lib,
   pkgs,
   ...
 }:
 {
-  config = lib.mkIf config.desktop.audio.enable {
+  config = lib.mkIf osConfig.desktop.audio.enable {
     xdg.configFile."pipewire/pipewire.conf.d/99-input-denoising.conf".text = builtins.toJSON {
       "context.modules" = [
         {

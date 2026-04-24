@@ -1,6 +1,6 @@
-{ config, lib, ... }:
+{ osConfig, lib, ... }:
 {
-  config = lib.mkIf config.dev.tools.enable {
+  config = lib.mkIf osConfig.dev.tools.enable {
     programs.yazi = {
       enable = true;
     };

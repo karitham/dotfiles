@@ -3,7 +3,7 @@
   pkgs,
   inputs,
   inputs',
-  config,
+  osConfig,
   ...
 }:
 let
@@ -29,7 +29,7 @@ let
     nufmt
   ];
 in
-lib.mkIf config.dev.editor.enable {
+lib.mkIf osConfig.dev.editor.enable {
   home.packages = global-tools;
 
   xdg.configFile."helix/init.scm".text = ''

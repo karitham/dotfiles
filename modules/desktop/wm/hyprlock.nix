@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.desktop.hyprlock.enable {
+  config = lib.mkIf osConfig.desktop.hyprlock.enable {
     services.hypridle = {
       enable = true;
       settings = {
