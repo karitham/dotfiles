@@ -1,7 +1,9 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
-  desktop.yubikey.enable = true;
-  programs._1password.enable = true;
+  config = lib.mkIf config.desktop.enable {
+    desktop.yubikey.enable = true;
+    programs._1password.enable = true;
+  };
 
   home-manager.users.${config.my.username} = {
     xdg.configFile."git/config".text = ''

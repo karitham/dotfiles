@@ -69,30 +69,6 @@
     {
       lib = {
         sdImageFromSystem = system: system.config.system.build.sdImage;
-
-        mkSystem' =
-          system: hostname:
-          withSystem system (
-            { inputs', self', ... }:
-            lib.nixosSystem {
-              specialArgs = {
-                inherit
-                  inputs
-                  inputs'
-                  self
-                  self'
-                  ;
-              };
-              modules = [
-                { networking.hostName = hostname; }
-                ./core.nix
-                ./systems/${hostname}
-              ];
-            }
-          );
-
-        mkSystem = system: hostname: { ${hostname} = self.lib.mkSystem' system hostname; };
-        mkSystems = system: hosts: lib.mergeAttrsList (map (self.lib.mkSystem system) hosts);
       };
 
       overlays.default = import ./overlays;
@@ -105,6 +81,7 @@
       nixosModules = {
         dev = import ./dev/nixos.nix;
         desktop = import ./desktop/nixos.nix;
+        acme-nginx = import ./services/acme-nginx.nix;
         multi-scrobbler = import ./services/multi-scrobbler.nix;
       };
     };

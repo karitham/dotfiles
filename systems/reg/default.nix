@@ -1,7 +1,5 @@
-{ config, inputs, ... }:
+{ inputs, ... }:
 {
-  my.username = "root";
-
   imports = [
     inputs.sops-nix.nixosModules.sops
     ./hardware.nix
@@ -17,8 +15,6 @@
     enable = true;
     host = "0.0.0.0";
   };
-
-  users.users.${config.my.username}.openssh.authorizedKeys.keyFiles = [ inputs.ssh-keys ];
 
   system.stateVersion = "25.05";
 }

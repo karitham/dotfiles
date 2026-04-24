@@ -1,10 +1,4 @@
-{
-  inputs,
-  lib,
-  modulesPath,
-  config,
-  ...
-}:
+{ lib, modulesPath, ... }:
 {
   imports = [
     (modulesPath + "/installer/sd-card/sd-image-aarch64-installer.nix")
@@ -12,7 +6,6 @@
   ];
 
   sdImage.compressImage = false;
-  my.username = "root";
   nixpkgs.hostPlatform = "aarch64-linux";
   system.stateVersion = "24.11";
 
@@ -24,8 +17,6 @@
       "usb_storage"
     ];
   };
-
-  users.users.${config.my.username}.openssh.authorizedKeys.keyFiles = [ inputs.ssh-keys ];
 
   services.openssh.settings.PermitRootLogin = "yes";
 }
