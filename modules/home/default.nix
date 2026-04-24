@@ -20,6 +20,8 @@
   };
 
   home-manager = {
+    useGlobalPkgs = true;
+
     extraSpecialArgs = {
       inherit
         inputs
@@ -38,12 +40,6 @@
       };
 
       catppuccin = { inherit (config.catppuccin) flavor enable; };
-
-      nixpkgs.overlays = [
-        inputs.self.overlays.default
-        inputs.niri.overlays.niri
-        inputs.knixpkgs.overlays.default
-      ];
 
       manual = {
         html.enable = false;
