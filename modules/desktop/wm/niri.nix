@@ -121,7 +121,7 @@
               };
             };
             eDP-1 = {
-              mode = edp;
+              mode = lib.mkDefault edp;
               position = {
                 x = lg.height;
                 y = benq.height;
