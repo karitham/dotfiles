@@ -1,7 +1,7 @@
 {
   imports = [
     ./browser.nix
-    ./discord.nix
+    ./social.nix
     ./zed.nix
     ./music.nix
   ];
