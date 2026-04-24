@@ -1,4 +1,1 @@
-{ pkgs, ... }:
-{
-  home.packages = [ pkgs.deezer-enhanced ];
-}
+_: { } # youtube music in browser
