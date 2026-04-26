@@ -37,7 +37,10 @@
       url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    niri.url = "github:sodiboo/niri-flake?ref=main";
+    niri = {
+      url = "github:sodiboo/niri-flake?ref=main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
