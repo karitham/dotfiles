@@ -19,6 +19,7 @@
     ];
 
     programs.waybar.settings.mainBar.battery.bat = lib.mkForce "BAT0";
+    imports = [ ./handy.nix ];
   };
 
   boot = {

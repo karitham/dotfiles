@@ -1,10 +1,4 @@
-{
-  withSystem,
-  self,
-  nixpkgs,
-  inputs,
-  ...
-}:
+{ self, ... }:
 {
   systems = [
     "x86_64-linux"
@@ -62,27 +56,21 @@
       };
     };
 
-  flake =
-    let
-      inherit (nixpkgs) lib;
-    in
-    {
-      lib = {
-        sdImageFromSystem = system: system.config.system.build.sdImage;
-      };
+  flake = {
+    lib.sdImageFromSystem = system: system.config.system.build.sdImage;
 
-      overlays.default = import ./overlays;
+    overlays.default = import ./overlays;
 
-      homeModules = {
-        dev = import ./dev/home.nix;
-        desktop = import ./desktop/home.nix;
-      };
-
-      nixosModules = {
-        dev = import ./dev/nixos.nix;
-        desktop = import ./desktop/nixos.nix;
-        acme-nginx = import ./services/acme-nginx.nix;
-        multi-scrobbler = import ./services/multi-scrobbler.nix;
-      };
+    homeModules = {
+      dev = import ./dev/home.nix;
+      desktop = import ./desktop/home.nix;
     };
+
+    nixosModules = {
+      dev = import ./dev/nixos.nix;
+      desktop = import ./desktop/nixos.nix;
+      acme-nginx = import ./services/acme-nginx.nix;
+      multi-scrobbler = import ./services/multi-scrobbler.nix;
+    };
+  };
 }

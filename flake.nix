@@ -53,6 +53,9 @@
       url = "github:karitham/knixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    handy = {
+      url = "github:LukeCarrier/handy/fix-wayland-enigo-woes";
+    };
     helium = {
       url = "github:schembriaiden/helium-browser-nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";
