@@ -1,6 +1,1 @@
-{
-  imports = [
-    ./easyeffects.nix
-    ./rnnoise.nix
-  ];
-}
+{ imports = [ ./easyeffects.nix ]; }
