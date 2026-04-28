@@ -32,20 +32,6 @@ in
           "launcher"
           "toggle"
         ];
-        "Mod+Shift+N".action.spawn = [
-          "noctalia-shell"
-          "ipc"
-          "call"
-          "controlCenter"
-          "toggle"
-        ];
-        "Mod+Shift+O".action.spawn = [
-          "noctalia-shell"
-          "ipc"
-          "call"
-          "sessionMenu"
-          "toggle"
-        ];
       };
     };
 
