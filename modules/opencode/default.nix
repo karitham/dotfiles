@@ -9,7 +9,13 @@
 let
   opencodePkg = pkgs.symlinkJoin {
     name = "opencode-wrapped";
-    paths = [ pkgs.opencode ];
+    paths = [
+      (pkgs.opencode.overrideAttrs (prev: {
+        node_modules = prev.node_modules.overrideAttrs (_: {
+          outputHash = "sha256-Zfgx97up2qPnDSGYFTIjdEioLHp4YCZSIgMGR5Zi6k8=";
+        });
+      }))
+    ];
 
     nativeBuildInputs = [ pkgs.makeWrapper ];
 
