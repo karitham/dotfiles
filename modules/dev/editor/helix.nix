@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  self',
   inputs,
   inputs',
   osConfig,
@@ -18,16 +19,18 @@ let
     done
   '';
 
-  global-tools = with pkgs; [
-    nixfmt
-    biome
-    golangci-lint
-    gotools
-    gopls-cleaned
-    sql-formatter
-    prettier
-    nufmt
-  ];
+  global-tools =
+    with pkgs;
+    [
+      nixfmt
+      biome
+      golangci-lint
+      gopls-cleaned
+      sql-formatter
+      prettier
+      nufmt
+    ]
+    ++ [ self'.packages.gotools ];
 in
 lib.mkIf osConfig.dev.editor.enable {
   home.packages = global-tools;
@@ -50,7 +53,6 @@ lib.mkIf osConfig.dev.editor.enable {
     extraPackages =
       with pkgs;
       [
-        golangci-lint-langserver
         nixd
         marksman
         typescript-language-server
@@ -59,6 +61,7 @@ lib.mkIf osConfig.dev.editor.enable {
         typos-lsp
         nil
       ]
+      ++ [ self'.packages.golangci-lint-langserver ]
       ++ global-tools;
 
     ignores = [

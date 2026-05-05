@@ -42,7 +42,6 @@
       input-fonts.acceptLicense = true;
     };
     overlays = [
-      inputs.self.overlays.default
       inputs.niri.overlays.niri
       inputs.knixpkgs.overlays.default
     ];

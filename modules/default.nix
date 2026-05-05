@@ -19,7 +19,10 @@
         pokego = pkgs.callPackage ./pkgs/pokego.nix { };
         http-nu = pkgs.callPackage ./pkgs/http-nu.nix { };
         malachite = pkgs.callPackage ./pkgs/malachite.nix { };
+        litestream = pkgs.callPackage ./pkgs/litestream.nix { };
         multi-scrobbler = pkgs.callPackage ./pkgs/multi-scrobbler.nix { };
+        golangci-lint-langserver = pkgs.callPackage ./pkgs/golangci-lint-langserver.nix { };
+        gotools = pkgs.callPackage ./pkgs/gotools.nix { };
 
         wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
 
@@ -58,8 +61,6 @@
 
   flake = {
     lib.sdImageFromSystem = system: system.config.system.build.sdImage;
-
-    overlays.default = import ./overlays;
 
     homeModules = {
       dev = import ./dev/home.nix;

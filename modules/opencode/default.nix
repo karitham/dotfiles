@@ -22,7 +22,7 @@ let
         --set SHELL "${lib.getExe pkgs.bash}" \
         --prefix PATH : "${
           lib.makeBinPath [
-            pkgs.golangci-lint-langserver
+            self'.packages.golangci-lint-langserver
             pkgs.nixd
             pkgs.marksman
             pkgs.typescript-language-server
