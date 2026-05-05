@@ -11,12 +11,7 @@
 
   desktop.noctalia.enable = true;
   home-manager.users.${config.my.username} = {
-    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "hayase" ];
-
-    home.packages = [
-      pkgs.obs-studio
-      pkgs.hayase
-    ];
+    home.packages = [ pkgs.obs-studio ];
 
     programs.waybar.settings.mainBar.battery.bat = lib.mkForce "BAT0";
     imports = [ ./handy.nix ];

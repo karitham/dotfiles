@@ -41,10 +41,6 @@
       allowUnfree = true;
       input-fonts.acceptLicense = true;
     };
-    overlays = [
-      inputs.niri.overlays.niri
-      inputs.knixpkgs.overlays.default
-    ];
   };
 
   programs.nh = {
