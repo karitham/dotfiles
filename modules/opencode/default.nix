@@ -58,7 +58,10 @@ lib.mkIf osCfg.enable {
     commands = ./commands;
     agents = ./agents;
     settings = {
-      plugin = [ "@mohak34/opencode-notifier@0.2.2" ];
+      plugin = [
+        "@mohak34/opencode-notifier@0.2.2"
+        "@ory/lumen-opencode"
+      ];
       experimental = {
         batch_tool = true;
       };
@@ -128,7 +131,22 @@ lib.mkIf osCfg.enable {
           };
           enabled = false;
         };
+
+        lumen = {
+          type = "local";
+          command = [
+            (lib.getExe self'.packages.lumen)
+            "stdio"
+          ];
+          enabled = true;
+          env = {
+            LUMEN_BACKEND = "ollama";
+            LUMEN_EMBED_MODEL = "ordis/jina-embeddings-v2-base-code";
+          };
+        };
       };
     };
   };
+
+  services.ollama.enable = true;
 }
