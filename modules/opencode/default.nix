@@ -48,6 +48,8 @@ lib.mkIf osCfg.enable {
     ];
   };
 
+  xdg.configFile."opencode/plugins/skills-reminder.ts".source = ./plugins/skills-reminder.ts;
+
   programs.opencode = {
     enable = true;
     package = opencodePkg;
