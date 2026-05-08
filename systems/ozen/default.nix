@@ -1,15 +1,26 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}:
-let
-  inherit (lib) mkForce;
-in
+{ pkgs, config, ... }:
 {
   system.stateVersion = "25.11";
-  programs.ssh.startAgent = true;
-
   nixpkgs.hostPlatform = "x86_64-linux";
+
+  wsl.useWindowsDriver = true;
+
+  programs = {
+    ssh.startAgent = true;
+    nix-ld.enable = true;
+  };
+
+  environment.etc."ld.so.conf.d/wsl-nvidia.conf".text = ''
+    /usr/lib/wsl/lib
+  '';
+
+  hardware = {
+    nvidia-container-toolkit = {
+      enable = true;
+      mount-nvidia-executables = false; # https://github.com/nix-community/NixOS-WSL/issues/578
+      suppressNvidiaDriverAssertion = true;
+    };
+  };
+
+  home-manager.users.${config.my.username}.services.ollama.package = pkgs.ollama-cuda;
 }
