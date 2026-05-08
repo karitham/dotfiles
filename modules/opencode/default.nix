@@ -3,13 +3,14 @@
   lib,
   pkgs,
   self',
+  inputs',
   osConfig,
   ...
 }:
 let
   opencodePkg = pkgs.symlinkJoin {
     name = "opencode-wrapped";
-    paths = [ pkgs.opencode ];
+    paths = [ inputs'.llm-agents.packages.opencode ];
 
     nativeBuildInputs = [ pkgs.makeWrapper ];
 

@@ -4,6 +4,7 @@
     # https://deer.social/profile/did:plc:mojgntlezho4qt7uvcfkdndg/post/3loogwsoqok2w
     # nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
     nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
+    llm-agents.url = "github:numtide/llm-agents.nix";
     home-manager = {
       type = "github";
       owner = "nix-community";
@@ -82,11 +83,13 @@
       "https://helix.cachix.org"
       "https://niri.cachix.org"
       "https://karitham.cachix.org"
+      "https://cache.numtide.com"
     ];
     extra-trusted-public-keys = [
       "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
       "karitham.cachix.org-1:Q0wdHZsCssuepIrtx83gHibE0LTDYLVNnvaV3Nms9U0="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
   };
 }
