@@ -65,6 +65,7 @@ lib.mkIf osCfg.enable {
       experimental = {
         batch_tool = true;
       };
+      lsp = { };
       inherit (cfg) theme;
       default_agent = "orchestrator";
       formatter = {
