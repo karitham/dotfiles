@@ -1,7 +1,9 @@
-{ pkgs, config, ... }:
-{
+_: {
   system.stateVersion = "25.11";
-  nixpkgs.hostPlatform = "x86_64-linux";
+  nixpkgs = {
+    hostPlatform = "x86_64-linux";
+    config.cudaSupport = true;
+  };
 
   wsl.useWindowsDriver = true;
 
@@ -21,6 +23,4 @@
       suppressNvidiaDriverAssertion = true;
     };
   };
-
-  home-manager.users.${config.my.username}.services.ollama.package = pkgs.ollama-cuda;
 }

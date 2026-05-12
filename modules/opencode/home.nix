@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   options.dev.opencode = {
     enable = lib.mkEnableOption "OpenCode AI-assisted development environment";
@@ -11,6 +11,11 @@
       type = lib.types.str;
       default = "catppuccin-macchiato";
       description = "OpenCode theme";
+    };
+    llamaPackage = lib.mkOption {
+      type = lib.types.package;
+      default = pkgs.llama-cpp;
+      description = "llama.cpp package to use for the embedding server";
     };
   };
 

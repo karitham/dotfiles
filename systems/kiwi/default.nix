@@ -10,9 +10,11 @@
   system.stateVersion = "25.11";
 
   desktop.noctalia.enable = true;
+
   home-manager.users.${config.my.username} = {
     home.packages = [ pkgs.obs-studio ];
 
+    dev.opencode.llamaPackage = pkgs.llama-cpp.override { vulkanSupport = true; };
     programs.waybar.settings.mainBar.battery.bat = lib.mkForce "BAT0";
     imports = [ ./handy.nix ];
   };
