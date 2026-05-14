@@ -8,20 +8,6 @@
   ...
 }:
 let
-  lumenPkg = pkgs.symlinkJoin {
-    name = "lumen-wrapped";
-    paths = [ self'.packages.lumen ];
-
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-
-    postBuild = ''
-      wrapProgram $out/bin/lumen \
-        --set LUMEN_BACKEND "lmstudio" \
-        --set LUMEN_EMBED_MODEL "jina-embeddings-v2-base-code" \
-        --set LUMEN_EMBED_DIMS "768"
-    '';
-  };
-
   opencodePkg = pkgs.symlinkJoin {
     name = "opencode-wrapped";
     paths = [ inputs'.llm-agents.packages.opencode ];
@@ -50,11 +36,6 @@ let
     '';
   };
 
-  embedModel = pkgs.fetchurl {
-    url = "https://huggingface.co/second-state/jina-embeddings-v2-base-code-GGUF/resolve/main/jina-embeddings-v2-base-code-f16.gguf";
-    hash = "sha256-ypgps2nHFeSG6f337JvuP5GtkQKNhnIgu2hnMpR7ZaU=";
-  };
-
   cfg = config.dev.opencode;
   osCfg = osConfig.dev.opencode;
 in
@@ -69,8 +50,6 @@ lib.mkIf osCfg.enable {
 
   xdg.configFile."opencode/plugins/skills-reminder.ts".source = ./plugins/skills-reminder.ts;
 
-  home.packages = [ lumenPkg ];
-
   programs.opencode = {
     enable = true;
     package = opencodePkg;
@@ -79,10 +58,7 @@ lib.mkIf osCfg.enable {
     commands = ./commands;
     agents = ./agents;
     settings = {
-      plugin = [
-        "@mohak34/opencode-notifier@0.2.2"
-        "@ory/lumen-opencode"
-      ];
+      plugin = [ "@mohak34/opencode-notifier@0.2.2" ];
       experimental = {
         batch_tool = true;
       };
@@ -154,31 +130,8 @@ lib.mkIf osCfg.enable {
           enabled = false;
         };
 
-        lumen = {
-          type = "local";
-          command = [
-            (lib.getExe' lumenPkg "lumen")
-            "stdio"
-          ];
-          enabled = true;
-        };
       };
     };
   };
 
-  systemd.user.services.llama-embedding = {
-    Unit = {
-      Description = "llama.cpp embedding server for lumen";
-      After = [ "network.target" ];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${lib.getExe' cfg.llamaPackage "llama-server"} --embedding --host 127.0.0.1 --port 1234 --alias jina-embeddings-v2-base-code --ubatch-size 2048 -m ${embedModel}";
-      Restart = "on-failure";
-      RestartSec = "5s";
-    };
-    Install = {
-      WantedBy = [ "default.target" ];
-    };
-  };
 }

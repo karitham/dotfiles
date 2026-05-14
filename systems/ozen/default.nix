@@ -1,5 +1,4 @@
-{ pkgs, config, ... }:
-{
+_: {
   system.stateVersion = "25.11";
   nixpkgs.hostPlatform = "x86_64-linux";
   wsl.useWindowsDriver = true;
@@ -12,8 +11,6 @@
   environment.etc."ld.so.conf.d/wsl-nvidia.conf".text = ''
     /usr/lib/wsl/lib
   '';
-
-  home-manager.users.${config.my.username}.dev.opencode.llamaPackage = pkgs.llama-cpp.override { cudaSupport = true; };
 
   hardware.nvidia-container-toolkit = {
     enable = true;
