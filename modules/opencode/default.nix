@@ -58,7 +58,10 @@ lib.mkIf osCfg.enable {
     commands = ./commands;
     agents = ./agents;
     settings = {
-      plugin = [ "@mohak34/opencode-notifier@0.2.2" ];
+      plugin = [
+        "@mohak34/opencode-notifier@0.2.2"
+        "@angdrew/opencode-hashline-plugin@v1.6.6"
+      ];
       experimental = {
         batch_tool = true;
       };
