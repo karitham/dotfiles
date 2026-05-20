@@ -12,6 +12,11 @@
       default = "catppuccin-macchiato";
       description = "OpenCode theme";
     };
+    enableSkepsis = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Install skepsis — local web UI for code review";
+    };
   };
 
   imports = [ ./default.nix ];

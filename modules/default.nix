@@ -23,6 +23,7 @@
         multi-scrobbler = pkgs.callPackage ./pkgs/multi-scrobbler.nix { };
         golangci-lint-langserver = pkgs.callPackage ./pkgs/golangci-lint-langserver.nix { };
         gotools = pkgs.callPackage ./pkgs/gotools.nix { };
+        skepsis = pkgs.callPackage ./pkgs/skepsis.nix { };
 
         wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
 
