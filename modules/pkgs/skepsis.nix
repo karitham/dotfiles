@@ -3,10 +3,9 @@
   buildNpmPackage,
   fetchFromGitHub,
   nodejs,
-  makeWrapper,
 }:
 
-buildNpmPackage rec {
+buildNpmPackage {
   pname = "skepsis";
   version = "devel";
 
@@ -17,7 +16,7 @@ buildNpmPackage rec {
     hash = "sha256-ovFeshhlkCEnds8sPDsyLf61J9AeO3NJgoIIxHyfuCU=";
   };
 
-  npmDepsHash = "sha256-jXgAjPTrYizn2XP7RXXEzgNhQXWKYaJeZuFsD+2Eh3Q=";
+  npmDepsHash = "sha256-cPiaCXYnwreIgqllo3AGYrjDWrHIXUHg+9dPv9w2YFs=";
 
   # Upstream lockfile is missing resolved URLs for ~1/3 of deps (known npm bug).
   # Regenerate it with `npm install --package-lock-only` to fix.
