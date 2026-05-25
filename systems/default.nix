@@ -4,7 +4,10 @@
 
   config.easy-hosts = {
     shared = {
-      modules = [ ../modules/core.nix ];
+      modules = [
+        ../modules/core.nix
+        (_: { environment.defaultPackages = [ ]; })
+      ];
 
       specialArgs = { inherit inputs self; };
     };

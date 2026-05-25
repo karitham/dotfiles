@@ -33,22 +33,8 @@
           mkdir $out
           ${lib.getExe self'.packages.strands-agents-sops} skills --output-dir $out
         '';
-
-        format = pkgs.writeShellApplication {
-          name = "format";
-          runtimeInputs = with pkgs; [
-            treefmt
-            nixfmt
-            nufmt
-            biome
-          ];
-          text = ''
-            cd "''${ROOT:-$(git rev-parse --show-toplevel)}"
-            treefmt "''$@"
-          '';
-        };
       };
-      formatter = pkgs.nixfmt;
+      formatter = pkgs.treefmt;
       devShells.default = pkgs.mkShell {
         packages = with pkgs; [
           sops
