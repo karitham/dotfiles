@@ -6,8 +6,8 @@
 }:
 let
   zjstatus = pkgs.fetchurl {
-    url = "https://github.com/dj95/zjstatus/releases/download/v0.22.0/zjstatus.wasm";
-    sha256 = "0lyxah0pzgw57wbrvfz2y0bjrna9bgmsw9z9f898dgqw1g92dr2d";
+    url = "https://github.com/dj95/zjstatus/releases/download/v0.23.0/zjstatus.wasm";
+    sha256 = "sha256-4AaQEiNSQjnbYYAh5MxdF/gtxL+uVDKJW6QfA/E4Yf8=";
   };
 in
 lib.mkIf osConfig.dev.shell.enable {

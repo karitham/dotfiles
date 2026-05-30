@@ -17,6 +17,7 @@
   catppuccin = {
     enable = true;
     flavor = "macchiato";
+    autoEnable = true;
   };
 
   home-manager = {
@@ -39,7 +40,7 @@
         stateVersion = "25.11";
       };
 
-      catppuccin = { inherit (config.catppuccin) flavor enable; };
+      catppuccin = { inherit (config.catppuccin) flavor enable autoEnable; };
 
       manual = {
         html.enable = false;
