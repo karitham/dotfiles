@@ -12,10 +12,10 @@
       default = "catppuccin-macchiato";
       description = "OpenCode theme";
     };
-    enableSkepsis = lib.mkOption {
+    enableDiffViewer = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Install skepsis — local web UI for code review";
+      description = "Install codiff — local diff viewer for code review";
     };
   };
 

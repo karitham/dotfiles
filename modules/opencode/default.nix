@@ -40,7 +40,7 @@ let
   osCfg = osConfig.dev.opencode;
 in
 lib.mkIf osCfg.enable {
-  home.packages = lib.optionals cfg.enableSkepsis [ self'.packages.skepsis ];
+  home.packages = lib.optionals cfg.enableDiffViewer [ self'.packages.codiff ];
 
   xdg.configFile."opencode/skills".source = pkgs.symlinkJoin {
     name = "opencode-skills";
