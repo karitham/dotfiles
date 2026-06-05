@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   stdenv,
   fetchFromGitHub,
   fetchPnpmDeps,
@@ -93,7 +94,6 @@ stdenv.mkDerivation (finalAttrs: {
     printf 'electron' > $out/lib/codiff/node_modules/electron/path.txt
 
     makeWrapper ${lib.getExe nodejs} $out/bin/codiff \
-      --chdir $out/lib/codiff \
       --set ELECTRON_OVERRIDE_DIST_PATH ${electron}/bin \
       --add-flags $out/lib/codiff/bin/codiff.js
 
@@ -115,6 +115,14 @@ stdenv.mkDerivation (finalAttrs: {
     EOF
 
     runHook postInstall
+  '';
+
+  # Strip the `opencode/skills/` prefix so the output shape matches the other
+  # symlinkJoin'd skills (each top-level entry is a skill name).
+  passthru.opencodeSkill = pkgs.runCommand "codiff-opencode-skill" { } ''
+    mkdir -p $out/codiff
+    cp -r ${finalAttrs.src}/opencode/skills/codiff/. $out/codiff/
+    chmod -R +w $out/codiff
   '';
 
   meta = with lib; {
