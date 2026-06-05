@@ -43,10 +43,30 @@ lib.mkIf osConfig.dev.editor.enable {
     enable = true;
     defaultEditor = true;
 
-    package = inputs'.helix.packages.helix.overrideAttrs {
-      pname = "helix-steel";
-      cargoBuildFeatures = [ "steel" ];
-    };
+    package =
+      (inputs'.helix.packages.helix.override {
+        # The pinned rev for tree-sitter-rpmspec in helix's languages.toml no
+        # longer resolves on the upstream repo, and the latest revs moved
+        # parser.c into a rpmspec/ subdir that the helix grammar build
+        # doesn't understand. Pin to the last rev with the original layout.
+        grammarOverlays = [
+          (final: prev: {
+            rpmspec = prev.rpmspec.overrideAttrs (_: {
+              src = builtins.fetchTree {
+                type = "git";
+                url = "https://gitlab.com/cryptomilk/tree-sitter-rpmspec";
+                rev = "7510373ef3384af3d083cdbed93c930bd8b77541";
+                ref = "HEAD";
+                shallow = true;
+              };
+            });
+          })
+        ];
+      }).overrideAttrs
+        {
+          pname = "helix-steel";
+          cargoBuildFeatures = [ "steel" ];
+        };
 
     plugins = with inputs.helix-plugins.plugins; [ fake-warp ];
 
