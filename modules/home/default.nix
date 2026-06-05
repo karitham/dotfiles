@@ -37,7 +37,8 @@
 
       home = {
         inherit (config.my) username;
-        stateVersion = "25.11";
+        stateVersion = "26.05";
+        enableNixpkgsReleaseCheck = false;
       };
 
       catppuccin = { inherit (config.catppuccin) flavor enable autoEnable; };
