@@ -8,6 +8,7 @@
   electron,
   nodejs,
   cacert,
+  git,
   makeWrapper,
 }:
 
@@ -16,15 +17,12 @@ stdenv.mkDerivation (finalAttrs: {
   version = "1.1.0";
 
   src = fetchFromGitHub {
-    owner = "nkzw-tech";
+    owner = "karitham";
     repo = "codiff";
-    # v1.1.0 is an annotated tag pointing to this commit.
-    rev = "28b1893e58c98f502c5d68f503bfb2548e39b452";
-    hash = "sha256-EznBUsTCfRxG7t2YsrvUM0ZqSRlkKha7SVQKkKybmbA=";
+    rev = "add-opencode-backend";
+    hash = "sha256-AtYPn/hD0GKKlBASMQ79R5R9qRLTAHwyXv7AaTtORAI=";
   };
 
-  # nixpkgs 26.05 no longer ships buildPnpmPackage; fetch the pnpm store
-  # ourselves and let pnpmConfigHook wire it into pnpm install.
   pnpmDeps = fetchPnpmDeps {
     pname = "${finalAttrs.pname}-pnpm-deps";
     inherit (finalAttrs) version src;
@@ -32,10 +30,19 @@ stdenv.mkDerivation (finalAttrs: {
     hash = "sha256-wyivubILGVGcgryizwX41t6zbUNWKz/s9ssrj271EJ4=";
   };
 
-  # electron's npm postinstall downloads its binary; we substitute nixpkgs'
-  # electron at runtime by rewriting node_modules/electron/path.txt, so skip
-  # the download here.
-  ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
+  env = {
+    # Skip pnpm's electron download;
+    # installPhase rewrites node_modules/electron/path.txt to nixpkgs' electron store path.
+    ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
+
+    # vite-plus (the Rust-based `vp` build tool) needs a CA bundle to fetch
+    # remote modules during the build. Nix's sandbox hides the system one.
+    SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
+
+    # pnpm refuses to clean its modules dir without a TTY; we're in a non-TTY
+    # sandbox, so opt into CI behaviour.
+    CI = "true";
+  };
 
   nativeBuildInputs = [
     pnpmConfigHook
@@ -45,11 +52,8 @@ stdenv.mkDerivation (finalAttrs: {
   buildInputs = [
     nodejs
     pnpm
+    git
   ];
-
-  # vite-plus (the Rust-based `vp` build tool) needs a CA bundle to fetch
-  # remote modules during the build. Nix's sandbox hides the system one.
-  env.SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
 
   # pnpmConfigHook (via postConfigureHooks) already ran `pnpm install --offline
   # --ignore-scripts --frozen-lockfile` and patched shebangs. We now need to
@@ -62,6 +66,16 @@ stdenv.mkDerivation (finalAttrs: {
     pnpm rebuild @swc/core @tailwindcss/oxide
     pnpm exec vp build
     runHook postBuild
+  '';
+
+  # Run the unit tests via vite-plus. Runs after buildPhase so dist/ is in
+  # place. The full test suite is fast enough that we always run it as part
+  # of the build — failing tests should fail the package.
+  doCheck = true;
+  checkPhase = ''
+    runHook preCheck
+    pnpm test
+    runHook postCheck
   '';
 
   installPhase = ''
