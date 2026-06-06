@@ -16,12 +16,16 @@
 stdenv.mkDerivation (finalAttrs: {
   pname = "codiff";
   version = "1.1.0";
+  outputs = [
+    "out"
+    "lib"
+  ];
 
   src = fetchFromGitHub {
     owner = "karitham";
     repo = "codiff";
     rev = "add-opencode-backend";
-    hash = "sha256-AtYPn/hD0GKKlBASMQ79R5R9qRLTAHwyXv7AaTtORAI=";
+    hash = "sha256-4sSZ9jGLmhhFOwFn2Oqg80TtZZq0GxiAcOMQw7o4SC0=";
   };
 
   pnpmDeps = fetchPnpmDeps {
@@ -83,7 +87,8 @@ stdenv.mkDerivation (finalAttrs: {
     runHook preInstall
 
     mkdir -p $out/lib/codiff $out/bin
-    cp -r . $out/lib/codiff
+    # Only copy runtime essentials: bin/, dist/, node_modules/, package.json
+    cp -r bin dist node_modules package.json $out/lib/codiff/
 
     # The `electron` npm module reads `path.txt` for the *relative* binary
     # name inside its `dist/` directory. Codiff spawns whatever it imports.
@@ -114,15 +119,11 @@ stdenv.mkDerivation (finalAttrs: {
     StartupNotify=true
     EOF
 
-    runHook postInstall
-  '';
+    # Install AI tool integration files to the lib output
+    mkdir -p $lib
+    cp -r opencode claude codex $lib/
 
-  # Strip the `opencode/skills/` prefix so the output shape matches the other
-  # symlinkJoin'd skills (each top-level entry is a skill name).
-  passthru.opencodeSkill = pkgs.runCommand "codiff-opencode-skill" { } ''
-    mkdir -p $out/codiff
-    cp -r ${finalAttrs.src}/opencode/skills/codiff/. $out/codiff/
-    chmod -R +w $out/codiff
+    runHook postInstall
   '';
 
   meta = with lib; {

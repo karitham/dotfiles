@@ -47,9 +47,11 @@ lib.mkIf osCfg.enable {
     paths = [
       self'.packages.strands-sops-skills
       ./skills
-    ]
-    ++ lib.optional cfg.enableDiffViewer self'.packages.codiff.opencodeSkill;
+    ];
   };
+
+  xdg.configFile."opencode/tools/codiff.ts".source =
+    lib.mkIf cfg.enableDiffViewer "${self'.packages.codiff.lib}/opencode/tools/codiff.ts";
 
   xdg.configFile."opencode/plugins/skills-reminder.ts".source = ./plugins/skills-reminder.ts;
 
