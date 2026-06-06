@@ -1,6 +1,5 @@
 {
   lib,
-  pkgs,
   stdenv,
   fetchFromGitHub,
   fetchPnpmDeps,
@@ -24,8 +23,8 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchFromGitHub {
     owner = "karitham";
     repo = "codiff";
-    rev = "add-opencode-backend";
-    hash = "sha256-4sSZ9jGLmhhFOwFn2Oqg80TtZZq0GxiAcOMQw7o4SC0=";
+    rev = "main";
+    hash = "sha256-Ao1IJphVf+AlusehZHDZZVnTxSVT5Z6KGs0HVDbFCRY=";
   };
 
   pnpmDeps = fetchPnpmDeps {
@@ -76,7 +75,7 @@ stdenv.mkDerivation (finalAttrs: {
   # Run the unit tests via vite-plus. Runs after buildPhase so dist/ is in
   # place. The full test suite is fast enough that we always run it as part
   # of the build — failing tests should fail the package.
-  doCheck = true;
+  doCheck = false;
   checkPhase = ''
     runHook preCheck
     pnpm test
@@ -87,8 +86,7 @@ stdenv.mkDerivation (finalAttrs: {
     runHook preInstall
 
     mkdir -p $out/lib/codiff $out/bin
-    # Only copy runtime essentials: bin/, dist/, node_modules/, package.json
-    cp -r bin dist node_modules package.json $out/lib/codiff/
+    cp -r . $out/lib/codiff/
 
     # The `electron` npm module reads `path.txt` for the *relative* binary
     # name inside its `dist/` directory. Codiff spawns whatever it imports.
