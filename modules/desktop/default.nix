@@ -6,7 +6,6 @@
     ../../modules/home
     ../locale.nix
     ../nix.nix
-    ../cachix.nix
     ../hardware/peripherals.nix
   ];
 

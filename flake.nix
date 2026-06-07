@@ -85,14 +85,14 @@
     extra-substituters = [
       "https://helix.cachix.org"
       "https://niri.cachix.org"
-      "https://karitham.cachix.org"
       "https://cache.numtide.com"
+      "https://nix-cache.karitham.dev/dotfiles"
     ];
     extra-trusted-public-keys = [
       "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
-      "karitham.cachix.org-1:Q0wdHZsCssuepIrtx83gHibE0LTDYLVNnvaV3Nms9U0="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "dotfiles:1EQBeGcPmLGKAW4WxYGfyyKOVI4rd/hM58QnIPQdMGI="
     ];
   };
 }

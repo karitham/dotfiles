@@ -34,8 +34,6 @@
     };
   };
 
-  environment.etc."nix/inputs/nixpkgs".source = "${inputs.nixpkgs}";
-
   nixpkgs = {
     config = {
       allowUnfree = true;
@@ -46,5 +44,32 @@
   programs.nh = {
     enable = true;
     flake = "/home/${config.my.username}/dotfiles";
+  };
+
+  environment = {
+    etc."nix/inputs/nixpkgs".source = "${inputs.nixpkgs}";
+    systemPackages = with pkgs; [ attic-client ];
+  };
+
+  systemd = {
+    services.attic-push = {
+      description = "Push NixOS system closure to Attic cache";
+      after = [ "network-online.target" ];
+      wants = [ "network-online.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.attic-client}/bin/attic push dotfiles /run/current-system";
+        User = "root";
+        Group = "root";
+      };
+    };
+
+    paths.attic-push = {
+      description = "Watch for NixOS system profile changes";
+      pathConfig = {
+        PathChanged = "/run/current-system";
+      };
+      wantedBy = [ "multi-user.target" ];
+    };
   };
 }

@@ -16,7 +16,6 @@ in
     ../locale.nix
     ../home
     ../nix.nix
-    ../cachix.nix
   ];
 
   dev.enable = true;
