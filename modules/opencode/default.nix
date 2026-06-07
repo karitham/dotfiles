@@ -138,6 +138,11 @@ lib.mkIf osCfg.enable {
           enabled = false;
         };
 
+        outline = {
+          type = "remote";
+          url = "https://outline.dolly-ruffe.ts.net/mcp";
+          enabled = true;
+        };
       };
     };
   };
