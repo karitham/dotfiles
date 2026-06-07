@@ -12,6 +12,8 @@ _: {
     /usr/lib/wsl/lib
   '';
 
+  home-manager.users.kar.dev.opencode.enableDiffViewer = false;
+
   hardware.nvidia-container-toolkit = {
     enable = true;
     mount-nvidia-executables = false; # https://github.com/nix-community/NixOS-WSL/issues/578

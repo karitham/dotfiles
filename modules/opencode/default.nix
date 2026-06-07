@@ -42,18 +42,20 @@ in
 lib.mkIf osCfg.enable {
   home.packages = lib.optionals cfg.enableDiffViewer [ self'.packages.codiff ];
 
-  xdg.configFile."opencode/skills".source = pkgs.symlinkJoin {
-    name = "opencode-skills";
-    paths = [
-      self'.packages.strands-sops-skills
-      ./skills
-    ];
+  xdg.configFile = {
+    "opencode/skills".source = pkgs.symlinkJoin {
+      name = "opencode-skills";
+      paths = [
+        self'.packages.strands-sops-skills
+        ./skills
+      ];
+    };
+
+    "opencode/plugins/skills-reminder.ts".source = ./plugins/skills-reminder.ts;
+  }
+  // lib.optionalAttrs cfg.enableDiffViewer {
+    "opencode/tools/codiff.ts".source = "${self'.packages.codiff.lib}/opencode/tools/codiff.ts";
   };
-
-  xdg.configFile."opencode/tools/codiff.ts".source =
-    lib.mkIf cfg.enableDiffViewer "${self'.packages.codiff.lib}/opencode/tools/codiff.ts";
-
-  xdg.configFile."opencode/plugins/skills-reminder.ts".source = ./plugins/skills-reminder.ts;
 
   programs.opencode = {
     enable = true;
