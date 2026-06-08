@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, ... }:
 {
   options.dev.opencode = {
     enable = lib.mkEnableOption "OpenCode AI-assisted development environment";
@@ -11,11 +11,6 @@
       type = lib.types.str;
       default = "catppuccin-macchiato";
       description = "OpenCode theme";
-    };
-    enableDiffViewer = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Install codiff — local diff viewer for code review";
     };
   };
 

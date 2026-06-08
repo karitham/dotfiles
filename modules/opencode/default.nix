@@ -40,8 +40,6 @@ let
   osCfg = osConfig.dev.opencode;
 in
 lib.mkIf osCfg.enable {
-  home.packages = lib.optionals cfg.enableDiffViewer [ self'.packages.codiff ];
-
   xdg.configFile = {
     "opencode/skills".source = pkgs.symlinkJoin {
       name = "opencode-skills";
@@ -52,9 +50,6 @@ lib.mkIf osCfg.enable {
     };
 
     "opencode/plugins/skills-reminder.ts".source = ./plugins/skills-reminder.ts;
-  }
-  // lib.optionalAttrs cfg.enableDiffViewer {
-    "opencode/tools/codiff.ts".source = "${self'.packages.codiff.lib}/opencode/tools/codiff.ts";
   };
 
   programs.opencode = {
