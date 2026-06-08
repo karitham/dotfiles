@@ -52,7 +52,7 @@ lib.mkIf osConfig.dev.editor.enable {
         grammarOverlays = [
           (final: prev: {
             rpmspec = prev.rpmspec.overrideAttrs (_: {
-              src = builtins.fetchTree {
+              src = fetchTree {
                 type = "git";
                 url = "https://gitlab.com/cryptomilk/tree-sitter-rpmspec";
                 rev = "7510373ef3384af3d083cdbed93c930bd8b77541";
@@ -148,6 +148,7 @@ lib.mkIf osConfig.dev.editor.enable {
         };
 
       editor = {
+        insecure = true; # I hate workspace trust features
         scrolloff = 10;
         text-width = 120;
         rulers = [ 120 ];
