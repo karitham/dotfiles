@@ -2,6 +2,7 @@
   inputs,
   config,
   pkgs,
+  lib,
   ...
 }:
 {
@@ -51,25 +52,19 @@
     systemPackages = with pkgs; [ attic-client ];
   };
 
-  systemd = {
-    services.attic-push = {
-      description = "Push NixOS system closure to Attic cache";
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.attic-client}/bin/attic push dotfiles /run/current-system";
-        User = "root";
-        Group = "root";
-      };
-    };
-
-    paths.attic-push = {
-      description = "Watch for NixOS system profile changes";
-      pathConfig = {
-        PathChanged = "/run/current-system";
-      };
-      wantedBy = [ "multi-user.target" ];
+  systemd.services.attic-push = {
+    description = "Push NixOS system closure to Attic cache";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.attic-client}/bin/attic push dotfiles /run/current-system";
+      User = "root";
+      Group = "root";
     };
   };
+
+  system.activationScripts.attic-push = pkgs.lib.mkAfter ''
+    ${lib.getExe' pkgs.systemd "systemctl"} start attic-push.service || true
+  '';
 }
