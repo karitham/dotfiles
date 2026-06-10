@@ -58,13 +58,16 @@
     wants = [ "network-online.target" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.attic-client}/bin/attic push dotfiles /run/current-system";
+      EnvironmentFile = "/run/attic-push.env";
+      ExecStart = "${pkgs.attic-client}/bin/attic push dotfiles \"$CLOSURE\"";
       User = "root";
       Group = "root";
     };
   };
 
   system.activationScripts.attic-push = pkgs.lib.mkAfter ''
+    mkdir -p /run
+    printf 'CLOSURE=%s\n' "$systemConfig" > /run/attic-push.env
     ${lib.getExe' pkgs.systemd "systemctl"} start attic-push.service || true
   '';
 }
