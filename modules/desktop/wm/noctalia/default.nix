@@ -5,9 +5,6 @@
   lib,
   ...
 }:
-let
-  settings = lib.importJSON ./settings.json;
-in
 {
   imports = [ inputs.noctalia.homeModules.default ];
 
@@ -17,27 +14,86 @@ in
       style.name = "kvantum";
     };
 
-    home.file.".cache/noctalia/wallpapers.json" = {
-      text = builtins.toJSON { defaultWallpaper = config.desktop.wallpaper.image; };
-    };
-
     programs.niri.settings = {
-      spawn-at-startup = [ { command = [ (lib.getExe config.programs.noctalia-shell.package) ]; } ];
+      spawn-at-startup = [ { command = [ (lib.getExe config.programs.noctalia.package) ]; } ];
 
       binds = {
-        "Mod+R".action.spawn = [
-          "noctalia-shell"
-          "ipc"
-          "call"
+        "Alt+Space".action.spawn = [
+          "noctalia"
+          "msg"
+          "panel-toggle"
           "launcher"
-          "toggle"
         ];
       };
     };
 
-    programs.noctalia-shell = {
+    programs.noctalia = {
       enable = true;
-      inherit settings;
+      settings = {
+        bar.widgets = {
+          auto_hide = true;
+          margin_ends = 10;
+          reserve_space = false;
+          start = [
+            "launcher"
+            "workspaces"
+          ];
+        };
+
+        control_center.shortcuts = [
+          { type = "wifi"; }
+          { type = "bluetooth"; }
+          { type = "power_profile"; }
+          { type = "audio"; }
+        ];
+
+        dock.enabled = false;
+
+        location.address = "Lille";
+        weather.enabled = true;
+
+        lockscreen_widgets = {
+          enabled = false;
+          schema_version = 2;
+          grid = {
+            cell_size = 16;
+            major_interval = 4;
+            visible = true;
+          };
+        };
+
+        notification = {
+          enable_daemon = false;
+        };
+
+        osd = {
+          monitors = [ "DP-1" ];
+        };
+
+        plugins = {
+          enabled = [ ];
+        };
+
+        shell = {
+          font_family = "Lexend";
+          offline_mode = true;
+          password_style = "random";
+        };
+
+        theme = {
+          builtin = "Catppuccin";
+
+          templates = {
+            enable_builtin_templates = false;
+            enable_community_templates = false;
+          };
+        };
+
+        wallpaper = {
+          enabled = true;
+          default.path = config.desktop.wallpaper.image;
+        };
+      };
     };
   };
 }
