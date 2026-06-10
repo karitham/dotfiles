@@ -132,7 +132,7 @@ lib.mkIf osCfg.enable {
           headers = {
             Authorization = "Bearer {env:GITHUB_TOKEN}";
           };
-          enabled = false;
+          enabled = true;
         };
 
         outline = {

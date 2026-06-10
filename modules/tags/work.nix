@@ -1,5 +1,4 @@
-{ config, lib, ... }:
-{
+{ config, lib, ... }: {
   config = lib.mkIf config.desktop.enable {
     desktop.yubikey.enable = true;
     programs._1password.enable = true;
@@ -16,14 +15,14 @@
         linear = {
           type = "remote";
           url = "https://mcp.linear.app/mcp";
-          enabled = false; # disable by default because it breaks google models
+          enabled = true;
           headers = {
             Authorization = "Bearer {env:LINEAR_API_KEY}";
           };
         };
         sentry = {
           type = "remote";
-          enabled = false;
+          enabled = true;
           url = "{env:SENTRY_MCP_URL}";
           oauth = { };
         };
