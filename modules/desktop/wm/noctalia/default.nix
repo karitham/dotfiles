@@ -63,7 +63,7 @@
         };
 
         notification = {
-          enable_daemon = false;
+          enable_daemon = true;
         };
 
         osd = {
