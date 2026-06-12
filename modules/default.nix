@@ -1,5 +1,4 @@
-{ self, ... }:
-{
+{ self, ... }: {
   systems = [
     "x86_64-linux"
     "aarch64-linux"
@@ -17,10 +16,6 @@
     {
       packages = {
         pokego = pkgs.callPackage ./pkgs/pokego.nix { };
-        http-nu = pkgs.callPackage ./pkgs/http-nu.nix { };
-        malachite = pkgs.callPackage ./pkgs/malachite.nix { };
-        litestream = pkgs.callPackage ./pkgs/litestream.nix { };
-        multi-scrobbler = pkgs.callPackage ./pkgs/multi-scrobbler.nix { };
         golangci-lint-langserver = pkgs.callPackage ./pkgs/golangci-lint-langserver.nix { };
         gotools = pkgs.callPackage ./pkgs/gotools.nix { };
 

@@ -1,5 +1,4 @@
-{ config, ... }:
-{
+{ config, ... }: {
   systemd.services.flood.serviceConfig = {
     SupplementaryGroups = [ config.services.rtorrent.group ];
   };

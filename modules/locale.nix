@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
   time.timeZone = "Europe/Paris";
 
   console = {

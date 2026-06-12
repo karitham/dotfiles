@@ -1,5 +1,4 @@
-{ config, self, ... }:
-{
+{ config, self, ... }: {
   imports = [
     self.nixosModules.desktop
     self.nixosModules.dev

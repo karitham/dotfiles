@@ -1,5 +1,4 @@
-{ config, self, ... }:
-{
+{ config, self, ... }: {
   imports = [ self.nixosModules.multi-scrobbler ];
 
   sops.secrets."multi-scrobbler.json" = {

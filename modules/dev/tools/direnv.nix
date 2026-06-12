@@ -1,5 +1,4 @@
-{ osConfig, lib, ... }:
-{
+{ osConfig, lib, ... }: {
   config = lib.mkIf osConfig.dev.tools.enable {
     programs.direnv = {
       enable = true;

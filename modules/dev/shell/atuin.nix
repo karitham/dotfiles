@@ -1,5 +1,4 @@
-{ osConfig, lib, ... }:
-{
+{ osConfig, lib, ... }: {
   config = lib.mkIf osConfig.dev.shell.enable {
     programs.atuin = {
       enable = true;

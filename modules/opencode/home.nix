@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{ lib, ... }: {
   options.dev.opencode = {
     enable = lib.mkEnableOption "OpenCode AI-assisted development environment";
     enableMcp = lib.mkOption {

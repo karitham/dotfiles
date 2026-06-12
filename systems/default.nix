@@ -1,5 +1,4 @@
-{ self, inputs, ... }:
-{
+{ self, inputs, ... }: {
   imports = [ inputs.easy-hosts.flakeModule ];
 
   config.easy-hosts = {

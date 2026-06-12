@@ -1,5 +1,4 @@
-{ lib, modulesPath, ... }:
-{
+{ lib, modulesPath, ... }: {
   imports = [
     (modulesPath + "/installer/sd-card/sd-image-aarch64-installer.nix")
     ./torrent.nix

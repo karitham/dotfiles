@@ -1,5 +1,4 @@
-{ pkgs, config, ... }:
-{
+{ pkgs, config, ... }: {
   imports = [ ./hardware.nix ];
   system.stateVersion = "26.05";
   desktop.noctalia.enable = true;
