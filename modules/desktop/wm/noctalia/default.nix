@@ -50,7 +50,6 @@
         dock.enabled = false;
 
         location.address = "Lille";
-        weather.enabled = true;
 
         lockscreen_widgets = {
           enabled = false;
@@ -62,19 +61,12 @@
           };
         };
 
-        notification = {
-          enable_daemon = true;
-        };
-
-        osd = {
-          monitors = [ "DP-1" ];
-        };
-
-        plugins = {
-          enabled = [ ];
-        };
+        notification.monitors = [ "eDP-1" ];
+        osd.monitors = [ "eDP-1" ];
+        plugins.enabled = [ ];
 
         shell = {
+          animation.speed = 2.0;
           font_family = "Lexend";
           offline_mode = true;
           password_style = "random";
