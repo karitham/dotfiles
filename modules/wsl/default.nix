@@ -36,7 +36,10 @@ in
   };
 
   environment = {
-    variables.BROWSER = mkForce "wsl-open";
+    variables = {
+      BROWSER = mkForce "wsl-open";
+      COPY_REMOTE_PATH_CLIPBOARD = "clip.exe";
+    };
     systemPackages = [ pkgs.wsl-open ];
   };
 

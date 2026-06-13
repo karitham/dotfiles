@@ -95,9 +95,7 @@ lib.mkIf osConfig.dev.editor.enable {
       keys =
         let
           plusMenu = {
-            g = ''
-              :sh ${./copy-remote-path.nu} "%{buffer_name}" --line-start "%{selection_line_start}" --line-end "%{selection_line_end}"
-            '';
+            g = ":sh ${./copy-remote-path.nu} %{buffer_name} --line-start %{selection_line_start} --line-end %{selection_line_end}";
             b = ":echo %sh{git blame -L %{cursor_line},+1 %{buffer_name}}";
             p = ":sh echo %{buffer_name} | ${pkgs.wl-clipboard}/bin/wl-copy";
           };
