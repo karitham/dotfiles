@@ -4,7 +4,7 @@
     "aarch64-linux"
   ];
 
-  imports = [ ../systems/default.nix ];
+  imports = [ ./systems/default.nix ];
 
   perSystem =
     {
@@ -44,15 +44,13 @@
     lib.sdImageFromSystem = system: system.config.system.build.sdImage;
 
     homeModules = {
-      dev = import ./dev/home.nix;
-      desktop = import ./desktop/home.nix;
+      dev = import ./modules/dev/home.nix;
+      desktop = import ./modules/desktop/home.nix;
     };
 
     nixosModules = {
-      dev = import ./dev/nixos.nix;
-      desktop = import ./desktop/nixos.nix;
-      acme-nginx = import ./services/acme-nginx.nix;
-      multi-scrobbler = import ./services/multi-scrobbler.nix;
+      dev = import ./modules/dev/nixos.nix;
+      desktop = import ./modules/desktop/nixos.nix;
     };
   };
 }

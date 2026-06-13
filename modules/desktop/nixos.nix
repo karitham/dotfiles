@@ -5,7 +5,7 @@ let
 in
 {
   imports = [
-    ../options/desktop.nix
+    ./options.nix
     ./desktop.nix
     ./sound.nix
     ./yubikey.nix

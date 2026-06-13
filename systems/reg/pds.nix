@@ -1,10 +1,16 @@
 { config, lib, ... }:
 let
   inherit (lib) mkMerge mkDefault;
+
+  hosts = [
+    {
+      domain = "0xf.fr";
+      extraDomainNames = [ "*.0xf.fr" ];
+      proxyPort = config.services.bluesky-pds.settings.PDS_PORT;
+    }
+  ];
 in
 {
-  imports = [ ../../modules/services/acme-nginx.nix ];
-
   sops = {
     secrets.pds = {
       format = "dotenv";
@@ -32,16 +38,45 @@ in
     ];
   };
 
-  services.acme-nginx = {
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
+
+  security.acme = {
+    defaults.email = "netop@0xf.fr";
+    acceptTerms = true;
+    certs = lib.listToAttrs (
+      map (host: {
+        name = host.domain;
+        value = {
+          dnsProvider = "cloudflare";
+          credentialsFile = config.sops.secrets.cloudflare-api.path;
+          inherit (config.services.nginx) group;
+          inherit (host) domain;
+          extraDomainNames = host.extraDomainNames;
+          reloadServices = [ "nginx" ];
+        };
+      }) hosts
+    );
+  };
+
+  services.nginx = {
     enable = true;
-    email = "netop@0xf.fr";
-    credentialsFile = config.sops.secrets.cloudflare-api.path;
-    hosts = [
-      {
-        domain = "0xf.fr";
-        extraDomainNames = [ "*.0xf.fr" ];
-        proxyPort = config.services.bluesky-pds.settings.PDS_PORT;
-      }
-    ];
+    recommendedProxySettings = true;
+    recommendedTlsSettings = true;
+    virtualHosts = lib.listToAttrs (
+      map (host: {
+        name = "~(.*)\\.${lib.escapeRegex host.domain}$";
+        value = {
+          useACMEHost = host.domain;
+          forceSSL = true;
+          locations."/" = {
+            proxyPass = "http://127.0.0.1:${toString host.proxyPort}";
+            proxyWebsockets = true;
+          };
+        };
+      }) hosts
+    );
   };
 }

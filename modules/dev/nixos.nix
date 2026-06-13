@@ -10,7 +10,7 @@ let
 in
 {
   imports = [
-    ../options/dev.nix
+    ./options.nix
     ./docker
   ];
 

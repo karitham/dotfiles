@@ -3,7 +3,6 @@
     inputs.sops-nix.nixosModules.sops
     ./hardware.nix
     ./pds.nix
-    # ./multi-scrobbler.nix
   ];
 
   boot.tmp.cleanOnBoot = true;
