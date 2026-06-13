@@ -5,7 +5,7 @@
   ...
 }:
 {
-  my.username = lib.mkDefault "root";
+  my.username = "root";
 
   services = {
     tailscale = {

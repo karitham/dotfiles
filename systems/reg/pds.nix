@@ -51,7 +51,9 @@ in
         name = host.domain;
         value = {
           dnsProvider = "cloudflare";
-          credentialsFile = config.sops.secrets.cloudflare-api.path;
+          credentialFiles = {
+            CLOUDFLARE_DNS_API_TOKEN_FILE = config.sops.secrets.cloudflare-api.path;
+          };
           inherit (config.services.nginx) group;
           inherit (host) domain;
           extraDomainNames = host.extraDomainNames;
