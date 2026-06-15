@@ -49,19 +49,18 @@ lib.mkIf osCfg.enable {
       ];
     };
 
-    "opencode/plugins/skills-reminder.ts".source = ./plugins/skills-reminder.ts;
   };
 
   programs.opencode = {
     enable = true;
     package = opencodePkg;
     enableMcpIntegration = cfg.enableMcp;
-    context = ./AGENTS.md;
     commands = ./commands;
     agents = ./agents;
     settings = {
+      instructions = [ ./AGENTS.md ];
       plugin = [
-        "@mohak34/opencode-notifier@0.2.2"
+        "@mohak34/opencode-notifier@0.2.8"
         "@angdrew/opencode-hashline-plugin@v1.6.6"
       ];
       experimental = {
