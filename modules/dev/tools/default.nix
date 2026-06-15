@@ -23,6 +23,7 @@ in
       pkgs.fd
       pkgs.uutils-coreutils-noprefix
       pkgs.libnotify
+      pkgs.prr # code review
       scripts
     ];
 
