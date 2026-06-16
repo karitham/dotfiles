@@ -1,80 +1,145 @@
 #!/usr/bin/env -S nu --no-config-file
-# jj-review: PR review workflow with jj, prr, hx, and zellij.
-# Requires: jj, gh, git, prr, hx (helix), zellij.
+# jj-review: PR review workflow with jj, prr, and hx.
+# Requires: jj, gh, git, prr, hx (helix).
 
-# ── helpers ──────────────────────────────────────────────────────────
-
-def fetch-pr [meta: record] {
-    # Always fetch origin — owns the base branch (PR's target).
-    jj git fetch --remote origin
-
-    # For cross-repo PRs, also fetch the fork to get the head.
-    if $meta.isCrossRepository {
-        let owner = $meta.headRepositoryOwner.login
-        let repo_url = $meta.headRepository.url
-        let existing = git remote | lines
-        if not ($owner in $existing) {
-            jj git remote add $owner $repo_url
-        }
-        jj git fetch --remote $owner
-    }
-}
-
-# ── Squash the PR and open zellij ─────────────────────────────────
-
-# Squash all PR commits onto the PR's target branch (or --base), land
-# in the squash, then open the `jj-review` zellij layout (managed by
-# Nix, includes the zjstatus bar) with hx (left) and prr (right).
-#
-# Design:
-# - The prr ref (full GitHub URI) is written to /tmp/jj-review-ref;
-#   the `jj-review` zellij layout reads it via
-#   `prr edit $(cat /tmp/jj-review-ref)`.
-# - Pane commands are `sh -c "hx; nu"` and
-#   `sh -c "prr edit ...; nu"`. zellij panes are exec-style (command
-#   = argc, args = argv), so chaining has to happen inside sh. After
-#   hx/prr exits, nu runs interactively — no dead pane.
-# - sh inherits the zellij session env (PATH, NIX_LD_LIBRARY_PATH,
-#   GITHUB_TOKEN, etc.). No manual env wiring.
-# - `zellij --layout jj-review` creates a new tab when already in a
-#   session (preserving the existing layout) and starts a new session
-#   otherwise. No branch on $env.ZELLIJ needed.
-def main [
-    url: string
-    --base: string       # jj revset to squash onto (default: PR's target branch)
-] {
-    # Fetch PR metadata — inline to avoid lazy-stream issues with from json
+# Fetch PR metadata from gh. Returns a record with url, number,
+# baseRefName, headRefOid, baseRefOid, etc.
+def gh-pr-metadata [url: string]: nothing -> record {
     let raw = (
-        do { gh pr view $url --json "number,title,baseRefName,headRefName,isCrossRepository,headRepository,headRepositoryOwner,headRefOid,baseRefOid" }
+        do {
+            gh pr view $url --json "url,number,title,baseRefName,headRefName,isCrossRepository,headRepository,headRepositoryOwner,headRefOid,baseRefOid"
+        }
         | complete
     )
     if $raw.exit_code != 0 {
         error make {msg: $"gh pr view failed: ($raw.stderr)"}
     }
-    let meta = $raw.stdout | str trim | from json
+    $raw.stdout | str trim | from json
+}
 
-    # Default to the PR's target branch (baseRefName), not trunk().
-    # This handles PRs into feature branches correctly — the squash
-    # sits on the PR's actual target, and the revset
-    # baseRefOid..headRefOid (ancestors(head) & ~ancestors(base))
-    # gives just the PR's commits regardless of whether the base
-    # branch has moved past the original fork point.
+# Fetch the remotes needed for a PR: origin (base) and the fork head
+# for cross-repository PRs.
+def fetch-pr-remotes [meta: record]: nothing -> nothing {
+    jj git fetch --remote origin
+    if not $meta.isCrossRepository { return }
+
+    let owner = $meta.headRepositoryOwner.login
+    let repo_url = $meta.headRepository.url
+    let existing = git remote | lines
+    if not ($owner in $existing) {
+        jj git remote add $owner $repo_url
+    }
+    jj git fetch --remote $owner
+}
+
+# Squash the PR commits onto the target branch in a new jj change.
+def squash-review-change [meta: record, base_rev: string]: nothing -> nothing {
+    jj new $base_rev
+    jj squash --ignore-immutable -m $"Squashed PR #($meta.number) for review.\njj-review: head=($meta.headRefOid) base=($meta.baseRefOid)" -t @ -f $"($meta.baseRefOid)..($meta.headRefOid)"
+}
+
+# Discover an existing review's path by opening it in a no-op editor.
+# More reliable than reconstructing the path because prr uses its own
+# configured workdir and local config.
+def existing-prr-path [url: string]: nothing -> string {
+    let edit = do { prr edit $url } | complete
+    if $edit.exit_code != 0 {
+        return (error make {msg: $"prr edit failed: ($edit.stderr)"})
+    }
+    let path = $edit.stdout | str trim
+    if $path == "" {
+        return (error make {msg: "prr edit returned an empty path"})
+    }
+    $path
+}
+
+# Return the path to the prr review file, downloading it if necessary.
+# If the review already exists with unsubmitted changes, re-use the existing
+# file instead of failing.
+def fetch-prr-path [url: string]: nothing -> string {
+    let get = do { prr get $url } | complete
+    if $get.exit_code == 0 {
+        let path = $get.stdout | str trim
+        if $path != "" {
+            return $path
+        }
+    }
+
+    if ($get.stderr | str contains "unsubmitted changes") {
+        return (existing-prr-path $url)
+    }
+
+    return (error make {msg: $"prr get failed: ($get.stderr)"})
+}
+
+# Return the jj workspace root so helix can run from the repo regardless of
+# where this script was invoked.
+def jj-repo-root []: nothing -> string {
+    let root = do { jj root } | complete
+    if $root.exit_code != 0 {
+        error make {msg: $"jj root failed: ($root.stderr)"}
+    }
+    $root.stdout | str trim
+}
+
+# Pick the first modified or added file from the squashed PR for the left
+# pane. Deleted files are skipped because they cannot be opened as review
+# context. Returns { path, temp } where temp is true for fallback empty files.
+def left-pane-file []: nothing -> record<path: string, temp: bool> {
+    let summary = do { jj diff --summary } | complete
+    if $summary.exit_code != 0 {
+        return {
+            path: (mktemp)
+            temp: true
+        }
+    }
+
+    let files = ($summary.stdout
+        | lines
+        | parse "{status} {path}"
+        | where status in [M A]
+    )
+    if ($files | is-empty) {
+        return {
+            path: (mktemp)
+            temp: true
+        }
+    }
+    {path: $files.0.path, temp: false}
+}
+
+# Open helix with a changed file on the left and the review file on the right.
+# Uses the repo root as the working directory so relative paths from jj diff
+# resolve correctly and the file picker starts in the repo.
+def open-helix-review [prr_file: string]: nothing -> nothing {
+    if not ($prr_file | path exists) {
+        error make {msg: $"prr review file not found: ($prr_file)"}
+    }
+
+    let left = (left-pane-file)
+    let repo_root = (jj-repo-root)
+    hx --working-dir $repo_root --vsplit $left.path $prr_file
+    if $left.temp {
+        rm $left.path
+    }
+}
+
+def main [
+    url: string
+    --base: string       # jj revset to squash onto (default: PR's target branch)
+]: nothing -> nothing {
+    let meta = (gh-pr-metadata $url)
     let base_rev = (if $base == null { $meta.baseRefName } else { $base })
 
     print $"Fetching PR #($meta.number)..."
-    fetch-pr $meta
+    fetch-pr-remotes $meta
 
     print $"Squashing onto ($base_rev)..."
-    jj new $base_rev
-    jj squash --ignore-immutable -m $"Squashed PR #($meta.number) for review.\njj-review: head=($meta.headRefOid) base=($meta.baseRefOid)" -t @ -f $"($meta.baseRefOid)..($meta.headRefOid)"
+    squash-review-change $meta $base_rev
 
-    print $"Fetching prr file..."
-    try { prr get $url } catch { print "Warning: prr get failed (no token?)" }
+    print "Fetching prr review file..."
+    let prr_file = (fetch-prr-path $meta.url)
 
-    # Write the prr ref (full GitHub URI) for the static zellij layout
-    # to pick up via `prr edit $(cat /tmp/jj-review-ref)`.
-    $url | save --force /tmp/jj-review-ref
-
-    print "Opening zellij tab for review..."
-    zellij --layout jj-review
+    print "Opening helix for review..."
+    open-helix-review $prr_file
 }
