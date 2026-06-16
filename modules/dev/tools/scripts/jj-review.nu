@@ -21,7 +21,22 @@ def fetch-head [meta: record] {
 # ── Squash the PR and open zellij ─────────────────────────────────
 
 # Squash all PR commits onto trunk (or --base), land in the squash,
-# then open helix + prr in a zellij tab.
+# then open the `jj-review` zellij layout (managed by Nix, includes the
+# zjstatus bar) with hx (left) and prr (right).
+#
+# Design:
+# - The prr ref (full GitHub URI) is written to /tmp/jj-review-ref;
+#   the `jj-review` zellij layout reads it via
+#   `prr edit $(cat /tmp/jj-review-ref)`.
+# - Pane commands are `sh -c "hx; nu"` and
+#   `sh -c "prr edit ...; nu"`. zellij panes are exec-style (command
+#   = argc, args = argv), so chaining has to happen inside sh. After
+#   hx/prr exits, nu runs interactively — no dead pane.
+# - sh inherits the zellij session env (PATH, NIX_LD_LIBRARY_PATH,
+#   GITHUB_TOKEN, etc.). No manual env wiring.
+# - `zellij --layout jj-review` creates a new tab when already in a
+#   session (preserving the existing layout) and starts a new session
+#   otherwise. No branch on $env.ZELLIJ needed.
 def main [
     url: string
     --base: string       # jj revset to squash onto (default: trunk())
@@ -36,11 +51,7 @@ def main [
     }
     let meta = $raw.stdout | str trim | from json
 
-    let cwd = (pwd)
-    let pr_ref = $"($meta.headRepositoryOwner.login)/($meta.headRepository.name)/($meta.number)"
     let base_rev = (if $base == null { "trunk()" } else { $base })
-    let head_oid = $meta.headRefOid
-    let base_oid = $meta.baseRefOid
 
     print $"Fetching PR #($meta.number)..."
     fetch-head $meta
@@ -50,31 +61,12 @@ def main [
     jj squash --ignore-immutable -m $"Squashed PR #($meta.number) for review.\njj-review: head=($meta.headRefOid) base=($meta.baseRefOid)" -t @ -f $"($meta.baseRefOid)..($meta.headRefOid)"
 
     print $"Fetching prr file..."
-    try { prr get $pr_ref } catch { print "Warning: prr get failed (no token?)" }
+    try { prr get $url } catch { print "Warning: prr get failed (no token?)" }
 
-    let path_str = $env.PATH | str join ":"
-    let env_path = $env | get --optional NIX_LD_LIBRARY_PATH | default ""
-    let hx_cmd = "$env.PATH = '" + $path_str + "'; $env.NIX_LD_LIBRARY_PATH = '" + $env_path + "'; hx"
-    let prr_cmd = "$env.PATH = '" + $path_str + "'; $env.GITHUB_TOKEN = '" + ($env | get --optional GITHUB_TOKEN | default "") + "'; $env.NIX_LD_LIBRARY_PATH = '" + $env_path + "'; prr edit " + $pr_ref
+    # Write the prr ref (full GitHub URI) for the static zellij layout
+    # to pick up via `prr edit $(cat /tmp/jj-review-ref)`.
+    $url | save --force /tmp/jj-review-ref
 
-    let layout = '
-layout {
-    default_tab_template {
-        pane split_direction="vertical" {
-            pane {
-                command "nu"
-                cwd "' + $cwd + '"
-                args "-c" "' + $hx_cmd + '"
-            }
-            pane {
-                command "nu"
-                cwd "' + $cwd + '"
-                args "-c" "' + $prr_cmd + '"
-            }
-        }
-    }
-}
-'
-    print "Opening zellij with helix (left) and prr (right)…"
-    zellij --layout-string $layout
+    print "Opening zellij tab for review..."
+    zellij --layout jj-review
 }
