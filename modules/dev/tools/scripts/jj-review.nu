@@ -4,7 +4,11 @@
 
 # ── helpers ──────────────────────────────────────────────────────────
 
-def fetch-head [meta: record] {
+def fetch-pr [meta: record] {
+    # Always fetch origin — owns the base branch (PR's target).
+    jj git fetch --remote origin
+
+    # For cross-repo PRs, also fetch the fork to get the head.
     if $meta.isCrossRepository {
         let owner = $meta.headRepositoryOwner.login
         let repo_url = $meta.headRepository.url
@@ -13,16 +17,14 @@ def fetch-head [meta: record] {
             jj git remote add $owner $repo_url
         }
         jj git fetch --remote $owner
-    } else {
-        jj git fetch --remote origin
     }
 }
 
 # ── Squash the PR and open zellij ─────────────────────────────────
 
-# Squash all PR commits onto trunk (or --base), land in the squash,
-# then open the `jj-review` zellij layout (managed by Nix, includes the
-# zjstatus bar) with hx (left) and prr (right).
+# Squash all PR commits onto the PR's target branch (or --base), land
+# in the squash, then open the `jj-review` zellij layout (managed by
+# Nix, includes the zjstatus bar) with hx (left) and prr (right).
 #
 # Design:
 # - The prr ref (full GitHub URI) is written to /tmp/jj-review-ref;
@@ -39,7 +41,7 @@ def fetch-head [meta: record] {
 #   otherwise. No branch on $env.ZELLIJ needed.
 def main [
     url: string
-    --base: string       # jj revset to squash onto (default: trunk())
+    --base: string       # jj revset to squash onto (default: PR's target branch)
 ] {
     # Fetch PR metadata — inline to avoid lazy-stream issues with from json
     let raw = (
@@ -51,10 +53,16 @@ def main [
     }
     let meta = $raw.stdout | str trim | from json
 
-    let base_rev = (if $base == null { "trunk()" } else { $base })
+    # Default to the PR's target branch (baseRefName), not trunk().
+    # This handles PRs into feature branches correctly — the squash
+    # sits on the PR's actual target, and the revset
+    # baseRefOid..headRefOid (ancestors(head) & ~ancestors(base))
+    # gives just the PR's commits regardless of whether the base
+    # branch has moved past the original fork point.
+    let base_rev = (if $base == null { $meta.baseRefName } else { $base })
 
     print $"Fetching PR #($meta.number)..."
-    fetch-head $meta
+    fetch-pr $meta
 
     print $"Squashing onto ($base_rev)..."
     jj new $base_rev
