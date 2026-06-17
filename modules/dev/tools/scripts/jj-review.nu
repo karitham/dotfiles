@@ -2,36 +2,6 @@
 # jj-review: PR review workflow with jj, prr, and hx.
 # Requires: jj, gh, git, prr, hx (helix).
 
-# Fetch PR metadata from gh. Returns a record with url, number,
-# baseRefName, headRefOid, baseRefOid, etc.
-def gh-pr-metadata [url: string]: nothing -> record {
-    let raw = (
-        do {
-            gh pr view $url --json "url,number,title,baseRefName,headRefName,isCrossRepository,headRepository,headRepositoryOwner,headRefOid,baseRefOid"
-        }
-        | complete
-    )
-    if $raw.exit_code != 0 {
-        error make {msg: $"gh pr view failed: ($raw.stderr)"}
-    }
-    $raw.stdout | str trim | from json
-}
-
-# Fetch the remotes needed for a PR: origin (base) and the fork head
-# for cross-repository PRs.
-def fetch-pr-remotes [meta: record]: nothing -> nothing {
-    jj git fetch --remote origin
-    if not $meta.isCrossRepository { return }
-
-    let owner = $meta.headRepositoryOwner.login
-    let repo_url = $meta.headRepository.url
-    let existing = git remote | lines
-    if not ($owner in $existing) {
-        jj git remote add $owner $repo_url
-    }
-    jj git fetch --remote $owner
-}
-
 # Squash the PR commits onto the target branch in a new jj change.
 def squash-review-change [meta: record, base_rev: string]: nothing -> nothing {
     jj new $base_rev
@@ -128,17 +98,62 @@ def main [
     url: string
     --base: string       # jj revset to squash onto (default: PR's target branch)
 ]: nothing -> nothing {
-    let meta = (gh-pr-metadata $url)
+    # Phase 1: Run three independent network operations in parallel.
+    # - gh pr view:  PR metadata (needed for squash, cross-repo fetch)
+    # - prr get:     review file download (needed for helix)
+    # - jj git fetch origin: base remote refs (needed for squash)
+    # All three depend only on the input URL, not on each other.
+    # --keep-order pins results to input order: $p.0=gh, $p.1=prr, $p.2=fetch.
+    print $"Fetching PR metadata, review file, and origin refs for ($url)..."
+    let p = (
+        [gh prr fetch]
+        | par-each --keep-order { |tag|
+            match $tag {
+                "gh"    => { do { gh pr view $url --json "url,number,title,baseRefName,headRefName,isCrossRepository,headRepository,headRepositoryOwner,headRefOid,baseRefOid" } | complete }
+                "prr"   => { do { prr get $url } | complete }
+                "fetch" => { do { jj git fetch --remote origin } | complete }
+                _ => { error make {msg: $"unknown tag: ($tag)"} }
+            }
+        }
+    )
+
+    let gh_result = $p.0
+    if $gh_result.exit_code != 0 {
+        error make {msg: $"gh pr view failed: ($gh_result.stderr)"}
+    }
+    let meta = $gh_result.stdout | str trim | from json
     let base_rev = (if $base == null { $meta.baseRefName } else { $base })
 
-    print $"Fetching PR #($meta.number)..."
-    fetch-pr-remotes $meta
+    # Cross-repo fetch if needed (depends on metadata from gh).
+    if $meta.isCrossRepository {
+        let owner = $meta.headRepositoryOwner.login
+        let repo_url = $meta.headRepository.url
+        let existing = git remote | lines
+        if not ($owner in $existing) {
+            jj git remote add $owner $repo_url
+        }
+        print $"Fetching fork ($owner)..."
+        jj git fetch --remote $owner
+    }
 
-    print $"Squashing onto ($base_rev)..."
+    print $"PR #($meta.number): squashing onto ($base_rev)..."
     squash-review-change $meta $base_rev
 
-    print "Fetching prr review file..."
-    let prr_file = (fetch-prr-path $meta.url)
+    # Process prr result. If prr get failed with the input URL, retry with
+    # the canonical URL from gh metadata (handles non-URL inputs like PR
+    # numbers that gh accepts but prr does not).
+    let prr_result = $p.1
+    let prr_file = (
+        if $prr_result.exit_code == 0 and ($prr_result.stdout | str trim) != "" {
+            $prr_result.stdout | str trim
+        } else if ($prr_result.stderr | str contains "unsubmitted changes") {
+            existing-prr-path $url
+        } else if $meta.url != $url {
+            fetch-prr-path $meta.url
+        } else {
+            error make {msg: $"prr get failed: ($prr_result.stderr)"}
+        }
+    )
 
     print "Opening helix for review..."
     open-helix-review $prr_file
