@@ -2,10 +2,41 @@
 # jj-review: PR review workflow with jj, prr, and hx.
 # Requires: jj, gh, git, prr, hx (helix).
 
-# Squash the PR commits onto the target branch in a new jj change.
-def squash-review-change [meta: record, base_rev: string]: nothing -> nothing {
+# Squash the PR commits onto the target branch in a new jj change. Returns
+# the change-ids of the previous working copy and the new review change so
+# the caller can restore @ after helix closes.
+#
+# The original PR commits and their bookmarks are preserved by duplicating
+# the source range first and squashing only the duplicates: a plain
+# `jj squash` of the source range would abandon the originals and, per the
+# jj docs, "When a commit has been abandoned, all associated bookmarks will
+# be deleted." The duplicates have no bookmarks, so abandoning them is
+# harmless.
+def squash-review-change [meta: record, base_rev: string, head_rev: string]: nothing -> record<prev_wc: string, review_wc: string> {
+    # Capture the user's current working copy so we can restore it after review.
+    let prev_wc = jj log -r @ -T change_id --no-graph --limit 1 | str trim
+
+    # Create a new empty working copy on top of base.
     jj new $base_rev
-    jj squash --ignore-immutable -m $"Squashed PR #($meta.number) for review.\njj-review: head=($meta.headRefOid) base=($meta.baseRefOid)" -t @ -f $"($meta.baseRefOid)..($meta.headRefOid)"
+
+    # Duplicate the PR commits and insert them between base and @. Originals
+    # (with their bookmarks) stay intact; the duplicates have no bookmarks.
+    jj duplicate -B @ -r $"($base_rev)..($head_rev)"
+
+    # Squash the duplicates into @. They get abandoned, but since they had
+    # no bookmarks nothing is lost.
+    #
+    # --ignore-immutable is required because the duplicates inherit the
+    # original PR authors and therefore match a strict `immutable_heads`
+    # revset like `(trunk().. & ~mine())`. The originals (with their
+    # bookmarks) are still untouched — only the temporary duplicates we
+    # just created are rewritten.
+    jj squash --ignore-immutable -m $"Squashed PR #($meta.number) for review.\njj-review: head=($meta.headRefOid) base=($meta.baseRefOid)" -t @ -f $"($base_rev)..@-"
+
+    # Capture the new review change-id so the caller can print it for the user.
+    let review_wc = jj log -r @ -T change_id --no-graph --limit 1 | str trim
+
+    {prev_wc: $prev_wc, review_wc: $review_wc}
 }
 
 # Discover an existing review's path by opening it in a no-op editor.
@@ -96,24 +127,26 @@ def open-helix-review [prr_file: string]: nothing -> nothing {
 
 def main [
     url: string
-    --base: string       # jj revset to squash onto (default: PR's target branch)
+    --base: string       # jj revset to squash onto (default: <PR target branch>@<--remote>)
+    --remote: string = "origin"  # remote to use for branch refs (default: origin)
 ]: nothing -> nothing {
 
     # Phase 1: Run three independent network operations in parallel.
     # - gh pr view:  PR metadata (needed for squash, cross-repo fetch)
     # - prr get:     review file download (needed for helix)
-    # - jj git fetch origin: base remote refs (needed for squash)
+    # - jj git fetch --remote: base remote refs (needed for squash)
     # All three depend only on the input URL, not on each other.
     # --keep-order pins results to input order: $p.0=gh, $p.1=prr, $p.2=fetch.
-    print $"Fetching PR metadata, review file, and origin refs for ($url)..."
+    print $"Fetching PR metadata, review file, and ($remote) refs for ($url)..."
     let p = (
-        [gh prr fetch]
+        ["gh" "prr" $remote]
         | par-each --keep-order { |tag|
-            match $tag {
-                "gh"    => { do { gh pr view $url --json "url,number,title,baseRefName,headRefName,isCrossRepository,headRepository,headRepositoryOwner,headRefOid,baseRefOid" } | complete }
-                "prr"   => { do { prr get $url } | complete }
-                "fetch" => { do { jj git fetch --remote origin } | complete }
-                _ => { error make {msg: $"unknown tag: ($tag)"} }
+            if $tag == "gh" {
+                do { gh pr view $url --json "url,number,title,baseRefName,headRefName,isCrossRepository,headRepository,headRepositoryOwner,headRefOid,baseRefOid" } | complete
+            } else if $tag == "prr" {
+                do { prr get $url } | complete
+            } else {
+                do { jj git fetch --remote $tag } | complete
             }
         }
     )
@@ -123,7 +156,16 @@ def main [
         error make {msg: $"gh pr view failed: ($gh_result.stderr)"}
     }
     let meta = $gh_result.stdout | str trim | from json
-    let base_rev = (if $base == null { $meta.baseRefName } else { $base })
+
+    # Use remote branch refs (e.g. main@origin) so the script works in
+    # setups where the relevant branches are only present as remote
+    # tracking refs. The head remote is the fork owner for cross-repo
+    # PRs; otherwise it matches --remote.
+    let base_rev = (if $base == null { $"($meta.baseRefName)@($remote)" } else { $base })
+    let head_remote = (
+        if $meta.isCrossRepository { $meta.headRepositoryOwner.login } else { $remote }
+    )
+    let head_rev = $"($meta.headRefName)@($head_remote)"
 
     # Cross-repo fetch if needed (depends on metadata from gh).
     if $meta.isCrossRepository {
@@ -137,8 +179,8 @@ def main [
         jj git fetch --remote $owner
     }
 
-    print $"PR #($meta.number): squashing onto ($base_rev)..."
-    squash-review-change $meta $base_rev
+    print $"PR #($meta.number): squashing ($base_rev)..($head_rev)..."
+    let ids = (squash-review-change $meta $base_rev $head_rev)
 
     # Process prr result. If prr get failed with the input URL, retry with
     # the canonical URL from gh metadata (handles non-URL inputs like PR
@@ -158,4 +200,9 @@ def main [
 
     print "Opening helix for review..."
     open-helix-review $prr_file
+
+    # Restore the user's working copy so the script is idempotent across
+    # runs. The review change remains in the log for later reference.
+    jj edit $ids.prev_wc
+    print $"Review change: ($ids.review_wc). Run 'jj edit ($ids.review_wc)' to revisit."
 }
