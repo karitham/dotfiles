@@ -135,6 +135,16 @@ lib.mkIf osCfg.enable {
           url = "https://outline.dolly-ruffe.ts.net/mcp";
           enabled = true;
         };
+
+        kagi = {
+          type = "remote";
+          url = "https://mcp.kagi.com/mcp";
+          enabled = true;
+          oauth = false;
+          headers = {
+            Authorization = "Bearer {env:KAGI_API_KEY}";
+          };
+        };
       };
     };
   };
