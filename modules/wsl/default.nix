@@ -50,5 +50,9 @@ in
     sudo.wheelNeedsPassword = false;
   };
 
-  home-manager.users.${config.my.username}.imports = [ self.homeModules.dev ];
+  home-manager.users.${config.my.username} = {
+    imports = [ self.homeModules.dev ];
+    sops.age.sshKeyPaths = [ "/home/${config.my.username}/.ssh/id_ed25519" ];
+    dev.opencode.sops.enable = true;
+  };
 }

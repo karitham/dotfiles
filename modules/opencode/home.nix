@@ -11,6 +11,15 @@
       default = "catppuccin-macchiato";
       description = "OpenCode theme";
     };
+    sops.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Use sops-backed secrets for opencode MCP servers (Linear, Sentry, GitHub, Kagi).
+        Disable on machines that don't have a registered SSH key in .sops.yaml —
+        the wrapper will still let opencode start, just without the secret-needing MCPs.
+      '';
+    };
   };
 
   imports = [ ./default.nix ];

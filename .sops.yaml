@@ -1,10 +1,27 @@
 # https://github.com/Mic92/sops-nix
+# Recipients are SSH public keys (https://github.com/karitham.keys).
+# Each machine has its own SSH key, used for ssh/git/sops.
+# Verify mapping on each machine: ssh-keygen -lf ~/.ssh/id_ed25519.pub
+#
+# Currently registered: ozen, kiwi.
+# belaf and reg can be added later by running `ssh-keygen -lf` there
+# and appending the matching key from karitham.keys.
+#
+# Legacy age keys are kept for backwards compatibility with already-encrypted
+# secrets. New secrets encrypt for both groups; sops updatekeys can re-encrypt
+# existing files to add the SSH recipients. The age keys can be removed once
+# all consumers are migrated.
 keys:
-  - &ozen age17cxj5zwkkxjkjvmpskpkyh6yt4xj4l8h6jyjxez3nmq6y9tvhqjsdp0m5j
+  - &ozen   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDSNRhCfSzYU5bliUcc+3axoVI46XbQ7uE58374CoOg3
+  - &kiwi   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdfgc1G9wmgw2mTI6nSPTBcev6DJsYLbb5NO0wT/j0c
+  - &ozen_age age17cxj5zwkkxjkjvmpskpkyh6yt4xj4l8h6jyjxez3nmq6y9tvhqjsdp0m5j
   - &server_reg age1j6j2ldpsj7jmchstwl3nktvatut9hzxnemmy6py84rrga5eaf93q5w8s39
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
+          # SSH keys are auto-converted by sops when placed in the age group
           - *ozen
+          - *kiwi
+          - *ozen_age
           - *server_reg
