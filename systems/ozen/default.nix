@@ -1,5 +1,6 @@
-_: {
+{ config, ... }: {
   system.stateVersion = "26.05";
+  home-manager.users.${config.my.username}.imports = [ ./home.nix ];
   nixpkgs.hostPlatform = "x86_64-linux";
   wsl.useWindowsDriver = true;
 

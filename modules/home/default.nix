@@ -32,22 +32,6 @@
         ;
     };
     backupFileExtension = "bak";
-    users.${config.my.username} = {
-      imports = [ inputs.catppuccin.homeModules.default ];
-
-      home = {
-        inherit (config.my) username;
-        stateVersion = "26.05";
-        enableNixpkgsReleaseCheck = false;
-      };
-
-      catppuccin = { inherit (config.catppuccin) flavor enable autoEnable; };
-
-      manual = {
-        html.enable = false;
-        json.enable = false;
-        manpages.enable = false;
-      };
-    };
+    users.${config.my.username}.imports = [ ./common.nix ];
   };
 }

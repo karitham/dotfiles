@@ -4,7 +4,7 @@
   self',
   inputs,
   inputs',
-  osConfig,
+  config,
   ...
 }:
 let
@@ -50,7 +50,7 @@ let
     '';
   };
 in
-lib.mkIf osConfig.dev.editor.enable {
+lib.mkIf config.dev.editor.enable {
   home.packages = global-tools;
 
   xdg.configFile."helix/init.scm".text = ''

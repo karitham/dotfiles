@@ -1,18 +1,18 @@
 {
-  osConfig,
+
   lib,
   pkgs,
   config,
   ...
 }:
 {
-  config = lib.mkIf osConfig.desktop.waybar.enable {
+  config = lib.mkIf config.desktop.waybar.enable {
     programs.niri.settings.spawn-at-startup = [ { command = [ "systemctl --user restart waybar.service" ]; } ];
     programs.waybar = {
       enable = true;
       systemd.enable = true;
       settings.mainBar = {
-        font = osConfig.fonts.mono;
+        font = config.fonts.mono;
         height = 40;
         layer = "top";
         position = "top";
@@ -158,7 +158,7 @@
 
       style = ''
         * {
-          font-family: ${osConfig.fonts.mono}, Noto Sans CJK SC;
+          font-family: ${config.fonts.mono}, Noto Sans CJK SC;
           font-weight: bold;
           font-size: 14px;
         }

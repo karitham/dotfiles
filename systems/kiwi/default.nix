@@ -1,22 +1,11 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
-{
+{ config, ... }: {
   imports = [ ./hardware.nix ];
 
   system.stateVersion = "25.11";
 
   desktop.noctalia.enable = true;
 
-  home-manager.users.${config.my.username} = {
-    home.packages = [ pkgs.obs-studio ];
-
-    programs.waybar.settings.mainBar.battery.bat = lib.mkForce "BAT0";
-    imports = [ ./handy.nix ];
-  };
+  home-manager.users.${config.my.username}.imports = [ ./home.nix ];
 
   # Block outgoing UDP from Tailscale CGNAT addresses on non-tailscale interfaces.
   # Prevents WebRTC (e.g. Discord voice) from selecting a broken ICE candidate

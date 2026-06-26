@@ -1,4 +1,24 @@
-{ self, inputs, ... }: {
+{
+  self,
+  inputs,
+  lib,
+  ...
+}:
+let
+  hosts = import ./hosts.nix;
+
+  # Reproduce the easy-hosts host attrs from ./hosts.nix: only emit `arch`
+  # for non-default architectures and `tags` when non-empty, matching the
+  # previous literal definition.
+  toEasyHost =
+    h:
+    {
+      inherit (h) class;
+    }
+    // lib.optionalAttrs (h.arch != "x86_64") { inherit (h) arch; }
+    // lib.optionalAttrs (h.tags != [ ]) { inherit (h) tags; };
+in
+{
   imports = [ inputs.easy-hosts.flakeModule ];
 
   config.easy-hosts = {
@@ -21,29 +41,6 @@
 
     perTag = tag: { modules = [ ../modules/tags/${tag}.nix ]; };
 
-    hosts = {
-      kiwi = {
-        class = "desktop";
-        tags = [ "work" ];
-      };
-
-      ozen = {
-        class = "wsl";
-      };
-
-      reg = {
-        class = "server";
-      };
-
-      belaf = {
-        class = "desktop";
-        tags = [ "secureboot" ];
-      };
-
-      wakuna = {
-        arch = "aarch64";
-        class = "server";
-      };
-    };
+    hosts = builtins.mapAttrs (_: toEasyHost) hosts;
   };
 }

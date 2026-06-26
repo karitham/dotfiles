@@ -33,7 +33,5 @@
       self.homeModules.desktop
       self.homeModules.dev
     ];
-    sops.age.sshKeyPaths = [ "/home/${config.my.username}/.ssh/id_ed25519" ];
-    dev.opencode.sops.enable = true;
   };
 }

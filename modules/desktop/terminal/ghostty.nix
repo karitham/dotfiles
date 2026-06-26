@@ -1,15 +1,9 @@
-{
-  config,
-  osConfig,
-  lib,
-  ...
-}:
-{
-  config = lib.mkIf osConfig.desktop.terminal.enable {
+{ config, lib, ... }: {
+  config = lib.mkIf config.desktop.terminal.enable {
     programs.ghostty = {
       enable = true;
       settings = {
-        font-family = osConfig.fonts.mono;
+        font-family = config.fonts.mono;
         font-size = 12;
         window-decoration = true;
         gtk-titlebar = false;

@@ -1,11 +1,5 @@
-{
-  lib,
-  osConfig,
-  config,
-  ...
-}:
-{
-  config = lib.mkIf osConfig.desktop.hyprlock.enable {
+{ lib, config, ... }: {
+  config = lib.mkIf config.desktop.hyprlock.enable {
     services.hypridle = {
       enable = true;
       settings = {
@@ -35,7 +29,7 @@
       settings = {
         "$accent" = "$mauve";
         "$accentAlpha" = "$mauveAlpha";
-        "$font" = osConfig.fonts.mono;
+        "$font" = config.fonts.mono;
 
         # GENERAL
         general = {

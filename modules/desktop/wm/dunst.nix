@@ -1,1 +1,1 @@
-{ osConfig, ... }: { services.dunst.enable = osConfig.desktop.notification.enable; }
+{ config, ... }: { services.dunst.enable = config.desktop.notification.enable; }

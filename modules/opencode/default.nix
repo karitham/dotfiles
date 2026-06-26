@@ -5,12 +5,10 @@
   pkgs,
   self',
   inputs',
-  osConfig,
   ...
 }:
 let
   cfg = config.dev.opencode;
-  osCfg = osConfig.dev.opencode;
 
   # Path to the sops-decrypted env file, or /dev/null if not configured.
   # The wrapper uses `[ -f ... ]` to skip if missing, so opencode always starts
@@ -50,7 +48,7 @@ in
 {
   imports = [ inputs.sops-nix.homeManagerModules.sops ];
 
-  config = lib.mkIf osCfg.enable {
+  config = lib.mkIf cfg.enable {
     sops.secrets."opencode/env" = lib.mkIf cfg.sops.enable {
       sopsFile = ../../secrets/opencode.env;
       format = "dotenv";
