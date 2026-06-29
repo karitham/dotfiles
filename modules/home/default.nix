@@ -18,6 +18,7 @@
     enable = true;
     flavor = "macchiato";
     autoEnable = true;
+    cache.enable = true;
   };
 
   home-manager = {

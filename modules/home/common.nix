@@ -15,6 +15,7 @@
     enable = true;
     flavor = "macchiato";
     autoEnable = true;
+    cache.enable = true;
   };
 
   manual = {
