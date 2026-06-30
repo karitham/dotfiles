@@ -25,6 +25,7 @@ in
     shared = {
       modules = [
         ../modules/core.nix
+        ../modules/ninjaone.nix
         (_: { environment.defaultPackages = [ ]; })
       ];
 
