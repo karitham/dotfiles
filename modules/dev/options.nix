@@ -14,7 +14,6 @@ in
 {
   options.dev = sharedOptions // {
     opencode.enable = mkEnableOption "OpenCode";
-    omp.enable = mkEnableOption "omp (oh-my-pi) coding agent";
   };
 
   config = {
@@ -23,6 +22,5 @@ in
     dev.vcs.enable = mkIf cfg.enable true;
     dev.tools.enable = mkIf cfg.enable true;
     dev.opencode.enable = mkIf cfg.enable true;
-    dev.omp.enable = mkIf cfg.enable true;
   };
 }

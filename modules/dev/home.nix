@@ -6,7 +6,6 @@
     vcs.enable = lib.mkEnableOption "version control tools";
     tools.enable = lib.mkEnableOption "dev utilities";
     # opencode.* options are defined in ../opencode/home.nix
-    # omp.* options are defined in ../omp/home.nix
   };
 
   config = {
@@ -16,8 +15,6 @@
     dev.tools.enable = lib.mkIf config.dev.enable true;
     # dev.opencode.enable is declared in ../opencode/home.nix
     dev.opencode.enable = lib.mkIf config.dev.enable true;
-    # dev.omp.enable is declared in ../omp/home.nix
-    dev.omp.enable = lib.mkIf config.dev.enable true;
   };
 
   imports = [
@@ -26,6 +23,5 @@
     ./vcs
     ./tools
     ../opencode/home.nix
-    ../omp/home.nix
   ];
 }

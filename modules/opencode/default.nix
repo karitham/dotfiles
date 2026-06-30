@@ -29,6 +29,7 @@ let
         --set OPENCODE_DISABLE_LSP_DOWNLOAD true \
         --set OPENCODE_DISABLE_AUTOUPDATE true \
         --set OPENCODE_EXPERIMENTAL_MARKDOWN true \
+        --set OPENCODE_ENABLE_EXA true \
         --set SHELL "${lib.getExe pkgs.bash}" \
         --prefix PATH : "${
           lib.makeBinPath [
