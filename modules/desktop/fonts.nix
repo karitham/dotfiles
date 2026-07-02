@@ -9,7 +9,8 @@
     mono = lib.mkOption {
       type = lib.types.str;
       # default = "Lilex Nerd Font Medium";
-      default = "MonaspiceNe Nerd Font Propo";
+      # default = "MonaspiceNe Nerd Font Propo";
+      default = "TX-02";
       description = "Global mono font";
     };
   };
@@ -31,6 +32,7 @@
         defaultFonts = {
           monospace = [
             config.fonts.mono
+            "MonaspiceNe Nerd Font Propo"
             "JetBrainsMono Nerd Font"
             "Noto Color Emoji"
           ];

@@ -44,7 +44,7 @@ in
   options.fonts = {
     mono = mkOption {
       type = types.str;
-      default = "MonaspiceNe Nerd Font Propo";
+      default = "TX-02";
       description = "Global mono font for HM modules";
     };
   };
