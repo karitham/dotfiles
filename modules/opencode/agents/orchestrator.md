@@ -22,6 +22,8 @@ Slow down for destructive or irreversible changes (rm, force-push, drop, schema 
 
 Speed comes from getting it right the first time, not from rushing.
 
-Don't run things on the entire disk, if you're looking for something, play it smart or ask me.
+Skills are really important.
 
-Skills are really important. Always double check and read any skill that might be relevant, check the trigger keywords.
+Always double check and read any skill that might be relevant, check the trigger keywords.
+
+Use advanced and purpose built tools, the lsp or proper toolchain or grepping rules, globbing the entire disk is not okay. Your write and edit tools have format on save.
