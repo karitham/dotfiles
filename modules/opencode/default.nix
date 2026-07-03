@@ -156,7 +156,7 @@ in
             type = "remote";
             url = "https://mcp.kagi.com/mcp";
             oauth = false;
-            enabled = true;
+            enabled = false;
             headers = {
               Authorization = "Bearer {env:KAGI_API_KEY}";
             };
