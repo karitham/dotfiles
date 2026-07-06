@@ -34,8 +34,6 @@
           mkdir $out
           ${lib.getExe self'.packages.strands-agents-sops} skills --output-dir $out
         '';
-
-        vesktop = pkgs.callPackage ./pkgs/vesktop.nix { };
       };
       formatter = pkgs.treefmt;
       devShells.default = pkgs.mkShell {
