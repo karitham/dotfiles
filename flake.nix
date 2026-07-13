@@ -47,7 +47,6 @@
     };
     noctalia = {
       url = "github:noctalia-dev/noctalia";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     ssh-keys = {
       url = "https://github.com/karitham.keys";
@@ -87,12 +86,14 @@
       "https://niri.cachix.org"
       "https://cache.numtide.com"
       "https://nix-cache.karitham.dev/dotfiles"
+      "https://noctalia.cachix.org"
     ];
     extra-trusted-public-keys = [
       "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       "dotfiles:1EQBeGcPmLGKAW4WxYGfyyKOVI4rd/hM58QnIPQdMGI="
+      "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
     ];
   };
 }

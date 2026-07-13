@@ -48,7 +48,7 @@
 
         dock.enabled = false;
 
-        location.address = "Lille";
+        location.auto_locate = true;
 
         lockscreen_widgets = {
           enabled = false;
