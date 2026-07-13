@@ -27,6 +27,12 @@ in
       scripts
     ];
 
+    xdg.configFile."prr/config.toml".text = ''
+      [prr]
+      workdir = "${config.home.homeDirectory}"
+      activate_pr_metadata_experiment = true
+    '';
+
     programs = {
       zoxide.enable = true;
       carapace.enable = true;
