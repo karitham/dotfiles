@@ -42,7 +42,7 @@
           treefmt
           nixfmt
           nufmt
-          biome
+          oxfmt
         ];
       };
     };

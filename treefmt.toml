@@ -8,7 +8,7 @@ command = "nufmt"
 includes = ["*.nu"]
 
 [formatter.json]
-command = "biome"
-options = ["format", "--write", "--indent-style=space", "--indent-width=2"]
+command = "oxfmt"
+options = []
 includes = ["*.json"]
 excludes = ["secrets/**", "modules/desktop/audio/**"]

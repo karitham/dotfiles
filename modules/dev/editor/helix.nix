@@ -23,7 +23,9 @@ let
     with pkgs;
     [
       nixfmt
-      biome
+      oxfmt
+      oxlint
+      typescript-go
       golangci-lint
       gopls-cleaned
       sql-formatter
@@ -245,9 +247,16 @@ lib.mkIf config.dev.editor.enable {
 
     languages = {
       language-server = {
-        biome = {
-          command = "biome";
-          args = [ "lsp-proxy" ];
+        oxlint = {
+          command = "oxlint";
+          args = [ "--lsp" ];
+        };
+        tsgo = {
+          command = "tsgo";
+          args = [
+            "--lsp"
+            "--stdio"
+          ];
         };
         nu-lsp = {
           command = "nu";
@@ -428,11 +437,18 @@ lib.mkIf config.dev.editor.enable {
                 name = "javascript";
                 language-servers = [
                   {
-                    name = "typescript-language-server";
+                    name = "tsgo";
                     except-features = [ "format" ];
                   }
-                  "biome"
+                  "oxlint"
                 ];
+                formatter = {
+                  command = "oxfmt";
+                  args = [
+                    "--stdin-filepath"
+                    "file.js"
+                  ];
+                };
                 auto-format = true;
               }
               {
@@ -442,13 +458,11 @@ lib.mkIf config.dev.editor.enable {
                     name = "vscode-json-language-server";
                     except-features = [ "format" ];
                   }
-                  "biome"
                 ];
                 formatter = {
-                  command = "biome";
+                  command = "oxfmt";
                   args = [
-                    "format"
-                    "--stdin-file-path"
+                    "--stdin-filepath"
                     "file.json"
                   ];
                 };
@@ -457,10 +471,9 @@ lib.mkIf config.dev.editor.enable {
               {
                 name = "graphql";
                 formatter = {
-                  command = "biome";
+                  command = "oxfmt";
                   args = [
-                    "format"
-                    "--stdin-file-path"
+                    "--stdin-filepath"
                     "file.gql"
                   ];
                 };
@@ -473,13 +486,11 @@ lib.mkIf config.dev.editor.enable {
                     name = "vscode-json-language-server";
                     except-features = [ "format" ];
                   }
-                  "biome"
                 ];
                 formatter = {
-                  command = "biome";
+                  command = "oxfmt";
                   args = [
-                    "format"
-                    "--stdin-file-path"
+                    "--stdin-filepath"
                     "file.jsonc"
                   ];
                 };
@@ -493,16 +504,15 @@ lib.mkIf config.dev.editor.enable {
                 name = "jsx";
                 language-servers = [
                   {
-                    name = "typescript-language-server";
+                    name = "tsgo";
                     except-features = [ "format" ];
                   }
-                  "biome"
+                  "oxlint"
                 ];
                 formatter = {
-                  command = "biome";
+                  command = "oxfmt";
                   args = [
-                    "format"
-                    "--stdin-file-path"
+                    "--stdin-filepath"
                     "file.jsx"
                   ];
                 };
@@ -512,16 +522,15 @@ lib.mkIf config.dev.editor.enable {
                 name = "tsx";
                 language-servers = [
                   {
-                    name = "typescript-language-server";
+                    name = "tsgo";
                     except-features = [ "format" ];
                   }
-                  "biome"
+                  "oxlint"
                 ];
                 formatter = {
-                  command = "biome";
+                  command = "oxfmt";
                   args = [
-                    "format"
-                    "--stdin-file-path"
+                    "--stdin-filepath"
                     "file.tsx"
                   ];
                 };
@@ -531,16 +540,15 @@ lib.mkIf config.dev.editor.enable {
                 name = "typescript";
                 language-servers = [
                   {
-                    name = "typescript-language-server";
+                    name = "tsgo";
                     except-features = [ "format" ];
                   }
-                  "biome"
+                  "oxlint"
                 ];
                 formatter = {
-                  command = "biome";
+                  command = "oxfmt";
                   args = [
-                    "format"
-                    "--stdin-file-path"
+                    "--stdin-filepath"
                     "file.ts"
                   ];
                 };
