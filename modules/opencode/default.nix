@@ -55,22 +55,13 @@ in
       format = "dotenv";
     };
 
-    xdg.configFile = {
-      "opencode/skills".source = pkgs.symlinkJoin {
-        name = "opencode-skills";
-        paths = [
-          self'.packages.strands-sops-skills
-          ./skills
-        ];
-      };
-    };
-
     programs.opencode = {
       enable = true;
       package = opencodePkg;
       enableMcpIntegration = cfg.enableMcp;
       commands = ./commands;
       agents = ./agents;
+      skills = ./skills;
       settings = {
         plugin = [ "@mohak34/opencode-notifier@0.2.8" ];
         experimental = {
