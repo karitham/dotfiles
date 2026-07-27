@@ -16,35 +16,37 @@ let
   opencodeEnvFile =
     if (config.sops.secrets ? "opencode/env") then config.sops.secrets."opencode/env".path else "/dev/null";
 
-  opencodePkg = pkgs.symlinkJoin {
-    name = "opencode-wrapped";
-    paths = [ inputs'.llm-agents.packages.opencode ];
+  opencodePkg' =
+    pkg: name:
+    pkgs.symlinkJoin {
+      name = "opencode-wrapped";
+      paths = [ pkg ];
 
-    nativeBuildInputs = [ pkgs.makeWrapper ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
 
-    postBuild = ''
-      wrapProgram $out/bin/opencode \
-        --run 'if [ -f "${opencodeEnvFile}" ]; then set -a; . "${opencodeEnvFile}"; set +a; fi' \
-        --set OPENCODE_EXPERIMENTAL_LSP_TOOL true \
-        --set OPENCODE_DISABLE_LSP_DOWNLOAD true \
-        --set OPENCODE_DISABLE_AUTOUPDATE true \
-        --set OPENCODE_EXPERIMENTAL_MARKDOWN true \
-        --set OPENCODE_ENABLE_EXA true \
-        --set SHELL "${lib.getExe pkgs.bash}" \
-        --prefix PATH : "${
-          lib.makeBinPath [
-            self'.packages.golangci-lint-langserver
-            pkgs.nixd
-            pkgs.marksman
-            pkgs.typescript-language-server
-            pkgs.vscode-langservers-extracted
-            pkgs.yaml-language-server
-            pkgs.typos-lsp
-            pkgs.nil
-          ]
-        }"
-    '';
-  };
+      postBuild = ''
+        wrapProgram $out/bin/${name} \
+          --run 'if [ -f "${opencodeEnvFile}" ]; then set -a; . "${opencodeEnvFile}"; set +a; fi' \
+          --set OPENCODE_EXPERIMENTAL_LSP_TOOL true \
+          --set OPENCODE_DISABLE_LSP_DOWNLOAD true \
+          --set OPENCODE_DISABLE_AUTOUPDATE true \
+          --set OPENCODE_EXPERIMENTAL_MARKDOWN true \
+          --set OPENCODE_ENABLE_EXA true \
+          --set SHELL "${lib.getExe pkgs.bash}" \
+          --prefix PATH : "${
+            lib.makeBinPath [
+              self'.packages.golangci-lint-langserver
+              pkgs.nixd
+              pkgs.marksman
+              pkgs.typescript-language-server
+              pkgs.vscode-langservers-extracted
+              pkgs.yaml-language-server
+              pkgs.typos-lsp
+              pkgs.nil
+            ]
+          }"
+      '';
+    };
 in
 {
   imports = [ inputs.sops-nix.homeManagerModules.sops ];
@@ -55,9 +57,11 @@ in
       format = "dotenv";
     };
 
+    home.packages = [ (opencodePkg' inputs'.llm-agents.packages.opencode2 "opencode2") ];
+
     programs.opencode = {
       enable = true;
-      package = opencodePkg;
+      package = opencodePkg' inputs'.llm-agents.packages.opencode "opencode";
       enableMcpIntegration = cfg.enableMcp;
       commands = ./commands;
       agents = ./agents;
