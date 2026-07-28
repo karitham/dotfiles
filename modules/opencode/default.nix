@@ -73,7 +73,13 @@ in
         };
         lsp = { };
         inherit (cfg) theme;
-        default_agent = "orchestrator";
+        default_agent = "pair";
+        agent = {
+          explore = {
+            model = "opencode-go/deepseek-v4-flash";
+            variant = "high";
+          };
+        };
         formatter = {
           nixfmt = {
             command = [

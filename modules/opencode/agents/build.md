@@ -1,4 +1,4 @@
 ---
-description: Built-in build agent — disabled, replaced by orchestrator
+description: Built-in build agent — disabled, replaced by pair
 disable: true
 ---
