@@ -8,31 +8,18 @@
   ...
 }:
 let
-  # Remove modernize from gopls output since gotools already provides it
-  gopls-cleaned = pkgs.runCommand "gopls" { } ''
-    mkdir -p $out/bin
-    # Copy all bins except modernize
-    for bin in ${pkgs.gopls}/bin/*; do
-      if [[ "$(basename $bin)" != "modernize" ]]; then
-        ln -s $bin $out/bin/
-      fi
-    done
-  '';
-
-  global-tools =
-    with pkgs;
-    [
-      nixfmt
-      oxfmt
-      oxlint
-      typescript-go
-      golangci-lint
-      gopls-cleaned
-      sql-formatter
-      prettier
-      nufmt
-    ]
-    ++ [ self'.packages.gotools ];
+  global-tools = [
+    pkgs.nixfmt
+    pkgs.oxfmt
+    pkgs.oxlint
+    pkgs.typescript-go
+    pkgs.golangci-lint
+    pkgs.gopls
+    pkgs.sql-formatter
+    pkgs.prettier
+    pkgs.nufmt
+    self'.packages.gotools
+  ];
 
   tree-sitter-prr = pkgs.stdenv.mkDerivation {
     pname = "tree-sitter-prr";
