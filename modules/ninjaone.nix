@@ -1,33 +1,45 @@
-# NixOS module: NinjaOne RMM agent (client install, runtime-extracted .deb).
+# NixOS module: NinjaOne RMM agent (runtime-extracted .deb, auto-updating).
 #
-# Design
-# ------
-# The agent .deb is kept OUT of the Nix store and extracted at boot into
+# Bootstrap
+# ---------
+# The agent ships as a portal-generated .deb that is also the device
+# identity: it embeds server.conf/agent.conf (ClientUID, NodeId, V2AgentKey,
+# MachineId).  It is kept OUT of the Nix store and extracted at boot into
 # ${dataDir}/root by the ninjaone-install oneshot, which also applies the
 # upstream post-install steps (cert bundle, root ownership).  The agent
 # service runs the upstream binary with the NixOS dynamic loader + explicit
 # library path and DAEMON_RUN=1 (foreground), bind-mounting the extracted tree
 # at /opt/NinjaRMMAgent so the agent's hardcoded absolute paths resolve.
 #
-# Upgrading
-# ---------
+# Because the .deb carries the device identity it cannot be shared between
+# machines: each machine needs its own installer, generated in the portal.
+# The .deb is only needed for the initial install; after that, updates never
+# touch the portal.
+#
+# Updating
+# --------
 # The agent's self-update (patcher) cannot work on NixOS: it spawns gunzip by
 # name (PATH), resolves its own location via /proc/self/exe (the ld-linux
 # wrapper -> /nix/store), and the binaries it downloads are Debian ELFs.
-# Version bumps are therefore manual, but do not need the portal:
+# Instead, on every boot ninjaone-install checks the public version manifest:
 #
-#   1. Query the public version manifest for the current release (no auth):
-#        curl https://agent-us2.us2.ninjarmm.com/ws/agent/version/LINUX/<clientUid>/0
-#      (clientUid is in programfiles/config/server.conf; the region in the
-#      hostname may differ).  Note agent_url and agent_sha256.
+#   1. Derive the manifest URL from Host/ClientUID in the extracted
+#      server.conf (no portal auth, region-agnostic):
+#        https://$Host/ws/agent/version/LINUX/$ClientUID/0
+#   2. Compare the manifest's version against the extracted
+#      ninjarmm-linagent.manifest.
+#   3. If newer: download agent_url, verify against agent_sha256, then
+#      atomically replace the binary + manifest (a running agent keeps its
+#      old inode; a non-atomic overwrite would SIGBUS it).
 #
-#   2. Download and verify the agent tarball:
-#        curl -o ~/private/ninjaone-agent.tgz <agent_url>
-#        echo '<agent_sha256>  ~/private/ninjaone-agent.tgz' | sha256sum -c -
-#      If you set services.ninjaone.updaterSha256, update it to agent_sha256.
+# The check is best-effort: any failure (offline, manifest error, checksum
+# mismatch) logs and keeps the current version, so the agent always starts.
 #
-#   3. Rebuild; ninjaone-install overlays the tarball over the extracted tree
-#      when it is newer than the .deb.
+#   - force a check without rebooting:  systemctl restart ninjaone-install
+#   - disable checks:                    services.ninjaone.autoUpdate = false
+#
+# Caveat: checks only run at boot (or manual restart), so a machine that
+# stays up for months will not self-update until it reboots.
 #
 # Security
 # --------
@@ -69,7 +81,7 @@ let
   # ''-string indentation trap with heredoc terminators.
   patcherServiceUnit = pkgs.writeText "ninjarmm-patcher.service" ''
     [Unit]
-    Description=NinjaOne patcher (no-op on NixOS; updates are applied by ninjaone-install)
+    Description=NinjaOne patcher (no-op on NixOS; updates applied by ninjaone-install's manifest check)
 
     [Service]
     Type=oneshot
@@ -95,8 +107,9 @@ let
     rootDir="${cfg.dataDir}/root"
     marker="$rootDir/.extracted"
     unitsDir="${cfg.dataDir}/systemd"
-    updaterPath="${cfg.updaterPath}"
-    updaterSha256="${toString cfg.updaterSha256}"
+    programfiles="$rootDir/opt/NinjaRMMAgent/programfiles"
+    configDir="$programfiles/config"
+    autoUpdate="${if cfg.autoUpdate then "true" else "false"}"
 
     if [ ! -f "$installerPath" ]; then
       echo "NinjaOne installer not found at $installerPath" >&2
@@ -117,36 +130,75 @@ let
       cp -f "$rootDir/tmp/ninja-uninstall/ninjarmm-deb-uninstall.service" "$unitsDir/ninjarmm-uninstall.service"
     }
 
-    # Version bump: overlay the current agent tarball over the extracted
-    # tree when it is newer than the .deb, so an old tarball can never
-    # downgrade a fresh installer.
-    apply_updater() {
-      [ -f "$updaterPath" ] || return 0
-      [ "$updaterPath" -nt "$installerPath" ] || return 0
+    # Version bump: fetch the public version manifest (no auth) and apply a
+    # newer agent when one exists.  Best-effort: any failure (offline,
+    # manifest error, checksum mismatch) is logged and keeps the current
+    # version; it must never block the agent from starting.
+    check_for_updates() {
+      [ "$autoUpdate" = "true" ] || return 0
+      [ -f "$configDir/server.conf" ] || {
+        echo "NinjaOne update: no server.conf; skipping." >&2
+        return 0
+      }
 
-      if [ -n "$updaterSha256" ]; then
-        echo "Verifying updater SHA-256..."
-        echo "$updaterSha256  $updaterPath" | sha256sum -c - || {
-          echo "Updater checksum mismatch; refusing to apply." >&2
-          exit 1
-        }
+      host="$(${pkgs.gnused}/bin/sed -n 's/^Host=\(.*\)$/\1/p' "$configDir/server.conf")"
+      clientUid="$(${pkgs.gnused}/bin/sed -n 's/^ClientUID=\(.*\)$/\1/p' "$configDir/server.conf")"
+      if [ -z "$host" ] || [ -z "$clientUid" ]; then
+        echo "NinjaOne update: cannot parse Host/ClientUID from server.conf; skipping." >&2
+        return 0
       fi
 
-      echo "Applying agent updater from $updaterPath..."
-      tmpUpd="$(mktemp -d)"
-      ${pkgs.gzip}/bin/gzip -dc "$updaterPath" | ${pkgs.gnutar}/bin/tar -xf - -C "$tmpUpd"
-      programfiles="$rootDir/opt/NinjaRMMAgent/programfiles"
+      workDir="$(mktemp -d)"
+      if ! ${pkgs.curl}/bin/curl -fsS -m 20 \
+          "https://$host/ws/agent/version/LINUX/$clientUid/0" \
+          -o "$workDir/manifest.json" 2>/dev/null; then
+        echo "NinjaOne update: manifest fetch failed; skipping (will retry next boot)." >&2
+        rm -rf "$workDir"
+        return 0
+      fi
 
-      # Atomic replace: cp -f would truncate the inode the running agent has
+      latestVersion="$(${pkgs.gnused}/bin/sed -n 's/.*"version":"\([^"]*\)".*/\1/p' "$workDir/manifest.json")"
+      agentUrl="$(${pkgs.gnused}/bin/sed -n 's/.*"agent_url":"\([^"]*\)".*/\1/p' "$workDir/manifest.json")"
+      agentSha256="$(${pkgs.gnused}/bin/sed -n 's/.*"agent_sha256":"\([^"]*\)".*/\1/p' "$workDir/manifest.json")"
+      installedVersion="$(${pkgs.gnused}/bin/sed -n 's/^Version=\(.*\)$/\1/p' "$programfiles/ninjarmm-linagent.manifest")"
+
+      if [ -z "$latestVersion" ] || [ -z "$agentUrl" ] || [ -z "$agentSha256" ]; then
+        echo "NinjaOne update: manifest fields missing; skipping." >&2
+        rm -rf "$workDir"
+        return 0
+      fi
+
+      if [ "$latestVersion" = "$installedVersion" ]; then
+        echo "NinjaOne agent is up to date ($installedVersion)."
+        rm -rf "$workDir"
+        return 0
+      fi
+
+      echo "NinjaOne update available: $installedVersion -> $latestVersion; downloading..."
+      if ! ${pkgs.curl}/bin/curl -fsS -m 120 -o "$workDir/agent.tgz" "$agentUrl" 2>/dev/null; then
+        echo "NinjaOne update: download failed; keeping current version." >&2
+        rm -rf "$workDir"
+        return 0
+      fi
+
+      echo "$agentSha256  $workDir/agent.tgz" | ${pkgs.coreutils}/bin/sha256sum -c - >/dev/null 2>&1 || {
+        echo "NinjaOne update: checksum mismatch; keeping current version." >&2
+        rm -rf "$workDir"
+        return 0
+      }
+
+      ${pkgs.gzip}/bin/gzip -dc "$workDir/agent.tgz" | ${pkgs.gnutar}/bin/tar -xf - -C "$workDir"
+
+      # Atomic replace: cp -f would truncate the inode a running agent has
       # mapped, crashing it with SIGBUS on the next page fault.  Write to a
       # temp name and rename; the running process keeps its old inode.
-      cp -f "$tmpUpd/ninjarmm-linagent" "$programfiles/ninjarmm-linagent.new"
-      cp -f "$tmpUpd/ninjarmm-linagent.manifest" "$programfiles/ninjarmm-linagent.manifest.new"
+      cp -f "$workDir/ninjarmm-linagent" "$programfiles/ninjarmm-linagent.new"
+      cp -f "$workDir/ninjarmm-linagent.manifest" "$programfiles/ninjarmm-linagent.manifest.new"
       mv -f "$programfiles/ninjarmm-linagent.new" "$programfiles/ninjarmm-linagent"
       mv -f "$programfiles/ninjarmm-linagent.manifest.new" "$programfiles/ninjarmm-linagent.manifest"
       chown 0:0 "$programfiles/ninjarmm-linagent" "$programfiles/ninjarmm-linagent.manifest"
-      rm -rf "$tmpUpd"
-      echo "Applied agent updater: $(grep '^Version=' "$programfiles/ninjarmm-linagent.manifest" || true)"
+      rm -rf "$workDir"
+      echo "NinjaOne agent updated to $latestVersion."
     }
 
     # Keep the agent's own systemd integration from misfiring.  The
@@ -178,9 +230,9 @@ let
 
     if [ -f "$marker" ] && [ "$installerPath" -ot "$marker" ]; then
       sync_units
-      apply_updater
+      check_for_updates
       apply_fixups
-      echo "NinjaOne agent already extracted and up to date."
+      echo "NinjaOne agent already extracted."
       exit 0
     fi
 
@@ -188,7 +240,6 @@ let
     # server.conf) across re-extracts so version bumps do not
     # re-register as a new device.  programdata is runtime state and is
     # intentionally not preserved.
-    configDir="$rootDir/opt/NinjaRMMAgent/programfiles/config"
     backupDir="$(mktemp -d)"
     if [ -d "$configDir" ]; then cp -a "$configDir" "$backupDir/config"; fi
 
@@ -205,12 +256,11 @@ let
     rm -rf "$backupDir"
 
     echo "Applying post-install configuration..."
-    programfiles="$rootDir/opt/NinjaRMMAgent/programfiles"
     mkdir -p "$programfiles/config"
     cp -f "$rootDir/tmp/ninja-startup/ninjarmm-curl-ca-bundle.crt" "$programfiles/"
 
     sync_units
-    apply_updater
+    check_for_updates
     apply_fixups
 
     chown -R 0:0 "$rootDir/opt/NinjaRMMAgent"
@@ -236,30 +286,25 @@ in
       description = ''
         Runtime path to the NinjaOne <literal>.deb</literal> installer.
         Must be a plain string, not a Nix path literal, or Nix will copy it
-        into the store.  Download it from the NinjaOne portal.
+        into the store.
+        This is the portal-generated installer for this device: it embeds the
+        device identity (server.conf/agent.conf), so generate one per machine
+        in the portal and do not share it.  It is only needed for the initial
+        install; updates are applied automatically (see the module header).
       '';
     };
 
-    updaterPath = lib.mkOption {
-      type = lib.types.str;
-      default = "/home/kar/private/ninjaone-agent.tgz";
+    autoUpdate = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
       description = ''
-        Runtime path to the current agent updater tarball (ninjarmm-linagent +
-        manifest, served publicly; see the module header for how to fetch it).  When
-        newer than the installer <literal>.deb</literal>, ninjaone-install
-        overlays it over the extracted tree.  Must be a plain string, not a
-        Nix path literal, to stay out of the store.
-      '';
-    };
-
-    updaterSha256 = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      description = ''
-        Optional SHA-256 of the updater tarball (<literal>agent_sha256</literal>
-        from the version manifest).  When set, ninjaone-install verifies the
-        tarball before overlaying it, so a corrupted or tampered download
-        fails loudly instead of installing.
+        On every <literal>ninjaone-install</literal> start (i.e. at boot),
+        check the public version manifest and update the agent when a newer
+        version exists.  The manifest URL is derived at runtime from
+        <literal>Host</literal>/<literal>ClientUID</literal> in
+        <literal>server.conf</literal>, so no portal access or manual steps
+        are needed; the downloaded tarball is verified against the manifest's
+        SHA-256 before being applied.
       '';
     };
 
