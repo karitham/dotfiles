@@ -5,7 +5,7 @@
 # The agent ships as a portal-generated .deb that is also the device
 # identity: it embeds server.conf/agent.conf (ClientUID, NodeId, V2AgentKey,
 # MachineId).  It is kept OUT of the Nix store and extracted at boot into
-# ${dataDir}/root by the ninjaone-install oneshot, which also applies the
+# ${dataDir}/root by the ninjarmm-install oneshot, which also applies the
 # upstream post-install steps (cert bundle, root ownership).  The agent
 # service runs the upstream binary with the NixOS dynamic loader + explicit
 # library path and DAEMON_RUN=1 (foreground), bind-mounting the extracted tree
@@ -21,7 +21,7 @@
 # The agent's self-update (patcher) cannot work on NixOS: it spawns gunzip by
 # name (PATH), resolves its own location via /proc/self/exe (the ld-linux
 # wrapper -> /nix/store), and the binaries it downloads are Debian ELFs.
-# Instead, on every boot ninjaone-install checks the public version manifest:
+# Instead, on every boot ninjarmm-install checks the public version manifest:
 #
 #   1. Derive the manifest URL from Host/ClientUID in the extracted
 #      server.conf (no portal auth, region-agnostic):
@@ -35,7 +35,7 @@
 # The check is best-effort: any failure (offline, manifest error, checksum
 # mismatch) logs and keeps the current version, so the agent always starts.
 #
-#   - force a check without rebooting:  systemctl restart ninjaone-install
+#   - force a check without rebooting:  systemctl restart ninjarmm-install
 #   - disable checks:                    services.ninjaone.autoUpdate = false
 #
 # Caveat: checks only run at boot (or manual restart), so a machine that
@@ -43,7 +43,7 @@
 #
 # Security
 # --------
-# The agent runs under a hard systemd sandbox (see ninjaone-agent
+# The agent runs under a hard systemd sandbox (see ninjarmm-agent
 # serviceConfig): resource caps, read-only OS tree, no home/devices, no
 # capabilities, restricted address families, and ProtectProc=invisible so it
 # cannot read other processes.  /proc/cpuinfo, /proc/meminfo and /proc/stat
@@ -75,32 +75,7 @@ let
 
   agentBinary = "${cfg.dataDir}/root/${cfg.agentBinaryRelativePath}";
 
-  # No-op units installed by apply_fixups so the agent's upstream
-  # ninja-systemd-patcher.sh succeeds without enabling a real patcher.
-  # Kept as writeText (not heredocs in the shell script) to avoid the Nix
-  # ''-string indentation trap with heredoc terminators.
-  patcherServiceUnit = pkgs.writeText "ninjarmm-patcher.service" ''
-    [Unit]
-    Description=NinjaOne patcher (no-op on NixOS; updates applied by ninjaone-install's manifest check)
-
-    [Service]
-    Type=oneshot
-    ExecStart=${pkgs.coreutils}/bin/true
-  '';
-
-  patcherTimerUnit = pkgs.writeText "ninjarmm-patcher.timer" ''
-    [Unit]
-    Description=Timer for ninjarmm-patcher.service (no-op on NixOS)
-
-    [Timer]
-    Unit=ninjarmm-patcher.service
-    OnUnitActiveSec=7d
-
-    [Install]
-    WantedBy=timers.target
-  '';
-
-  installScript = pkgs.writeShellScript "ninjaone-install" ''
+  installScript = pkgs.writeShellScript "ninjarmm-install" ''
     set -euo pipefail
 
     installerPath="${cfg.installerPath}"
@@ -118,7 +93,7 @@ let
 
     # The agent's distress monitor checks for its upstream systemd units
     # at /lib/systemd/system, which does not exist on NixOS.  Keep the
-    # units in $unitsDir (survives rebuilds) and let ninjaone-agent
+    # units in $unitsDir (survives rebuilds) and let ninjarmm-agent
     # bind-mount the directory there.  /etc/systemd/system cannot be
     # used for this: it is /etc/static/systemd/system on NixOS and is
     # regenerated on every rebuild.
@@ -201,37 +176,9 @@ let
       echo "NinjaOne agent updated to $latestVersion."
     }
 
-    # Keep the agent's own systemd integration from misfiring.  The
-    # agent re-deploys ninja-systemd-patcher.sh from its embedded .qrc
-    # when the file differs, so patching that script cannot work;
-    # instead we make the upstream script succeed.  It
-    # systemctl-enables and -starts ninjarmm-patcher.timer, which the
-    # manager can only see if the units live in a host-visible path
-    # (/etc/systemd/system).  Install no-op units and pre-enable them
-    # from here (this service runs unlocked), so the agent's own
-    # `systemctl enable` is an idempotent no-op that needs no /etc
-    # write access under ProtectSystem=full.
-    apply_fixups() {
-      mkdir -p /etc/systemd/system
-
-      cp -f "${patcherServiceUnit}" /etc/systemd/system/ninjarmm-patcher.service
-      cp -f "${patcherTimerUnit}" /etc/systemd/system/ninjarmm-patcher.timer
-
-      ${pkgs.systemd}/bin/systemctl daemon-reload || true
-      ${pkgs.systemd}/bin/systemctl enable ninjarmm-patcher.timer ninjarmm-patcher.service || true
-      ${pkgs.systemd}/bin/systemctl start ninjarmm-patcher.timer || true
-
-      # The agent looks for its own unit (ninjarmm-agent) to detect how
-      # it is managed; alias our unit so those checks pass.
-      mkdir -p /etc/systemd/system/multi-user.target.wants
-      ln -sf ../ninjaone-agent.service /etc/systemd/system/multi-user.target.wants/ninjarmm-agent.service
-      ln -sf ninjaone-agent.service /etc/systemd/system/ninjarmm-agent.service
-    }
-
     if [ -f "$marker" ] && [ "$installerPath" -ot "$marker" ]; then
       sync_units
       check_for_updates
-      apply_fixups
       echo "NinjaOne agent already extracted."
       exit 0
     fi
@@ -261,7 +208,6 @@ let
 
     sync_units
     check_for_updates
-    apply_fixups
 
     chown -R 0:0 "$rootDir/opt/NinjaRMMAgent"
     chmod 600 "$programfiles/config/agent.conf" "$programfiles/config/server.conf"
@@ -298,7 +244,7 @@ in
       type = lib.types.bool;
       default = true;
       description = ''
-        On every <literal>ninjaone-install</literal> start (i.e. at boot),
+        On every <literal>ninjarmm-install</literal> start (i.e. at boot),
         check the public version manifest and update the agent when a newer
         version exists.  The manifest URL is derived at runtime from
         <literal>Host</literal>/<literal>ClientUID</literal> in
@@ -333,7 +279,7 @@ in
       }
     ];
 
-    systemd.services.ninjaone-install = {
+    systemd.services.ninjarmm-install = {
       description = "Install/Update NinjaOne RMM agent";
       wantedBy = [ "multi-user.target" ];
       after = [
@@ -349,16 +295,42 @@ in
       };
     };
 
-    systemd.services.ninjaone-agent = {
+    # The agent expects a ninjarmm-* unit set: its patcher script
+    # systemctl-enables ninjarmm-patcher.timer and it looks for
+    # ninjarmm-agent to detect how it is managed.  Declare no-op units here
+    # rather than writing them to /etc/systemd/system at runtime — that path
+    # is regenerated per rebuild and is read-only with
+    # system.immutable.enable.  NixOS pre-enables them, so the agent's own
+    # `systemctl enable` calls are idempotent no-ops that need no /etc write
+    # access under ProtectSystem=full.
+    systemd.services.ninjarmm-patcher = {
+      description = "NinjaOne patcher (no-op on NixOS; updates applied by ninjarmm-install's manifest check)";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.coreutils}/bin/true";
+      };
+    };
+
+    systemd.timers.ninjarmm-patcher = {
+      description = "Timer for ninjarmm-patcher.service (no-op on NixOS)";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        Unit = "ninjarmm-patcher.service";
+        OnUnitActiveSec = "7d";
+      };
+    };
+
+    systemd.services.ninjarmm-agent = {
       description = "NinjaOne RMM Agent";
       wantedBy = [ "multi-user.target" ];
       after = [
         "network-online.target"
-        "ninjaone-install.service"
+        "ninjarmm-install.service"
       ];
       wants = [
         "network-online.target"
-        "ninjaone-install.service"
+        "ninjarmm-install.service"
       ];
 
       # NixOS turns this into both Path= and the service $PATH (via
