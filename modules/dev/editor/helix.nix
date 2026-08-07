@@ -360,8 +360,8 @@ lib.mkIf config.dev.editor.enable {
             };
           };
         };
-        thriftls = {
-          command = "thriftls";
+        thrift-ls = {
+          command = "thrift-ls";
         };
       };
 
@@ -613,8 +613,7 @@ lib.mkIf config.dev.editor.enable {
               }
               {
                 name = "thrift";
-                language-servers = [ "thriftls" ];
-                auto-format = true;
+                language-servers = [ "thrift-ls" ];
               }
               {
                 name = "prr";
