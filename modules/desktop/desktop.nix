@@ -3,6 +3,7 @@
   lib,
   pkgs,
   inputs,
+  inputs',
   ...
 }:
 let
@@ -37,6 +38,7 @@ in
 
     programs = {
       niri.enable = true;
+      niri.package = inputs'.niri.packages.niri-unstable;
       hyprlock.enable = cfg.hyprlock.enable;
     };
 
