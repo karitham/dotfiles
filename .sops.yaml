@@ -12,8 +12,9 @@
 # existing files to add the SSH recipients. The age keys can be removed once
 # all consumers are migrated.
 keys:
-  - &ozen   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDSNRhCfSzYU5bliUcc+3axoVI46XbQ7uE58374CoOg3
-  - &kiwi   ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdfgc1G9wmgw2mTI6nSPTBcev6DJsYLbb5NO0wT/j0c
+  - &ozen ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDSNRhCfSzYU5bliUcc+3axoVI46XbQ7uE58374CoOg3
+  - &kiwi ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdfgc1G9wmgw2mTI6nSPTBcev6DJsYLbb5NO0wT/j0c
+  - &belaf_age age13mteasehqfnmmne7g57h6cgt9jpkqu08e55g3wn0pc9h5gqragms2gzat8
   - &ozen_age age17cxj5zwkkxjkjvmpskpkyh6yt4xj4l8h6jyjxez3nmq6y9tvhqjsdp0m5j
   - &server_reg age1j6j2ldpsj7jmchstwl3nktvatut9hzxnemmy6py84rrga5eaf93q5w8s39
 creation_rules:
@@ -24,4 +25,5 @@ creation_rules:
           - *ozen
           - *kiwi
           - *ozen_age
+          - *belaf_age
           - *server_reg

@@ -9,6 +9,7 @@
   };
 
   virtualisation.docker.daemon.settings.data-root = "/docker";
+  systemd.services.attic-push.enable = false;
 
   home-manager.users.${config.my.username}.imports = [ ./home.nix ];
 }
