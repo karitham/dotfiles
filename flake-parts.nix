@@ -25,6 +25,7 @@
         pokego = pkgs.callPackage ./pkgs/pokego.nix { };
         golangci-lint-langserver = pkgs.callPackage ./pkgs/golangci-lint-langserver.nix { };
         gotools = pkgs.callPackage ./pkgs/gotools.nix { };
+        browsermcp = pkgs.callPackage ./pkgs/browsermcp.nix { };
 
         wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
 

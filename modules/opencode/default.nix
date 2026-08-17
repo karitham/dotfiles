@@ -163,6 +163,13 @@ in
             };
           };
 
+          # Packaged from the npm tarball in pkgs/browsermcp.nix; the bin
+          # carries its own node shebang, so no JS runtime is needed on PATH.
+          browsermcp = {
+            type = "local";
+            enabled = true;
+            command = [ "${self'.packages.browsermcp}/bin/mcp-server-browsermcp" ];
+          };
         };
       };
     };
