@@ -25,5 +25,4 @@
   };
 
   sops.age.sshKeyPaths = [ "/home/kar/.ssh/id_ed25519" ];
-  dev.opencode.sops.enable = true;
 }

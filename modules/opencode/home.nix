@@ -13,7 +13,7 @@
     };
     sops.enable = lib.mkOption {
       type = lib.types.bool;
-      default = false;
+      default = true;
       description = ''
         Use sops-backed secrets for opencode MCP servers (Linear, Sentry, GitHub, Kagi).
         Disable on machines that don't have a registered SSH key in .sops.yaml —
