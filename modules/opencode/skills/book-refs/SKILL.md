@@ -2,11 +2,11 @@
 name: book-refs
 description: >
   Loads up-to-date reference material from upstream git repos for nushell,
-  zellij, jj, niri, ghostty, opencode, atuin, helix, starship, direnv, and
-  flake-parts. Use when working on any of these tools and the answer depends on
-  current syntax, APIs, defaults, or behavior that may have changed since
-  training cutoff. Fetches chapters on demand via raw.githubusercontent.com;
-  always cites the raw source URL.
+  zellij, jj, niri, ghostty, opencode, atuin, helix, starship, direnv,
+  flake-parts, and nixpkgs lib. Use when working on any of these tools and the
+  answer depends on current syntax, APIs, defaults, or behavior that may have
+  changed since training cutoff. Fetches chapters on demand via
+  raw.githubusercontent.com; always cites the raw source URL.
 ---
 
 # Book Refs
@@ -20,6 +20,10 @@ agent pulls fresh chapters instead of guessing.
 Working on any tool in the table below — the per-reference files hold the
 curated chapter index and URL pattern. Especially valuable for tools that
 release frequently or where hallucinated syntax costs real debugging time.
+
+The `nixpkgs-lib` reference is the one to reach for when writing or refactoring
+Nix: `lib.*` semantics shift between nixpkgs revs, so always fetch the doc
+comment at your pinned rev instead of trusting training data.
 
 ## When NOT to use
 
@@ -55,6 +59,7 @@ release frequently or where hallucinated syntax costs real debugging time.
 | starship | starship, prompt, cross-shell, module | `references/starship.md` |
 | direnv | direnv, `.envrc`, shell hook, allow | `references/direnv.md` |
 | flake-parts | flake-parts, flake modules, perSystem, mkOption | `references/flake-parts.md` |
+| nixpkgs-lib | nixpkgs, `lib.*`, nixos module, nix module, flake, overlay, package set, callPackage, mkIf, mkMerge, genAttrs | `references/nixpkgs-lib.md` |
 
 ## Caching
 
