@@ -369,267 +369,265 @@ lib.mkIf config.dev.editor.enable {
         let
           defaults = [ "typos" ];
         in
-        map
-          (lang: lang // { language-servers = if lang ? language-servers then lang.language-servers ++ defaults else defaults; })
-          (
-            [
-              {
-                name = "nix";
-                language-servers = [
-                  "nixd"
-                  "nil"
+        map (lang: lang // { language-servers = (lang.language-servers or [ ]) ++ defaults; }) (
+          [
+            {
+              name = "nix";
+              language-servers = [
+                "nixd"
+                "nil"
+              ];
+              formatter = {
+                command = "nixfmt";
+                args = [
+                  "-s"
+                  "-w"
+                  "120"
                 ];
-                formatter = {
-                  command = "nixfmt";
-                  args = [
-                    "-s"
-                    "-w"
-                    "120"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "go";
-                language-servers = [
-                  "gopls"
-                  "golangci-lint-lsp"
+              };
+              auto-format = true;
+            }
+            {
+              name = "go";
+              language-servers = [
+                "gopls"
+                "golangci-lint-lsp"
+              ];
+              formatter = {
+                command = "goimports";
+              };
+              auto-format = true;
+            }
+            {
+              name = "ruby";
+              language-servers = [
+                "ruby-lsp"
+                "rubocop"
+              ];
+              auto-format = true;
+            }
+            {
+              name = "html";
+              language-servers = [ "vscode-html-language-server" ];
+              formatter = {
+                command = "prettier";
+                args = [
+                  "--stdin-filepath"
+                  "file.html"
                 ];
-                formatter = {
-                  command = "goimports";
-                };
-                auto-format = true;
-              }
-              {
-                name = "ruby";
-                language-servers = [
-                  "ruby-lsp"
-                  "rubocop"
+              };
+              auto-format = true;
+            }
+            {
+              name = "javascript";
+              language-servers = [
+                {
+                  name = "tsgo";
+                  except-features = [ "format" ];
+                }
+                "oxlint"
+              ];
+              formatter = {
+                command = "oxfmt";
+                args = [
+                  "--stdin-filepath"
+                  "file.js"
                 ];
-                auto-format = true;
-              }
-              {
-                name = "html";
-                language-servers = [ "vscode-html-language-server" ];
-                formatter = {
-                  command = "prettier";
-                  args = [
-                    "--stdin-filepath"
-                    "file.html"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "javascript";
-                language-servers = [
-                  {
-                    name = "tsgo";
-                    except-features = [ "format" ];
-                  }
-                  "oxlint"
+              };
+              auto-format = true;
+            }
+            {
+              name = "json";
+              language-servers = [
+                {
+                  name = "vscode-json-language-server";
+                  except-features = [ "format" ];
+                }
+              ];
+              formatter = {
+                command = "oxfmt";
+                args = [
+                  "--stdin-filepath"
+                  "file.json"
                 ];
-                formatter = {
-                  command = "oxfmt";
-                  args = [
-                    "--stdin-filepath"
-                    "file.js"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "json";
-                language-servers = [
-                  {
-                    name = "vscode-json-language-server";
-                    except-features = [ "format" ];
-                  }
+              };
+              auto-format = true;
+            }
+            {
+              name = "graphql";
+              formatter = {
+                command = "oxfmt";
+                args = [
+                  "--stdin-filepath"
+                  "file.gql"
                 ];
-                formatter = {
-                  command = "oxfmt";
-                  args = [
-                    "--stdin-filepath"
-                    "file.json"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "graphql";
-                formatter = {
-                  command = "oxfmt";
-                  args = [
-                    "--stdin-filepath"
-                    "file.gql"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "jsonc";
-                language-servers = [
-                  {
-                    name = "vscode-json-language-server";
-                    except-features = [ "format" ];
-                  }
+              };
+              auto-format = true;
+            }
+            {
+              name = "jsonc";
+              language-servers = [
+                {
+                  name = "vscode-json-language-server";
+                  except-features = [ "format" ];
+                }
+              ];
+              formatter = {
+                command = "oxfmt";
+                args = [
+                  "--stdin-filepath"
+                  "file.jsonc"
                 ];
-                formatter = {
-                  command = "oxfmt";
-                  args = [
-                    "--stdin-filepath"
-                    "file.jsonc"
-                  ];
-                };
-                file-types = [
-                  "jsonc"
-                  "hujson"
+              };
+              file-types = [
+                "jsonc"
+                "hujson"
+              ];
+              auto-format = true;
+            }
+            {
+              name = "jsx";
+              language-servers = [
+                {
+                  name = "tsgo";
+                  except-features = [ "format" ];
+                }
+                "oxlint"
+              ];
+              formatter = {
+                command = "oxfmt";
+                args = [
+                  "--stdin-filepath"
+                  "file.jsx"
                 ];
-                auto-format = true;
-              }
-              {
-                name = "jsx";
-                language-servers = [
-                  {
-                    name = "tsgo";
-                    except-features = [ "format" ];
-                  }
-                  "oxlint"
+              };
+              auto-format = true;
+            }
+            {
+              name = "tsx";
+              language-servers = [
+                {
+                  name = "tsgo";
+                  except-features = [ "format" ];
+                }
+                "oxlint"
+              ];
+              formatter = {
+                command = "oxfmt";
+                args = [
+                  "--stdin-filepath"
+                  "file.tsx"
                 ];
-                formatter = {
-                  command = "oxfmt";
-                  args = [
-                    "--stdin-filepath"
-                    "file.jsx"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "tsx";
-                language-servers = [
-                  {
-                    name = "tsgo";
-                    except-features = [ "format" ];
-                  }
-                  "oxlint"
+              };
+              auto-format = true;
+            }
+            {
+              name = "typescript";
+              language-servers = [
+                {
+                  name = "tsgo";
+                  except-features = [ "format" ];
+                }
+                "oxlint"
+              ];
+              formatter = {
+                command = "oxfmt";
+                args = [
+                  "--stdin-filepath"
+                  "file.ts"
                 ];
-                formatter = {
-                  command = "oxfmt";
-                  args = [
-                    "--stdin-filepath"
-                    "file.tsx"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "typescript";
-                language-servers = [
-                  {
-                    name = "tsgo";
-                    except-features = [ "format" ];
-                  }
-                  "oxlint"
+              };
+              auto-format = true;
+            }
+            {
+              name = "yaml";
+              language-servers = [ "yaml-language-server" ];
+              formatter = {
+                command = "prettier";
+                args = [
+                  "--stdin-filepath"
+                  "file.yaml"
                 ];
-                formatter = {
-                  command = "oxfmt";
-                  args = [
-                    "--stdin-filepath"
-                    "file.ts"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "yaml";
-                language-servers = [ "yaml-language-server" ];
-                formatter = {
-                  command = "prettier";
-                  args = [
-                    "--stdin-filepath"
-                    "file.yaml"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "helm";
-                language-servers = [ "helm_ls" ];
-              }
-              {
-                name = "typst";
-                language-servers = [ "tinymist" ];
-                auto-format = true;
-              }
-              {
-                name = "markdown";
-                language-servers = [
-                  "marksman"
-                  # "vale-ls"
+              };
+              auto-format = true;
+            }
+            {
+              name = "helm";
+              language-servers = [ "helm_ls" ];
+            }
+            {
+              name = "typst";
+              language-servers = [ "tinymist" ];
+              auto-format = true;
+            }
+            {
+              name = "markdown";
+              language-servers = [
+                "marksman"
+                # "vale-ls"
+              ];
+              text-width = 100;
+              rulers = [ 100 ];
+              soft-wrap = {
+                enable = true;
+                wrap-at-text-width = true;
+              };
+              formatter = {
+                command = "prettier";
+                args = [
+                  "--stdin-filepath"
+                  "file.md"
                 ];
-                text-width = 100;
-                rulers = [ 100 ];
-                soft-wrap = {
-                  enable = true;
-                  wrap-at-text-width = true;
-                };
-                formatter = {
-                  command = "prettier";
-                  args = [
-                    "--stdin-filepath"
-                    "file.md"
-                  ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "sql";
-                formatter = {
-                  command = "sql-formatter";
-                  args = [
-                    "-c"
-                    (builtins.toJSON {
-                      keywordCase = "upper";
-                      functionCase = "upper";
-                      dataTypeCase = "upper";
-                      identifierCase = "lower";
-                      language = "postgresql";
-                      expressionWidth = 80;
-                      tabWidth = 2;
-                    })
-                  ];
-                };
-                auto-format = false;
-              }
-              {
-                name = "nu";
-                language-servers = [ "nu-lsp" ];
-                formatter = {
-                  command = "nufmt";
-                  args = [ "--stdin" ];
-                };
-                auto-format = true;
-              }
-              {
-                name = "thrift";
-                language-servers = [ "thrift-ls" ];
-              }
-              {
-                name = "prr";
-                scope = "source.prr";
-                file-types = [ "prr" ];
-                grammar = "prr";
-              }
-            ]
-            ++ map (lang: { name = lang; }) [
-              "git-attributes"
-              "git-commit"
-              "git-config"
-              "git-ignore"
-              "git-rebase"
-            ]
-          );
+              };
+              auto-format = true;
+            }
+            {
+              name = "sql";
+              formatter = {
+                command = "sql-formatter";
+                args = [
+                  "-c"
+                  (builtins.toJSON {
+                    keywordCase = "upper";
+                    functionCase = "upper";
+                    dataTypeCase = "upper";
+                    identifierCase = "lower";
+                    language = "postgresql";
+                    expressionWidth = 80;
+                    tabWidth = 2;
+                  })
+                ];
+              };
+              auto-format = false;
+            }
+            {
+              name = "nu";
+              language-servers = [ "nu-lsp" ];
+              formatter = {
+                command = "nufmt";
+                args = [ "--stdin" ];
+              };
+              auto-format = true;
+            }
+            {
+              name = "thrift";
+              language-servers = [ "thrift-ls" ];
+            }
+            {
+              name = "prr";
+              scope = "source.prr";
+              file-types = [ "prr" ];
+              grammar = "prr";
+            }
+          ]
+          ++ map (lang: { name = lang; }) [
+            "git-attributes"
+            "git-commit"
+            "git-config"
+            "git-ignore"
+            "git-rebase"
+          ]
+        );
     };
   };
 }

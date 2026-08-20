@@ -84,7 +84,7 @@ let
     unitsDir="${cfg.dataDir}/systemd"
     programfiles="$rootDir/opt/NinjaRMMAgent/programfiles"
     configDir="$programfiles/config"
-    autoUpdate="${if cfg.autoUpdate then "true" else "false"}"
+    autoUpdate="${toString cfg.autoUpdate}"
 
     if [ ! -f "$installerPath" ]; then
       echo "NinjaOne installer not found at $installerPath" >&2

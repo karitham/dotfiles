@@ -13,8 +13,7 @@ let
   # Path to the sops-decrypted env file, or /dev/null if not configured.
   # The wrapper uses `[ -f ... ]` to skip if missing, so opencode always starts
   # even on machines where sops can't decrypt.
-  opencodeEnvFile =
-    if (config.sops.secrets ? "opencode/env") then config.sops.secrets."opencode/env".path else "/dev/null";
+  opencodeEnvFile = lib.attrByPath [ "opencode/env" "path" ] "/dev/null" config.sops.secrets;
 
   opencodePkg' =
     pkg: name:

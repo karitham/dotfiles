@@ -1,8 +1,12 @@
-{ pkgs, ... }:
-pkgs.buildGoModule {
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+}:
+buildGoModule {
   pname = "pokego";
   version = "devel";
-  src = pkgs.fetchFromGitHub {
+  src = fetchFromGitHub {
     owner = "karitham";
     repo = "pokego";
     rev = "main";
@@ -18,7 +22,7 @@ pkgs.buildGoModule {
     "-extldflags -static"
   ];
 
-  meta = with pkgs.lib; {
+  meta = with lib; {
     description = "Command-line tool that lets you display Pokémon sprites in color directly in your terminal.";
     homepage = "https://github.com/karitham/pokego";
     mainProgram = "pokego";

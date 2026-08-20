@@ -13,40 +13,22 @@
 
   imports = [ ./systems/default.nix ];
 
-  perSystem =
-    {
-      pkgs,
-      lib,
-      self',
-      ...
-    }:
-    {
-      packages = {
-        pokego = pkgs.callPackage ./pkgs/pokego.nix { };
-        golangci-lint-langserver = pkgs.callPackage ./pkgs/golangci-lint-langserver.nix { };
-        gotools = pkgs.callPackage ./pkgs/gotools.nix { };
-        browsermcp = pkgs.callPackage ./pkgs/browsermcp.nix { };
-
-        wakuna-image = self.lib.sdImageFromSystem self.nixosConfigurations.wakuna;
-
-        strands-agents-sops = pkgs.callPackage ./pkgs/strands-agents-sops.nix { };
-
-        strands-sops-skills = pkgs.runCommand "strands-sops-skills" { } ''
-          mkdir $out
-          ${lib.getExe self'.packages.strands-agents-sops} skills --output-dir $out
-        '';
-      };
-      formatter = pkgs.treefmt;
-      devShells.default = pkgs.mkShell {
-        packages = with pkgs; [
-          sops
-          treefmt
-          nixfmt
-          nufmt
-          oxfmt
-        ];
-      };
+  perSystem = { pkgs, lib, ... }: {
+    packages = lib.packagesFromDirectoryRecursive {
+      inherit (pkgs) callPackage;
+      directory = ./pkgs;
     };
+    formatter = pkgs.treefmt;
+    devShells.default = pkgs.mkShell {
+      packages = with pkgs; [
+        sops
+        treefmt
+        nixfmt
+        nufmt
+        oxfmt
+      ];
+    };
+  };
 
   flake = {
     lib.sdImageFromSystem = system: system.config.system.build.sdImage;
@@ -72,11 +54,6 @@
       let
         hosts = import ./systems/hosts.nix;
         homeHosts = lib.filterAttrs (_: h: h.class == "desktop" || h.class == "wsl") hosts;
-
-        # Tags that carry home-manager content (mirrors modules/tags/<tag>.nix).
-        tagHomeModules = {
-          work = self.homeModules.work;
-        };
 
         mkHome =
           name: host:
@@ -112,10 +89,10 @@
                 self.homeModules.desktop
                 inputs.niri.homeModules.niri
               ]
-              ++ lib.concatMap (t: lib.optional (tagHomeModules ? ${t}) tagHomeModules.${t}) host.tags
+              ++ lib.optionals (builtins.elem "work" host.tags) [ self.homeModules.work ]
               ++ [
                 ./systems/${name}/home.nix
-                { home.homeDirectory = "/home/kar"; }
+                { home.homeDirectory = lib.mkDefault "/home/kar"; }
               ];
             }
           );

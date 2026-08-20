@@ -42,6 +42,6 @@ in
 
     perTag = tag: { modules = [ ../modules/tags/${tag}.nix ]; };
 
-    hosts = builtins.mapAttrs (_: toEasyHost) hosts;
+    hosts = lib.mapAttrs (_: toEasyHost) hosts;
   };
 }

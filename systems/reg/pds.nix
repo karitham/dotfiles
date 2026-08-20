@@ -28,14 +28,12 @@ in
   services.bluesky-pds = {
     enable = mkDefault true;
     environmentFiles = [ config.sops.secrets.pds.path ];
-    settings = mkMerge [
-      {
-        PDS_SQLITE_DISABLE_WAL_AUTO_CHECKPOINT = "true";
-        PDS_DATA_DIRECTORY = "/var/lib/pds";
-        PDS_HOSTNAME = "0xf.fr";
-        PDS_BLOBSTORE_DISK_LOCATION = null;
-      }
-    ];
+    settings = {
+      PDS_SQLITE_DISABLE_WAL_AUTO_CHECKPOINT = "true";
+      PDS_DATA_DIRECTORY = "/var/lib/pds";
+      PDS_HOSTNAME = "0xf.fr";
+      PDS_BLOBSTORE_DISK_LOCATION = null;
+    };
   };
 
   networking.firewall.allowedTCPPorts = [

@@ -15,5 +15,7 @@
     openssh.enable = true;
   };
 
-  users.users.${config.my.username}.openssh.authorizedKeys.keyFiles = lib.mkIf (inputs ? ssh-keys) [ inputs.ssh-keys ];
+  users.users.${config.my.username}.openssh.authorizedKeys.keyFiles = lib.optionals (inputs ? ssh-keys) [
+    inputs.ssh-keys
+  ];
 }

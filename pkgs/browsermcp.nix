@@ -1,8 +1,12 @@
-{ pkgs, ... }:
-pkgs.buildNpmPackage {
+{
+  lib,
+  buildNpmPackage,
+  fetchurl,
+}:
+buildNpmPackage {
   pname = "browsermcp";
   version = "0.1.3";
-  src = pkgs.fetchurl {
+  src = fetchurl {
     url = "https://registry.npmjs.org/@browsermcp/mcp/-/mcp-0.1.3.tgz";
     hash = "sha256-KtNMKRRcqAxfLn2OyQ4FiWl7GTOLK0WoPJGNSQekz5Y=";
   };
@@ -34,7 +38,7 @@ pkgs.buildNpmPackage {
     ln -sf $out/lib/node_modules/@browsermcp/mcp/dist/index.js $out/bin/mcp-server-browsermcp
   '';
 
-  meta = with pkgs.lib; {
+  meta = with lib; {
     description = "MCP server for browser automation using Browser MCP";
     homepage = "https://browsermcp.io";
     license = licenses.asl20;

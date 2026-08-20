@@ -10,7 +10,7 @@
     programs.starship = {
       enable = true;
       settings = {
-        format = lib.concatMapStrings (s: s) [
+        format = lib.concatStringsSep "" [
           "$directory"
           "$nix_shell"
           "$custom"

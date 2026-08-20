@@ -24,16 +24,12 @@ in
         gnome-themes-extra
       ];
 
-      etc = {
-        "xdg/gtk-3.0/settings.ini".text = ''
+      etc = lib.genAttrs [ "xdg/gtk-3.0/settings.ini" "xdg/gtk-4.0/settings.ini" ] (_: {
+        text = ''
           [Settings]
           gtk-application-prefer-dark-theme=1
         '';
-        "xdg/gtk-4.0/settings.ini".text = ''
-          [Settings]
-          gtk-application-prefer-dark-theme=1
-        '';
-      };
+      });
     };
 
     programs = {
