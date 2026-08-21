@@ -6,7 +6,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.desktop.apps.enable {
+  config = lib.mkIf config.desktop.enable {
     home = {
       packages = [
         pkgs.firefox

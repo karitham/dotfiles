@@ -1,5 +1,5 @@
 { lib, config, ... }: {
-  config = lib.mkIf config.desktop.hyprlock.enable {
+  config = lib.mkIf (config.desktop.enable && !config.desktop.noctalia.enable) {
     services.hypridle = {
       enable = true;
       settings = {

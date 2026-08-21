@@ -2,27 +2,45 @@
 # (via ./default.nix) and the standalone `homeConfigurations` generated in
 # ../../flake-parts.nix. Keep machine-agnostic content here; per-machine bits
 # live in systems/<host>/home.nix.
-{ inputs, ... }: {
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
+{
   imports = [ inputs.catppuccin.homeModules.default ];
 
-  home = {
-    username = "kar";
-    stateVersion = "26.05";
-    enableNixpkgsReleaseCheck = false;
+  # Mirror of modules/core.nix's identity option: the NixOS and HM module
+  # trees are separate, so each declares its own copy of `my`.
+  options.my.username = lib.mkOption {
+    type = lib.types.str;
+    description = "The username for the current user.";
   };
 
-  catppuccin = {
-    enable = true;
-    flavor = "macchiato";
-    autoEnable = true;
-    cache.enable = true;
-  };
+  config = {
+    my.username = lib.mkDefault "kar";
 
-  manual = {
-    html.enable = false;
-    json.enable = false;
-    manpages.enable = false;
-  };
+    home = {
+      username = config.my.username;
+      homeDirectory = lib.mkDefault "/home/${config.my.username}";
+      stateVersion = "26.05";
+      enableNixpkgsReleaseCheck = false;
+    };
 
-  sops.age.sshKeyPaths = [ "/home/kar/.ssh/id_ed25519" ];
+    catppuccin = {
+      enable = true;
+      flavor = "macchiato";
+      autoEnable = true;
+      cache.enable = true;
+    };
+
+    manual = {
+      html.enable = false;
+      json.enable = false;
+      manpages.enable = false;
+    };
+
+    sops.age.sshKeyPaths = [ "/home/${config.my.username}/.ssh/id_ed25519" ];
+  };
 }

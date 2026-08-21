@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.desktop.launcher.enable {
+  config = lib.mkIf (config.desktop.enable && !config.desktop.noctalia.enable) {
     programs.fuzzel = {
       enable = true;
       settings.main = {

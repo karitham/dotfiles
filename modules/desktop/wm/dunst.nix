@@ -1,1 +1,1 @@
-{ config, ... }: { services.dunst.enable = config.desktop.notification.enable; }
+{ config, ... }: { services.dunst.enable = config.desktop.enable && !config.desktop.noctalia.enable; }

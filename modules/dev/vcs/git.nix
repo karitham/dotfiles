@@ -6,7 +6,7 @@
 }:
 {
   # Note: `config` here is HM config, and `config.dev.sessionVariables.EDITOR` is set via HM's home.sessionVariables
-  config = lib.mkIf config.dev.vcs.enable {
+  config = lib.mkIf config.dev.enable {
     home.packages = [ pkgs.gh ];
     programs.git = {
       enable = true;

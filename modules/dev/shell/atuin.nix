@@ -1,5 +1,5 @@
 { config, lib, ... }: {
-  config = lib.mkIf config.dev.shell.enable {
+  config = lib.mkIf config.dev.enable {
     programs.atuin = {
       enable = true;
       flags = [ "--disable-up-arrow" ];

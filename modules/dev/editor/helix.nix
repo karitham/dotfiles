@@ -8,6 +8,8 @@
   ...
 }:
 let
+  # On PATH both for direct use and so helix's LSP/spawn environment finds
+  # them (helix resolves formatters/ls by bare name).
   global-tools = [
     pkgs.nixfmt
     pkgs.oxfmt
@@ -39,7 +41,7 @@ let
     '';
   };
 in
-lib.mkIf config.dev.editor.enable {
+lib.mkIf config.dev.enable {
   home.packages = global-tools;
 
   xdg.configFile."helix/init.scm".text = ''
@@ -368,6 +370,68 @@ lib.mkIf config.dev.editor.enable {
       language =
         let
           defaults = [ "typos" ];
+
+          # tsgo handles LSP features, oxfmt formats, oxlint lints.
+          tsFamily =
+            name: ext:
+            {
+              inherit name;
+            }
+            // {
+              language-servers = [
+                {
+                  name = "tsgo";
+                  except-features = [ "format" ];
+                }
+                "oxlint"
+              ];
+              formatter = {
+                command = "oxfmt";
+                args = [
+                  "--stdin-filepath"
+                  "file.${ext}"
+                ];
+              };
+              auto-format = true;
+            };
+
+          jsonFamily =
+            name: ext:
+            {
+              inherit name;
+            }
+            // {
+              language-servers = [
+                {
+                  name = "vscode-json-language-server";
+                  except-features = [ "format" ];
+                }
+              ];
+              formatter = {
+                command = "oxfmt";
+                args = [
+                  "--stdin-filepath"
+                  "file.${ext}"
+                ];
+              };
+              auto-format = true;
+            };
+
+          prettier =
+            name: ext:
+            {
+              inherit name;
+            }
+            // {
+              formatter = {
+                command = "prettier";
+                args = [
+                  "--stdin-filepath"
+                  "file.${ext}"
+                ];
+              };
+              auto-format = true;
+            };
         in
         map (lang: lang // { language-servers = (lang.language-servers or [ ]) ++ defaults; }) (
           [
@@ -406,53 +470,9 @@ lib.mkIf config.dev.editor.enable {
               ];
               auto-format = true;
             }
-            {
-              name = "html";
-              language-servers = [ "vscode-html-language-server" ];
-              formatter = {
-                command = "prettier";
-                args = [
-                  "--stdin-filepath"
-                  "file.html"
-                ];
-              };
-              auto-format = true;
-            }
-            {
-              name = "javascript";
-              language-servers = [
-                {
-                  name = "tsgo";
-                  except-features = [ "format" ];
-                }
-                "oxlint"
-              ];
-              formatter = {
-                command = "oxfmt";
-                args = [
-                  "--stdin-filepath"
-                  "file.js"
-                ];
-              };
-              auto-format = true;
-            }
-            {
-              name = "json";
-              language-servers = [
-                {
-                  name = "vscode-json-language-server";
-                  except-features = [ "format" ];
-                }
-              ];
-              formatter = {
-                command = "oxfmt";
-                args = [
-                  "--stdin-filepath"
-                  "file.json"
-                ];
-              };
-              auto-format = true;
-            }
+            (prettier "html" "html")
+            (tsFamily "javascript" "js")
+            (jsonFamily "json" "json")
             {
               name = "graphql";
               formatter = {
@@ -464,93 +484,19 @@ lib.mkIf config.dev.editor.enable {
               };
               auto-format = true;
             }
-            {
-              name = "jsonc";
-              language-servers = [
-                {
-                  name = "vscode-json-language-server";
-                  except-features = [ "format" ];
-                }
-              ];
-              formatter = {
-                command = "oxfmt";
-                args = [
-                  "--stdin-filepath"
-                  "file.jsonc"
+            (
+              (jsonFamily "jsonc" "jsonc")
+              // {
+                file-types = [
+                  "jsonc"
+                  "hujson"
                 ];
-              };
-              file-types = [
-                "jsonc"
-                "hujson"
-              ];
-              auto-format = true;
-            }
-            {
-              name = "jsx";
-              language-servers = [
-                {
-                  name = "tsgo";
-                  except-features = [ "format" ];
-                }
-                "oxlint"
-              ];
-              formatter = {
-                command = "oxfmt";
-                args = [
-                  "--stdin-filepath"
-                  "file.jsx"
-                ];
-              };
-              auto-format = true;
-            }
-            {
-              name = "tsx";
-              language-servers = [
-                {
-                  name = "tsgo";
-                  except-features = [ "format" ];
-                }
-                "oxlint"
-              ];
-              formatter = {
-                command = "oxfmt";
-                args = [
-                  "--stdin-filepath"
-                  "file.tsx"
-                ];
-              };
-              auto-format = true;
-            }
-            {
-              name = "typescript";
-              language-servers = [
-                {
-                  name = "tsgo";
-                  except-features = [ "format" ];
-                }
-                "oxlint"
-              ];
-              formatter = {
-                command = "oxfmt";
-                args = [
-                  "--stdin-filepath"
-                  "file.ts"
-                ];
-              };
-              auto-format = true;
-            }
-            {
-              name = "yaml";
-              language-servers = [ "yaml-language-server" ];
-              formatter = {
-                command = "prettier";
-                args = [
-                  "--stdin-filepath"
-                  "file.yaml"
-                ];
-              };
-              auto-format = true;
-            }
+              }
+            )
+            (tsFamily "jsx" "jsx")
+            (tsFamily "tsx" "tsx")
+            (tsFamily "typescript" "ts")
+            ((prettier "yaml" "yaml") // { language-servers = [ "yaml-language-server" ]; })
             {
               name = "helm";
               language-servers = [ "helm_ls" ];
@@ -560,27 +506,21 @@ lib.mkIf config.dev.editor.enable {
               language-servers = [ "tinymist" ];
               auto-format = true;
             }
-            {
-              name = "markdown";
-              language-servers = [
-                "marksman"
-                # "vale-ls"
-              ];
-              text-width = 100;
-              rulers = [ 100 ];
-              soft-wrap = {
-                enable = true;
-                wrap-at-text-width = true;
-              };
-              formatter = {
-                command = "prettier";
-                args = [
-                  "--stdin-filepath"
-                  "file.md"
+            (
+              (prettier "markdown" "md")
+              // {
+                language-servers = [
+                  "marksman"
+                  # "vale-ls"
                 ];
-              };
-              auto-format = true;
-            }
+                text-width = 100;
+                rulers = [ 100 ];
+                soft-wrap = {
+                  enable = true;
+                  wrap-at-text-width = true;
+                };
+              }
+            )
             {
               name = "sql";
               formatter = {
@@ -620,7 +560,7 @@ lib.mkIf config.dev.editor.enable {
               grammar = "prr";
             }
           ]
-          ++ map (lang: { name = lang; }) [
+          ++ map (name: { inherit name; }) [
             "git-attributes"
             "git-commit"
             "git-config"

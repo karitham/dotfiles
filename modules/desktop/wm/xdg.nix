@@ -1,5 +1,5 @@
 { config, lib, ... }: {
-  config = lib.mkIf config.desktop.wm.enable {
+  config = lib.mkIf config.desktop.enable {
     xdg =
       let
         editor = "Helix.desktop";
@@ -10,7 +10,7 @@
         mimeApps = {
           enable = true;
           defaultApplications = {
-            "x-scheme-handler/http " = browser;
+            "x-scheme-handler/http" = browser;
             "x-scheme-handler/https" = browser;
             "x-scheme-handler/chrome" = browser;
             "text/html" = browser;

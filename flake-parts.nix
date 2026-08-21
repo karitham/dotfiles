@@ -31,8 +31,6 @@
   };
 
   flake = {
-    lib.sdImageFromSystem = system: system.config.system.build.sdImage;
-
     homeModules = {
       common = import ./modules/home/common.nix;
       dev = import ./modules/dev/home.nix;
@@ -84,16 +82,17 @@
               modules = [
                 self.homeModules.common
                 self.homeModules.dev
+                # HM's nix.conf generation requires an explicit package; the
+                # NixOS path gets one from modules/nix.nix, this one doesn't.
+                { nix.package = pkgs.nix; }
               ]
               ++ lib.optionals (host.class == "desktop") [
                 self.homeModules.desktop
                 inputs.niri.homeModules.niri
               ]
               ++ lib.optionals (builtins.elem "work" host.tags) [ self.homeModules.work ]
-              ++ [
-                ./systems/${name}/home.nix
-                { home.homeDirectory = lib.mkDefault "/home/kar"; }
-              ];
+              # Per-host home overrides are optional.
+              ++ lib.optionals (builtins.pathExists ./systems/${name}/home.nix) [ ./systems/${name}/home.nix ];
             }
           );
       in

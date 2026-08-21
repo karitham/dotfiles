@@ -5,7 +5,7 @@
   ...
 }:
 {
-  config = lib.mkIf config.desktop.wallpaper.enable {
+  config = lib.mkIf (config.desktop.enable && !config.desktop.noctalia.enable) {
     services.swww = {
       enable = true;
     };

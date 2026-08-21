@@ -6,7 +6,7 @@
 }:
 {
   # Note: `config` here is HM config
-  config = lib.mkIf config.desktop.wm.enable {
+  config = lib.mkIf config.desktop.enable {
     home.packages = [ pkgs.nautilus ]; # xdg-desktop-portal-gnome wants it
     programs.niri = {
       settings = {
@@ -87,6 +87,9 @@
           }
         ];
 
+        # The shared desk: both laptops dock here. eDP-1 mode differs
+        # per machine and is overridden in systems/<host>/home.nix
+        # (belaf: 2560x1600); absent outputs are ignored by niri.
         outputs =
           let
             lg = {

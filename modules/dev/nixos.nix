@@ -9,22 +9,15 @@ let
   inherit (lib) mkIf mkEnableOption mkDefault;
 in
 {
-  imports = [
-    ./options.nix
-    ./docker
-  ];
+  imports = [ ./docker ];
 
-  options.dev = {
-    docker.enable = mkEnableOption "Docker";
-  };
+  options.dev.enable = mkEnableOption "development tools";
 
   config = {
-    dev.docker.enable = mkIf cfg.enable true;
+    users.defaultUserShell = mkIf cfg.enable pkgs.nushell;
+    environment.shells = mkIf cfg.enable [ pkgs.nushell ];
 
-    users.defaultUserShell = mkIf (cfg.enable || cfg.shell.enable) pkgs.nushell;
-    environment.shells = mkIf (cfg.enable || cfg.shell.enable) [ pkgs.nushell ];
-
-    programs.nano.enable = mkDefault (!(cfg.enable || cfg.editor.enable));
-    environment.sessionVariables.EDITOR = mkIf cfg.editor.enable "hx";
+    programs.nano.enable = mkDefault (!cfg.enable);
+    environment.sessionVariables.EDITOR = mkIf cfg.enable "hx";
   };
 }

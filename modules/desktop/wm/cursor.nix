@@ -1,5 +1,5 @@
 { lib, config, ... }: {
-  config = lib.mkIf config.desktop.wm.enable {
+  config = lib.mkIf config.desktop.enable {
     catppuccin.cursors.enable = true;
     home.pointerCursor = {
       enable = true;

@@ -17,7 +17,7 @@ let
   ];
 in
 {
-  config = lib.mkIf config.dev.tools.enable {
+  config = lib.mkIf config.dev.enable {
     home.packages = [
       pkgs.sd
       pkgs.fd

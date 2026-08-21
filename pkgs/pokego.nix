@@ -9,7 +9,8 @@ buildGoModule {
   src = fetchFromGitHub {
     owner = "karitham";
     repo = "pokego";
-    rev = "main";
+    # pinned; was rev = "main" (floating)
+    rev = "4b2e7856badae1dd315d4d3bcf798b08b643ee42";
     hash = "sha256-zd5HNg63e6fdBDM+ri6NpA4gU4uEvvvs69XDOTFOQr8=";
   };
 

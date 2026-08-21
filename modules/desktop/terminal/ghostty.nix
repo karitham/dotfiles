@@ -1,5 +1,5 @@
 { config, lib, ... }: {
-  config = lib.mkIf config.desktop.terminal.enable {
+  config = lib.mkIf config.desktop.enable {
     programs.ghostty = {
       enable = true;
       settings = {

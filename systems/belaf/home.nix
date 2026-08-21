@@ -1,6 +1,4 @@
 { ... }: {
-  dev.enable = true;
-  desktop.enable = true;
   desktop.noctalia.enable = true;
   dev.opencode.sops.enable = false;
 

@@ -11,7 +11,7 @@ let
 in
 {
   imports = [ inputs.niri.nixosModules.niri ];
-  config = lib.mkIf cfg.wm.enable {
+  config = lib.mkIf cfg.enable {
     environment = {
       systemPackages = with pkgs; [
         wl-clipboard
@@ -35,7 +35,6 @@ in
     programs = {
       niri.enable = true;
       niri.package = inputs'.niri.packages.niri-unstable;
-      hyprlock.enable = cfg.hyprlock.enable;
     };
 
     services = {

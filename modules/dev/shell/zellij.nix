@@ -10,7 +10,7 @@ let
     sha256 = "sha256-4AaQEiNSQjnbYYAh5MxdF/gtxL+uVDKJW6QfA/E4Yf8=";
   };
 in
-lib.mkIf config.dev.shell.enable {
+lib.mkIf config.dev.enable {
   programs.zellij = {
     enable = true;
     settings = {
@@ -34,7 +34,7 @@ lib.mkIf config.dev.shell.enable {
     };
   };
 
-  programs.nushell.configFile.text = ''
+  programs.nushell.extraConfig = ''
     if ($env | get -o ZELLIJ | is-not-empty) {
       $env.config = ($env.config | upsert hooks {
       pre_prompt: [ {
@@ -103,9 +103,9 @@ lib.mkIf config.dev.shell.enable {
                   mode_pane          "#[bg=$teal,fg=$crust,bold] PANE#[bg=$surface0,fg=teal]"
                   mode_tab           "#[bg=$teal,fg=$crust,bold] TAB#[bg=$surface0,fg=$teal]"
                   mode_scroll        "#[bg=$flamingo,fg=$crust,bold] SCROLL#[bg=$surface0,fg=$flamingo]"
-                  mode_enter_search  "#[bg=$flamingo,fg=$crust,bold] ENT-SEARCH#[bg=$surfaco,fg=$flamingo]"
-                  mode_search        "#[bg=$flamingo,fg=$crust,bold] SEARCHARCH#[bg=$surfac0,fg=$flamingo]"
-                  mode_resize        "#[bg=$yellow,fg=$crust,bold] RESIZE#[bg=$surfac0,fg=$yellow]"
+                  mode_enter_search  "#[bg=$flamingo,fg=$crust,bold] ENT-SEARCH#[bg=$surface0,fg=$flamingo]"
+                  mode_search        "#[bg=$flamingo,fg=$crust,bold] SEARCH#[bg=$surface0,fg=$flamingo]"
+                  mode_resize        "#[bg=$yellow,fg=$crust,bold] RESIZE#[bg=$surface0,fg=$yellow]"
                   mode_rename_tab    "#[bg=$yellow,fg=$crust,bold] RENAME-TAB#[bg=$surface0,fg=$yellow]"
                   mode_rename_pane   "#[bg=$yellow,fg=$crust,bold] RENAME-PANE#[bg=$surface0,fg=$yellow]"
                   mode_move          "#[bg=$yellow,fg=$crust,bold] MOVE#[bg=$surface0,fg=$yellow]"

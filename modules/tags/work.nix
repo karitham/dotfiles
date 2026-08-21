@@ -6,7 +6,6 @@
 }:
 {
   config = lib.mkIf config.desktop.enable {
-    desktop.yubikey.enable = true;
     programs._1password.enable = true;
     services.ninjaone.enable = true;
 

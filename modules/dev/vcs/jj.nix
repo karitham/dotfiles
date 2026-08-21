@@ -1,5 +1,5 @@
 { config, lib, ... }: {
-  config = lib.mkIf config.dev.vcs.enable {
+  config = lib.mkIf config.dev.enable {
     programs.jujutsu = {
       enable = true;
 

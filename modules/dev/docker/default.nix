@@ -1,5 +1,5 @@
 { lib, config, ... }: {
-  config = lib.mkIf config.dev.docker.enable {
+  config = lib.mkIf config.dev.enable {
     virtualisation.docker = {
       enable = lib.mkDefault true;
       enableOnBoot = false;

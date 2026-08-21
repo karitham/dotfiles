@@ -3,8 +3,6 @@
 
   system.stateVersion = "25.11";
 
-  desktop.noctalia.enable = true;
-
   home-manager.users.${config.my.username}.imports = [ ./home.nix ];
 
   # Block outgoing UDP from Tailscale CGNAT addresses on non-tailscale interfaces.

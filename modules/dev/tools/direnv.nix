@@ -1,5 +1,5 @@
 { config, lib, ... }: {
-  config = lib.mkIf config.dev.tools.enable {
+  config = lib.mkIf config.dev.enable {
     programs.direnv = {
       enable = true;
       nix-direnv.enable = true;
