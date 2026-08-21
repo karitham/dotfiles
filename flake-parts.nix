@@ -89,6 +89,11 @@
               ++ lib.optionals (host.class == "desktop") [
                 self.homeModules.desktop
                 inputs.niri.homeModules.niri
+                # The niri HM module validates settings with
+                # programs.niri.package, which otherwise defaults to
+                # nixpkgs niri here and forces a source build. The NixOS
+                # path overrides this in modules/desktop/desktop.nix.
+                { programs.niri.package = inputs'.niri.packages.niri-unstable; }
               ]
               ++ lib.optionals (builtins.elem "work" host.tags) [ self.homeModules.work ]
               # Per-host home overrides are optional.

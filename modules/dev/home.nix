@@ -6,6 +6,10 @@
 
   config.dev.enable = lib.mkDefault true;
 
+  # opencode gates on its own flag; importing the dev bundle turns it on
+  # unless overridden (e.g. dev.opencode.sops.enable = false per host).
+  config.dev.opencode.enable = lib.mkDefault true;
+
   imports = [
     ./shell
     ./editor
