@@ -87,7 +87,15 @@ in
       enableMcpIntegration = cfg.enableMcp;
       commands = ./commands;
       agents = ./agents;
-      skills = ./skills;
+      skills = toString (
+        pkgs.symlinkJoin {
+          name = "opencode-skills";
+          paths = [
+            ./skills
+            self'.packages.strands-agents-sops-skills
+          ];
+        }
+      );
       settings = {
         plugin = [ "@mohak34/opencode-notifier@0.2.8" ];
         experimental = {
