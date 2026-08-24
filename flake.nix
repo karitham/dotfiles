@@ -57,7 +57,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     handy = {
-      url = "github:LukeCarrier/handy/fix-wayland-enigo-woes";
+      url = "github:cjpais/handy";
     };
     helium = {
       url = "github:schembriaiden/helium-browser-nix-flake";
@@ -87,6 +87,7 @@
       "https://cache.numtide.com"
       "https://nix-cache.karitham.dev/dotfiles"
       "https://noctalia.cachix.org"
+      "https://handy-computer.cachix.org"
     ];
     extra-trusted-public-keys = [
       "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
@@ -94,6 +95,7 @@
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       "dotfiles:1EQBeGcPmLGKAW4WxYGfyyKOVI4rd/hM58QnIPQdMGI="
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+      "handy-computer.cachix.org-1:Sihzctn6DC0CJM5QeL+9nBEL3CL8c33m777C+eIv748="
     ];
   };
 }

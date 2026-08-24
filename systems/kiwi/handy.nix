@@ -1,13 +1,17 @@
-{ inputs', lib, ... }: {
+{ inputs', lib, ... }:
+let
+  handy = inputs'.handy.packages.default;
+in
+{
   programs.niri.settings.binds = {
-    "Mod+Shift+M".action.spawn = [
-      (lib.getExe inputs'.handy.packages.handy)
+    "Mod+M".action.spawn = [
+      (lib.getExe handy)
       "--toggle-transcription"
     ];
-    "Mod+Shift+N".action.spawn = [
-      (lib.getExe inputs'.handy.packages.handy)
+    "Mod+N".action.spawn = [
+      (lib.getExe handy)
       "--toggle-post-process"
     ];
   };
-  home.packages = [ inputs'.handy.packages.handy ];
+  home.packages = [ handy ];
 }

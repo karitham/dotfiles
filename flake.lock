@@ -190,16 +190,15 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1777289845,
-        "narHash": "sha256-XbBU3XHWhxin+BKGIHW8sVlyfYp8xZxTycuR93BgVPo=",
-        "owner": "LukeCarrier",
+        "lastModified": 1787554887,
+        "narHash": "sha256-6eNa9iNjwKgLL8t72GeMHTxjyHaeVl+9VF/QWjlHzts=",
+        "owner": "cjpais",
         "repo": "handy",
-        "rev": "862c3d8f2284a56e586f24bbbbd4694d5aa008f3",
+        "rev": "af48dd68a64d58aad128fdbb920492a03da53c79",
         "type": "github"
       },
       "original": {
-        "owner": "LukeCarrier",
-        "ref": "fix-wayland-enigo-woes",
+        "owner": "cjpais",
         "repo": "handy",
         "type": "github"
       }
@@ -213,11 +212,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1786886160,
-        "narHash": "sha256-legFYpDokCOzwAPmyH7mDi+2jkllaeE+czhJifeQsFU=",
+        "lastModified": 1787300923,
+        "narHash": "sha256-HSyz9Jbpz2Iz43lC1yYv2T+T3Lv+6coLLDv2lFv1SfE=",
         "owner": "schembriaiden",
         "repo": "helium-browser-nix-flake",
-        "rev": "11edc339e075f16b356852096420ecd966462cc1",
+        "rev": "72a3f0cd428f04e1da9be5ea9554409f00ee4b20",
         "type": "github"
       },
       "original": {
@@ -353,11 +352,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1787216589,
-        "narHash": "sha256-XtBw86QXg9HtTU1IlD3yTpIHAG0r5df6SCrpDVG/1Cc=",
+        "lastModified": 1787551962,
+        "narHash": "sha256-zfumhlJTGDKSILebSBa8nTKG76ByIPlLkGPAKjxaiwE=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "5aad5f64e621fc35fed0fddcc2b6e17ab662cf78",
+        "rev": "46e6a013fd49779cd2def2c98fa447f197da3fe7",
         "type": "github"
       },
       "original": {
@@ -464,11 +463,11 @@
     },
     "nixpkgs-darwin": {
       "locked": {
-        "lastModified": 1786527240,
-        "narHash": "sha256-OLtJPnSXcRy79Rf7BhYaMeXAVF625FpLcd3+Svq641Y=",
+        "lastModified": 1786920013,
+        "narHash": "sha256-tlbRqzZ3suDUO3vyR0QFBk0TrxJiRP50t7VWfHhtVrw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e0c84f9d0ad137f076dc957494f5b39885597d4f",
+        "rev": "33da5f36e599b50aa7dbbfacb718254423b18354",
         "type": "github"
       },
       "original": {
