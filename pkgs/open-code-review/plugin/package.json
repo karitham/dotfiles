@@ -1,0 +1,9 @@
+{
+  "name": "open-code-review-tools",
+  "version": "1.9.10",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@opencode-ai/plugin": "1.18.22"
+  }
+}

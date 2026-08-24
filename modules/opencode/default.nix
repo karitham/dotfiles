@@ -79,13 +79,41 @@ in
       format = "dotenv";
     };
 
-    home.packages = [ (opencodePkg' inputs'.llm-agents.packages.opencode2 "opencode2") ];
+    home.packages = [
+      (opencodePkg' inputs'.llm-agents.packages.opencode2 "opencode2")
+      self'.packages.open-code-review
+    ];
+
+    # OCR config — single source of truth, reuses the opencode-go auth
+    # already present in ~/.local/share/opencode/auth.json. The api_key is
+    # resolved via api_key_cmd so no secret lands in the nix store.
+    # Endpoint + model verified against https://opencode.ai/docs/go/#endpoints
+    home.file.".opencodereview/config.json".text = builtins.toJSON {
+      provider = "opencode-go";
+      custom_providers = {
+        "opencode-go" = {
+          url = "https://opencode.ai/zen/go/v1";
+          protocol = "openai";
+          model = "deepseek-v4-pro";
+          api_key_cmd = "${lib.getExe pkgs.jq} -r '.[\"opencode-go\"].key' ${config.home.homeDirectory}/.local/share/opencode/auth.json";
+        };
+      };
+    };
+
+    xdg.configFile."opencode/tools" = {
+      source = "${self'.packages.open-code-review}/share/opencode/tools";
+      recursive = true;
+    };
 
     programs.opencode = {
       enable = true;
       package = opencodePkg' inputs'.llm-agents.packages.opencode "opencode";
       enableMcpIntegration = cfg.enableMcp;
-      commands = ./commands;
+      commands =
+        (lib.mapAttrs' (name: _: lib.nameValuePair (lib.removeSuffix ".md" name) (./commands + "/${name}")) (
+          lib.filterAttrs (n: v: v == "regular" && lib.hasSuffix ".md" n) (builtins.readDir ./commands)
+        ))
+        // (self'.packages.open-code-review.passthru.commands or { });
       agents = ./agents;
       skills = toString (
         pkgs.symlinkJoin {
@@ -97,7 +125,6 @@ in
         }
       );
       settings = {
-        plugin = [ "@mohak34/opencode-notifier@0.2.8" ];
         experimental = {
           batch_tool = true;
         };
