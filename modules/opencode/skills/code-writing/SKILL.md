@@ -1,12 +1,11 @@
 ---
 name: code-writing
 description: >
-  Enforces clean coding conventions for any implementation task. Covers guard
-  clauses, extract method, immutability, define errors out of existence, naming,
-  and comment-driven development. Use when writing, editing, fixing,
-  implementing, or reviewing code at the function or file level. Do NOT use for
-  API design, module boundaries, or service structure — use
-  software-architecture instead.
+  Reference for function-level code quality: guard clauses, extract method,
+  immutability, naming as abstraction, and comment-driven development. Use when
+  polishing, reviewing, or fixing code at the function or file level.
+  Referenced by the engineering SOP for its tactical pass; use directly for
+  focused tactical work when a full structural scan is not needed.
 ---
 
 ## Guard Clauses
