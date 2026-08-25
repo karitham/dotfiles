@@ -108,6 +108,30 @@ a name eliminates the need for a comment, it has done its job.
 - If a name needs a comment to explain it, the name is wrong
 - Single-letter names are acceptable only for loop indices and math conventions
 
+## Boundary Type Conversion
+
+Package and external enum types can share an underlying representation without sharing semantics.
+
+BAD:
+
+    func convertStatus(v ExternalStatus) Status {
+        return Status(v)
+    }
+
+GOOD:
+
+    func convertStatus(v ExternalStatus) (Status, error) {
+        switch v {
+        case ExternalPending:
+            return Pending, nil
+        default:
+            return 0, fmt.Errorf("unknown status %d", v)
+        }
+    }
+
+- MUST convert enum-like values explicitly at package or API boundaries, because numeric alignment can change independently.
+- MUST handle unknown values deliberately, because external inputs can contain values the current package does not know.
+
 ## Define Errors Out of Existence
 
 Ousterhout, _A Philosophy of Software Design_: The best way to handle an
