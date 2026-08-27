@@ -16,7 +16,7 @@
         nn = "run-external $env.EDITOR ($env.HOME)/notes";
       };
       configFile.text = ''
-        $env.config = {show_banner: false}
+        $env.config = {show_banner: false, edit_mode: helix}
 
         source-env (if ("~/.profile.nu" | path exists) { "~/.profile.nu" } else null)
 
