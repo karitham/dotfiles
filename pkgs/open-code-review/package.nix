@@ -9,13 +9,13 @@
   esbuild,
 }:
 let
-  version = "1.9.10";
+  version = "1.11.0";
 
   src = fetchFromGitHub {
     owner = "alibaba";
     repo = "open-code-review";
     tag = "v${version}";
-    hash = "sha256-/HwWnPtn1CApQEVM6CXheR2LPjU0CCy2X2tciMu+gkM=";
+    hash = "sha256-FtCVlor8h5rnTU0Tk4VqyMlCa9kKe9rXXsp4ED55mFs=";
   };
 
   # OpenCode custom tools use the Zod schema definitions from @opencode-ai/plugin.
