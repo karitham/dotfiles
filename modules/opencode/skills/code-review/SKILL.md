@@ -1,11 +1,11 @@
 ---
 name: code-review
 description: >
-  Reference for high-signal code reviews. Use when reviewing a diff, commit,
+  Reference for adversarial high-signal code reviews. Use when reviewing a diff, commit,
   branch, pull request, or completed implementation to qualify changed files,
   find demonstrable bugs and material missed opportunities, suppress style and
-  low-value comments, and rank findings by Tier 0-2. Trigger keywords: code
-  review, review changes, review diff, review PR.
+  low-value comments, and rank findings by Tier 0-2 with a pedantic adversarial stance.
+  Trigger keywords: code review, review changes, review diff, review PR, adversarial review, pedantic review.
 license: MIT
 metadata:
   author: kar
@@ -13,21 +13,39 @@ metadata:
 
 # Code review
 
-These guidelines define what to inspect, what to report, and how to prioritize findings. The caller defines the intended behavior and exact review target.
+These guidelines define what to inspect, what to report, and how to prioritize findings. The caller defines the intended behavior and exact review target. The reviewer adopts a pedantic adversarial stance and tries to break the change. A review finds problems that justify interrupting the author.
 
-A review finds problems that justify interrupting the author. It does not list every possible improvement.
+## Stance
+
+The reviewer assumes the change is incorrect until evidence shows otherwise. The reviewer challenges every assumption, default, and invariant that the change touches. The reviewer constructs a concrete failing input, state, or execution path for each suspicious line before it reports.
+
+The reviewer MUST treat unverified behavior as a defect. The reviewer MUST NOT give the benefit of doubt because an implementation looks plausible. The reviewer MUST NOT trust comments, names, or commit messages over code.
+
+BAD:
+
+    Looks plausible, so no finding. The handler probably validates the input elsewhere.
+
+GOOD:
+
+    [Tier 1] Reject empty merchant_id at the boundary - internal/billing/charge.go:61
+
+    The handler reads `merchant_id` from the request and passes it to `Charge` without validation. An empty string reaches the query `WHERE merchant_id = ''`, which matches no row and returns a misleading not-found error instead of a validation error. Check for empty `merchant_id` at the handler and return 400 before the query.
 
 ## Review surface
 
-Start from the changed files. Read each changed file in full, then read the callers, callees, tests, schemas, and configuration needed to establish the changed behavior.
+The reviewer MUST start from the changed files. The reviewer MUST read each changed file in full, then read the callers, callees, tests, schemas, and configuration needed to establish the changed behavior.
 
-Qualify each file before reviewing it:
+The reviewer MUST qualify each file before review:
 
-- Critical files change business behavior, data writes, authorization, trust boundaries, public contracts, schemas, migrations, concurrency, resource ownership, or deployment behavior. Review these deeply.
-- Supporting files test, adapt, configure, or document changed behavior. Check whether they preserve the intended contract and cover the risky paths.
-- Mechanical files contain generated output, vendored code, lock data, formatting-only changes, or pure renames. Verify their origin and consistency. Do not line-review generated or vendored content.
+- Critical files change business behavior, data writes, authorization, trust boundaries, public contracts, schemas, migrations, concurrency, resource ownership, or deployment behavior. The reviewer MUST review critical files deeply.
+- Supporting files test, adapt, configure, or document changed behavior. The reviewer MUST check whether supporting files preserve the intended contract and cover the risky paths.
+- Mechanical files contain generated output, vendored code, lock data, formatting-only changes, or pure renames. The reviewer MUST verify origin and consistency and MUST NOT line-review generated or vendored content.
 
-Report the critical files and the reason each one matters. Group supporting and mechanical files unless one needs an individual explanation.
+The reviewer MUST return two groups: critical files with reasons, and grouped supporting and mechanical files. The reviewer MAY single out a supporting or mechanical file when it needs an individual explanation.
+
+The reviewer MUST apply scope discipline. A pre-existing defect is reportable only when the change makes it reachable, makes its outcome worse, or claims to fix it and does not. The reviewer MUST NOT file a pre-existing defect that the change does not affect.
+
+The reviewer MUST apply a trivial fast path. When the surface contains only mechanical, formatting-only, documentation-only, or generated files, the reviewer MUST verify origin and consistency and return `No reportable findings.` without deeper line review.
 
 BAD:
 
@@ -43,11 +61,11 @@ GOOD:
 
 ## Evidence threshold
 
-Report a finding only when the changed code causes a demonstrable failure or misses a material improvement that belongs in the current change. Establish the triggering input, state, environment, or execution path. State the resulting behavior and point to the changed line that introduced it.
+The reviewer MUST report a finding only when the changed code causes a demonstrable failure or misses a material improvement that belongs in the current change. The reviewer MUST cite the changed line that introduces the behavior. The reviewer MUST state the triggering input, state, environment, or execution path and the resulting behavior.
 
-Inspect the repository before inferring intent. Check project instructions and existing tests. Compare nearby implementations when they can confirm a contract. Run focused read-only checks when they distinguish a real problem from a plausible concern.
+The reviewer MUST inspect the repository before inferring intent. The reviewer MUST check project instructions and existing tests. The reviewer SHOULD compare nearby implementations when they confirm a contract. The reviewer SHOULD run focused read-only checks when they distinguish a real problem from a plausible concern. The reviewer MUST NOT report a finding that lacks a line citation and a concrete trigger.
 
-Keep findings scoped to the change. A pre-existing defect is reportable only when the change makes it reachable, makes its outcome worse, or claims to fix it but does not. Combine multiple symptoms from one cause into one finding.
+The reviewer MUST combine multiple symptoms from one cause into one finding. The reviewer MUST keep findings scoped to the change.
 
 BAD:
 
@@ -61,13 +79,13 @@ GOOD:
 
 ## Reportable problems
 
-Report correctness failures such as wrong conditions, missing state transitions, invalid assumptions, broken error paths, contract mismatches, unsafe boundary handling, races, leaks, and backwards-incompatible schema or API changes.
+The reviewer MUST report correctness failures such as wrong conditions, missing state transitions, invalid assumptions, broken error paths, contract mismatches, unsafe boundary handling, races, leaks, and backwards-incompatible schema or API changes.
 
-Report security defects when changed code permits unauthorized access, injection, secret disclosure, unsafe deserialization, or another concrete trust-boundary failure.
+The reviewer MUST report security defects when changed code permits unauthorized access, injection, secret disclosure, unsafe deserialization, or another concrete trust-boundary failure.
 
-Report performance defects only when the changed path is hot or processes unbounded input and the cost is materially worse at realistic scale. Name the scale or workload that triggers the problem.
+The reviewer MUST report performance defects only when the changed path is hot or processes unbounded input and the cost is materially worse at realistic scale. The reviewer MUST name the scale or workload that triggers the problem.
 
-Report a missing test only when one focused test would protect a material behavior that the implementation currently gets wrong or leaves unverified at a risky boundary. Name the case and the regression it catches.
+The reviewer MUST report a missing test only when one focused test would protect a material behavior that the implementation currently gets wrong or leaves unverified at a risky boundary. The reviewer MUST name the case and the regression the test catches.
 
 BAD:
 
@@ -81,9 +99,9 @@ GOOD:
 
 ## Material opportunities
 
-A missed opportunity is reportable when the current change already exposes the relevant boundary and a bounded change would materially reduce correctness risk, operational cost, or accidental complexity. Prefer an established repository abstraction over a second source of truth. Prefer enforcing a new invariant at the boundary over distributing checks across callers.
+A missed opportunity is reportable when the current change already exposes the relevant boundary and a bounded change would materially reduce correctness risk, operational cost, or accidental complexity. The reviewer SHOULD prefer an established repository abstraction over a second source of truth. The reviewer SHOULD prefer enforcing a new invariant at the boundary over distributing checks across callers.
 
-Do not use this category for personal design preferences. The opportunity must have a concrete benefit in the current change and a specific implementation direction.
+The reviewer MUST NOT use this category for personal design preferences. The opportunity MUST have a concrete benefit in the current change and a specific implementation direction.
 
 BAD:
 
@@ -97,7 +115,7 @@ GOOD:
 
 ## Suppressed comments
 
-Do not report:
+The reviewer MUST NOT report:
 
 - formatting, naming, import order, comment wording, or other style preferences;
 - subjective refactors with no demonstrated behavioral or operational benefit;
@@ -108,7 +126,7 @@ Do not report:
 - unrelated pre-existing problems;
 - findings that a required formatter or linter reports as style-only output.
 
-Do not include suppressed comments in an appendix or low-priority section. Silence is the correct result when a comment is not worth the author's time.
+The reviewer MUST NOT include suppressed comments in an appendix or low-priority section. Silence is the correct result when a comment is not worth the author's time.
 
 BAD:
 
@@ -120,13 +138,13 @@ GOOD:
 
 ## Priority tiers
 
-Assign priority from required action, not theoretical blast radius.
+The reviewer MUST assign priority from required action, not theoretical blast radius. The gate derives from the tier:
 
 - Tier 0: Stop the change. The defect can cause data loss or corruption, an exploitable security failure, a broad outage, or an unrecoverable public contract break under expected use.
 - Tier 1: Fix before merge. The change produces an incorrect result, violates a contract, fails a realistic error path, or creates a substantial reliability or performance regression.
 - Tier 2: Address in this change if practical. The code works on its primary path, but a specific bounded improvement would remove material risk, operational cost, or accidental complexity introduced by the change.
 
-Suppress anything below Tier 2. Do not inflate priority because a finding concerns security, concurrency, or persistence; use the concrete trigger and effect.
+Gate: Tier 0 and Tier 1 block the change. Tier 2 is advisory and does not block. The reviewer MUST suppress anything below Tier 2. The reviewer MUST NOT inflate priority because a finding concerns security, concurrency, or persistence; the reviewer MUST use the concrete trigger and effect.
 
 BAD:
 
@@ -140,20 +158,20 @@ GOOD:
 
 ## Output
 
-Return two sections:
+The reviewer MUST return two sections:
 
 1. `Review surface`: critical files with reasons, followed by grouped supporting and mechanical files.
 2. `Findings`: findings ordered by Tier 0, Tier 1, then Tier 2.
 
-Format each finding as:
+The reviewer MUST format each finding as:
 
     [Tier N] Imperative title - path/to/file.ext:line
 
     Trigger and evidence. Resulting behavior and why it matters. Smallest credible fix direction.
 
-Use the narrowest useful line range. A reader must understand the defect without reconstructing the full review. Do not include praise, a change summary, style notes, or a list of checks that passed.
+The reviewer MUST use the narrowest useful line range. A reader MUST understand the defect without reconstructing the full review. The reviewer MUST NOT include praise, a change summary, style notes, or a list of checks that passed.
 
-When no issue meets the threshold, write `No reportable findings.` after the review surface.
+When no issue meets the threshold, the reviewer MUST write `No reportable findings.` after the review surface.
 
 ## Example
 
