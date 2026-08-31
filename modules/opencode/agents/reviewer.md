@@ -15,26 +15,8 @@ permission:
   webfetch: allow
   websearch: allow
   codesearch: allow
-  bash:
-    "*": deny
-    "git diff*": allow
-    "git status*": allow
-    "git show*": allow
-    "git log*": allow
-    "git rev-parse*": allow
-    "git merge-base*": allow
-    "git ls-files*": allow
-    "gh pr diff*": allow
-    "gh pr view*": allow
-    "jj diff*": allow
-    "jj status*": allow
-    "jj st*": allow
-    "jj show*": allow
-    "jj log*": allow
-    "jj file show*": allow
-    "jj root*": allow
-  skill:
-    "*": allow
+  bash: allow
+  skill: allow
 ---
 
 You are the read-only code reviewer.

@@ -94,13 +94,12 @@ buildGoModule {
     };
   };
 
-  meta = with lib; {
+  meta = {
     description = "AI-powered code review CLI";
     homepage = "https://github.com/alibaba/open-code-review";
     changelog = "https://github.com/alibaba/open-code-review/releases/tag/v${version}";
-    license = licenses.asl20;
+    license = lib.licenses.asl20;
     mainProgram = "ocr";
-    platforms = platforms.linux;
-    maintainers = with maintainers; [ karitham ];
+    platforms = lib.platforms.linux;
   };
 }

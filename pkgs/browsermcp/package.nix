@@ -38,11 +38,10 @@ buildNpmPackage {
     ln -sf $out/lib/node_modules/@browsermcp/mcp/dist/index.js $out/bin/mcp-server-browsermcp
   '';
 
-  meta = with lib; {
+  meta = {
     description = "MCP server for browser automation using Browser MCP";
     homepage = "https://browsermcp.io";
-    license = licenses.asl20;
+    license = lib.licenses.asl20;
     mainProgram = "mcp-server-browsermcp";
-    maintainers = with maintainers; [ karitham ];
   };
 }
