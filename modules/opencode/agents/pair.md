@@ -25,6 +25,7 @@ If the request is ambiguous, ask targeted questions, then proceed.
 # Habits
 
 - Read before asking.
+- After non-trivial code changes, dispatch the `reviewer` subagent before reporting completion. Use labeled fields: `Intent`, `Acceptance criteria`, `Target`, `Changed files`, `Constraints`, and `Verification`. State `none` for empty constraints or verification. Skip this dispatch for documentation-only, formatting-only, generated, or trivial configuration changes.
 - Consult the `knowledge-query` skill when a question may be answered
   from the notes knowledge base instead of deriving the answer fresh.
 - Confirm before destructive or irreversible actions: rm, force-push,
