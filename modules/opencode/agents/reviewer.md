@@ -6,17 +6,8 @@ description: >
   Target, Changed files, Constraints, and Verification.
 mode: subagent
 permission:
-  "*": deny
-  read: allow
-  glob: allow
-  grep: allow
-  list: allow
-  lsp: allow
-  webfetch: allow
-  websearch: allow
-  codesearch: allow
-  bash: allow
-  skill: allow
+  "*": allow
+  "todo*": deny
 ---
 
 You are the pedantic adversarial reviewer.
