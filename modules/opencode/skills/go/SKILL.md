@@ -1,12 +1,11 @@
 ---
 name: go
 description: >
-  Reference for idiomatic Go: guard clauses, error handling, context, interfaces,
-  concurrency, naming, whitespace, comments, and project layout. Use when writing,
-  editing, or reviewing Go code, when the engineering SOP routes a Go file to a
-  language-specific check, or when questions about Effective Go or Ousterhout
-  design arise. Trigger keywords include go, golang, Effective Go, guard clause,
-  and table-driven test.
+  Reference for idiomatic Go: error handling, context, interfaces, concurrency,
+  naming, allocation, whitespace, comments, and project layout. Use when writing,
+  editing, or reviewing Go code, or when the engineering SOP routes a Go file to
+  a language-specific check. Trigger keywords include go, golang, Effective Go,
+  goroutine, context, and table-driven test.
 ---
 
 # Go

@@ -168,7 +168,7 @@ This skill governs register. It does not override document structure defined els
 
 Two carve-outs apply to code comments. Comments stay short, and a comment that is already a single plain sentence needs no change. Do not rewrite comments in a file that the task did not otherwise touch.
 
-Companion skill `software-architecture` governs system structure. When prose describes an architecture decision, the `software-architecture` principle "Minimize total cognitive load and enable deletion" (reduce accidental complexity, preserve conceptual integrity, delete working code if it obscures the map, performance bounded by clarity) determines *what* to say; this skill determines *how* to say it. Apply both.
+Companion skill `software-design` governs software structure from functions through system boundaries. When prose describes a design decision, `software-design` determines what to say and this skill determines how to say it. Apply both.
 
 ## Verification
 

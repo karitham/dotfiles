@@ -1,107 +1,140 @@
 ---
 name: engineering
-description: >
-  Structure-first SOP for Go code. Applies Ousterhout deep modules and
-  information hiding before Effective Go tactics. Loads software-architecture
-  for structure and go for language checks. Use when writing, editing, or
-  reviewing Go code, or when deciding whether a change needs structure or
-  just tactics.
+description: Coordinates engineering work across design, implementation, debugging, testing, documentation, and review. Classifies scope, selects specialist skills, and verifies that structure, implementation, and evidence fit the task. Use when planning, changing, debugging, or reviewing software, configuration, or engineering workflows. Do NOT use for standalone prose editing or knowledge queries.
 ---
 
 # Engineering
 
 ## Overview
 
-The agent checks structure before tactics. Ousterhout defines the structure: deep modules with simple interfaces and hidden complexity. Effective Go defines the tactics: names, errors, context, and small interfaces. The agent runs the structural check first and only then polishes the function.
+The engineering skill coordinates work across the engineering skills. It classifies the task, identifies the affected boundaries, selects the smallest useful set of specialist skills, and checks the result before reporting completion.
 
-This SOP composes two References. `software-architecture` provides the structural principles. `go` provides Effective Go. Both remain loadable alone for focused work.
+The agent uses this workflow for software, configuration, automation, and other engineering tasks. The agent loads language-specific guidance only when the task requires it. The workflow does not replace a specialist skill. It decides when that skill applies and keeps the work in scope.
 
 ## Parameters
 
-- **task_scope** (required): One sentence that states what the caller asked for.
-- **files_changed** (optional): List of files in the change. Inferred from the diff when empty.
+- **task_scope** (required): One sentence that states the requested outcome.
+- **files_changed** (optional): Files already changed by the caller. Infer the list from the working copy when empty.
+- **observed_failure** (optional): The failure, unexpected behavior, or test output that triggered the task.
 
 ## Steps
 
-### 1. Gate Scope
+### 1. Gate scope
 
-Decide whether structural work is in scope.
-
-**Constraints:**
-
-- MUST classify the task as `trivial` (typo, comment, formatting, single-line rename) or `non-trivial` (behavior, API, boundary, or multi-file).
-- If `trivial`, MUST NOT expand scope to unrelated structural changes. Flag structural debt with an expiry and owner instead.
-- MUST record the decision in one line. Example: `trivial — gated` or `non-trivial — full scan`.
-
-### 2. Check Module Depth and Information Hiding
-
-Apply Ousterhout. A deep module hides significant complexity behind a simple interface. Most knowledge stays internal. Invalid states are unrepresentable.
+Read the relevant files, local instructions, and current diff before planning a change.
 
 **Constraints:**
 
-- MUST load `software-architecture` §5 and check: does the change expose a simple interface and hide its implementation. When the interface is as complex as the implementation, the abstraction is shallow and MUST be removed or deepened.
-- MUST check information hiding: no caller depends on a callee's internal representation. Vendor types are translated at the edge that contacts the vendor.
-- SHOULD define errors out of existence where possible. Prefer a type that makes the error unrepresentable over a function that returns the error.
-- MUST check that the new interface has a clean comment. When a concise interface comment is not possible, the design is wrong and the agent returns to this step.
-- If a structural issue sits outside `task_scope`, MUST propose the ideal, record debt with a deadline, and proceed. MUST NOT mix a broad refactor into the current change.
+- MUST classify the task as `trivial` or `non-trivial`.
+- MUST classify a typo, comment change, formatting change, or isolated rename as `trivial` unless it changes behavior.
+- MUST classify behavior changes, API changes, boundary changes, multi-file changes, and investigations as `non-trivial`.
+- MUST record the decision in one line, such as `trivial: gated` or `non-trivial: full scan`.
+- MUST NOT expand a trivial task into an unrelated refactor, because the refactor would obscure the requested change.
+- MUST record structural debt with an owner and expiry when the ideal fix sits outside the task scope.
 
-### 3. Isolate Side Effects
+### 2. Map the task
 
-Separate I/O from logic so the core is testable with values alone.
-
-**Constraints:**
-
-- MUST structure an operation as gather, process, commit. `gather` fetches external state. `process` is a deterministic pure function with no I/O. `commit` persists the result.
-- MUST NOT place business logic inside gather or commit.
-- MUST keep dependencies in one direction. One bounded context owns one model and translates at the boundary.
-- MUST run cheap local validation before remote calls. A transaction wraps only the final commit.
-
-### 4. Apply Effective Go
-
-Polish the function after structure is sound or debt is recorded.
+Describe the task in terms of its requested outcome, affected code or documents, external boundaries, side effects, and available evidence.
 
 **Constraints:**
 
-- MUST load `go`. Apply it as a checklist.
-- MUST enforce in order: guard clauses and left-aligned happy path, then extract method and consolidate conditionals, then naming as abstraction and scope minimization.
-- MUST follow Effective Go for Go files: `MixedCaps`, `context.Context` as first argument for I/O, small consumer-defined interfaces, `fmt.Errorf("...: %w", err)` with `errors.Is`/`errors.As`, `defer` close to acquisition, `make` versus `var` made explicit, and `gofmt` layout.
-- MUST keep whitespace grouped: blank lines separate logical blocks and top-level declarations. Must keep comments sparse and interface-first.
-- MUST NOT introduce novelty that contradicts the three nearby files or the linter config.
+- MUST identify the input, output, and observable acceptance criteria.
+- MUST identify public interfaces, data stores, network calls, process boundaries, and generated files that the change may affect.
+- MUST separate observed facts from hypotheses when `observed_failure` is present.
+- MUST ask a targeted question when a missing requirement blocks a safe decision. MUST proceed with the known scope when the missing detail does not block progress.
 
-### 5. Validate
+### 3. Select specialist skills
 
-Confirm that structure precedes tactics and that Go idioms hold.
+Load the specialist that owns the next decision. Load more than one when the task crosses concerns.
+
+| Task signal | Load first | Add when relevant |
+| --- | --- | --- |
+| Software implementation, refactoring, public APIs, module boundaries, data flow, or system structure | `software-design` | A language or domain skill |
+| Go language rules | `go` | `upfluence-go` in an Upfluence repository |
+| Unexpected behavior, crashes, failing tests, or production errors | `debugging` | `software-design` after the cause is established |
+| Test-driven implementation or test design | `code-assist` | The language or domain skill |
+| Completed diff or pull request review | `code-review` | `go` or another language skill |
+| Technical prose, documentation, comments, or task descriptions | `plain-technical-prose` | A domain skill when the content requires it |
+| Skill, agent, or workflow authoring | `skill-builder` | `plain-technical-prose` |
+| Jujutsu status, history, commits, or other VCS operations | `vcs` | None |
+| Questions answered from the persistent notes | `knowledge-query` | None |
+| Current syntax or behavior of a supported external tool | `book-refs` | The relevant implementation skill |
 
 **Constraints:**
 
-- MUST verify:
-  - Scope was gated and recorded.
-  - The module is deep. The interface is simple and hides its complexity.
-  - Information does not leak across the boundary.
-  - I/O is separate from pure logic. The core is testable with values.
-  - Guard clauses are present and the happy path is left-aligned.
-  - `go` checks pass for `.go` files.
-- MUST NOT consider the change complete until all items pass or debt is recorded with an expiry.
+- MUST load `software-design` before writing or revising non-trivial code or changing module boundaries, public interfaces, dependency direction, or data flow.
+- MUST load language-specific guidance after the structural decision and before polishing language-specific code.
+- MUST load `debugging` before changing code in response to an unexplained failure.
+- MUST NOT load a specialist only because a filename matches its domain, because the task scope determines the required expertise.
+
+### 4. Design before tactics
+
+Use the selected structural guidance before applying local code or prose rules.
+
+**Constraints:**
+
+- MUST prefer the smallest structure that meets the acceptance criteria.
+- MUST keep external I/O at boundaries and keep deterministic logic separate when the task contains both.
+- MUST keep each concept owned by one module or context and translate it at boundaries.
+- MUST preserve existing conventions unless a requirement justifies a change.
+- MUST keep a trivial change local even when nearby structural debt is visible.
+- MUST confirm before destructive or irreversible actions, including data deletion, schema changes, force-pushes, and file replacement.
+
+### 5. Implement and inspect
+
+Make the smallest change that satisfies the acceptance criteria. Inspect the affected files and diff after editing.
+
+**Constraints:**
+
+- MUST validate inputs at the earliest boundary that has enough information to reject them.
+- MUST keep error handling explicit and preserve useful context.
+- MUST add or update tests when behavior changes and the repository has a test convention for the affected code.
+- MUST NOT introduce a new abstraction, dependency, or configuration switch without a task-relevant reason, because each addition expands the maintenance surface.
+- MUST NOT claim a verification result that the agent did not run or observe, because an unobserved result is not evidence.
+
+### 6. Verify and report
+
+Run the checks that correspond to the changed surface. Report the result, remaining debt, and any unverified assumption.
+
+**Constraints:**
+
+- MUST verify the requested behavior and the relevant local conventions.
+- MUST run focused tests, linters, formatters, or builds when the repository provides them and the change affects their scope.
+- MUST inspect the final diff for unrelated changes, missing files, accidental generated output, and leaked secrets.
+- MUST dispatch the `reviewer` subagent for non-trivial code changes before reporting completion.
+- MUST skip the reviewer for documentation-only, formatting-only, generated, and trivial configuration changes.
+- MUST record unresolved structural debt with an owner and expiry instead of silently expanding scope.
+- MUST NOT report the change as complete until the relevant checks pass or an exception is recorded with an owner and expiry, because failed or missing checks leave the acceptance criteria unsupported.
 
 ## Examples
 
-### Example Input
+### Example input
 
-Add credit-limit check to `CreateOrder`.
+Add retry handling to an HTTP client and document the new behavior.
 
-### Example Flow
+### Example flow
 
-1. Gate: `non-trivial — full scan`. The change adds a business rule across a boundary.
-2. Structure: load `software-architecture`. `CreateOrder` mixes a database fetch with credit logic. Extract `ValidateAndBuildOrder(user, req) OrderResult` as pure function. The handler does `user, err := db.GetUser(ctx, req.UserID)` (gather), calls the pure function (process), then `db.SaveOrder(ctx, order)` (commit). Record the old mixed function as deprecated with expiry `2026-09-01`.
-3. Tactics: load `go`. Replace nested conditionals with guard clauses, wrap the database error with `%w`, pass `ctx` as first argument, keep the new interface to one method.
-4. Validate: all checks pass. Debt has an expiry.
+1. Gate the task as `non-trivial: full scan` because it changes runtime behavior and documentation.
+2. Map the client boundary, retry policy, caller-visible errors, tests, and documentation files.
+3. Load `software-design`, the language skill for the client, and `plain-technical-prose`.
+4. Keep retry ownership inside the HTTP client so callers see one simple operation and one error contract.
+5. Implement bounded retries with deterministic tests. Update the documentation to describe the behavior and limits.
+6. Run the focused tests and lint checks. Inspect the diff. Dispatch `reviewer`. Report the checks and any unverified network behavior.
 
 ## Troubleshooting
 
-### Scope expands on a trivial fix
+### The selected skill does not match the decision
 
-Scope gate was skipped. Return to Step 1, reclassify as `trivial — gated`, and record debt instead of refactoring.
+Return to Step 2 and identify the affected boundary or failure. Load the skill that owns that decision. Do not force `software-design` to answer an unexplained failure or a language-specific question.
 
-### Tactics hide a shallow abstraction
+### A trivial task expands into a refactor
 
-Step 2 was skipped. Re-run the depth check before polishing. A simple rename does not fix an interface that leaks storage details.
+Return to Step 1 and record `trivial: gated`. Apply only the requested change. Record structural debt with an owner and expiry.
+
+### A specialist adds rules that conflict with the repository
+
+Read the local instructions and three nearby files. Preserve the repository convention unless the task explicitly changes it. Record the conflict in the report when it remains unresolved.
+
+### Verification is unavailable
+
+State which check could not run and why. Run the narrowest available static or focused check. Do not report the task as fully verified.

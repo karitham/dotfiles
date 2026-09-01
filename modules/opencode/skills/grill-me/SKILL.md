@@ -88,7 +88,7 @@ Load domain-specific skills when the problem matches:
 
 | Problem Type | Skill to Load |
 |--------------|---------------|
-| Architecture, refactoring, abstractions | `software-architecture` |
+| Architecture, refactoring, abstractions | `software-design` |
 | Failures, errors, crashes | `debugging` |
 
 ## Communication Rules
