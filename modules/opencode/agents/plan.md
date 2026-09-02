@@ -1,4 +1,4 @@
 ---
-description: Built-in plan agent — disabled, replaced by ask
+description: Built-in plan agent — disabled, replaced by pair
 disable: true
 ---

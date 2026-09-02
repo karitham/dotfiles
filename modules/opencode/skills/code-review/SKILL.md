@@ -1,14 +1,9 @@
 ---
 name: code-review
 description: >
-  Reference for adversarial high-signal code reviews. Use when reviewing a diff, commit,
-  branch, pull request, or completed implementation to qualify changed files,
-  find demonstrable bugs and material missed opportunities, suppress style and
-  low-value comments, and rank findings by Tier 0-2 with a pedantic adversarial stance.
-  Trigger keywords: code review, review changes, review diff, review PR, adversarial review, pedantic review.
-license: MIT
-metadata:
-  author: kar
+  Review a diff, commit, or pull request for demonstrable bugs and material
+  missed opportunities. Use when reviewing completed code. Findings are
+  ranked Tier 0-2; style and low-value comments are suppressed.
 ---
 
 # Code review
@@ -172,25 +167,3 @@ The reviewer MUST format each finding as:
 The reviewer MUST use the narrowest useful line range. A reader MUST understand the defect without reconstructing the full review. The reviewer MUST NOT include praise, a change summary, style notes, or a list of checks that passed.
 
 When no issue meets the threshold, the reviewer MUST write `No reportable findings.` after the review surface.
-
-## Example
-
-Input: Review a payment retry change that modifies `charge.go`, `charge_test.go`, a SQL migration, and `go.sum`.
-
-Output:
-
-    Review surface
-
-    Critical:
-    - internal/billing/charge.go: changes retry idempotency and payment writes.
-    - migrations/042_add_charge_key.sql: defines the uniqueness contract for retries.
-    Supporting: internal/billing/charge_test.go.
-    Mechanical: go.sum.
-
-    Findings
-
-    [Tier 0] Make the idempotency key unique per merchant - migrations/042_add_charge_key.sql:8
-
-    Two merchants can receive the same provider retry key. The new global unique index rejects the second merchant's valid charge, and the handler then returns the first merchant's stored result. Index `(merchant_id, retry_key)` and query by both columns so retries cannot cross tenant boundaries.
-
-Reference: https://github.com/anomalyco/opencode/blob/dev/packages/core/src/plugin/command/review.txt

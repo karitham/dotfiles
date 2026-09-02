@@ -1,13 +1,9 @@
 ---
 name: knowledge-base
 description: >
-  Conventions for the persistent markdown knowledge base in ~/notes/wiki.
-  Use when recording session outcomes ("record what we did", "save this
-  decision to my notes"), ingesting sources ("ingest this URL/paper/file
-  into my notes"), answering from accumulated knowledge ("what do my notes
-  say about X"), or health-checking the wiki (orphans, broken links,
-  contradictions). Do NOT use for editing personal notes outside wiki/ —
-  everything there is human-written and read-only evidence.
+  Conventions for the wiki at ~/notes/wiki: record outcomes, ingest sources,
+  answer from the corpus, lint. Use when the user wants something saved to or
+  read from their notes. Do not use for anything outside wiki/.
 license: MIT
 metadata:
   author: kar

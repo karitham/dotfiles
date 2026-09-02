@@ -1,12 +1,9 @@
 ---
 name: knowledge-query
 description: >
-  Read-only query protocol for the persistent markdown knowledge base at
-  ~/notes/wiki. Use when a question may be answered from accumulated
-  knowledge, for example "what do my notes say about X", "check the wiki",
-  or "did we settle Y before". Do NOT use for recording, ingesting, or
-  editing knowledge; dispatch the knowledge-worker agent instead, because
-  this protocol never writes.
+  Read-only queries against the wiki at ~/notes/wiki. Use when a question may
+  be answered from accumulated notes. It never writes; dispatch the
+  knowledge-worker agent to record or edit.
 license: MIT
 metadata:
   author: kar
@@ -15,11 +12,6 @@ metadata:
 # Knowledge base queries
 
 The Obsidian vault at `~/notes` holds a persistent knowledge base. The curated part lives in `~/notes/wiki`; everything else in the vault is human-written evidence. Both are readable through this protocol. Neither is writable through it.
-
-## Parameters
-
-- **question** (required): stated by the user or implied by the task.
-- **scope** (optional): one scope directory to search first. Default: search all scopes.
 
 ## Layout
 
@@ -67,24 +59,5 @@ When the corpus cannot answer the question, state that plainly and name the miss
 
 - MUST NOT create, edit, or delete anything under `~/notes`. Writes belong to the knowledge-worker agent, and everything outside `wiki/` belongs to the human.
 - SHOULD prefer citing an existing page over restating its content, so answers stay consistent with the corpus.
-
-## Example
-
-Input: "what did we decide about ghostty config sharing?"
-
-1. Orient: `index.md` lists `common/entities/ghostty.md` and a synthesis under `nixos/syntheses/`.
-2. Search: grep for `ghostty` across all scopes; the human note `~/notes/journal/2026-03-14.md` surfaces as a cited source.
-3. Answer: "Terminal configs are shared through the dotfiles flake, not per-host overrides (`nixos/syntheses/terminal-config.md`, source `~/notes/journal/2026-03-14.md`)."
-4. Gap: the corpus records the decision but not why per-host overrides were rejected; report the gap and offer a `knowledge-worker` dispatch.
-
-Output: a cited answer plus one reported gap. No files changed.
-
-## Troubleshooting
-
-### Pages disagree
-
-Cite both claims with their paths and `updated` dates. Prefer neither; contradiction resolution belongs to the write side, and the human decides.
-
-### Term appears everywhere but has no page
-
-Treat it as a recurring-term gap. Report it in the gap step; do not create the page here.
+- When pages disagree, cite both claims with their paths and `updated` dates. Prefer neither; contradiction resolution belongs to the write side, and the human decides.
+- A term that appears everywhere but has no page is a recurring-term gap: report it; do not create the page here.

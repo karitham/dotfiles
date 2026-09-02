@@ -1,35 +1,15 @@
 ---
 name: book-refs
 description: >
-  Loads up-to-date reference material from upstream git repos for nushell,
-  zellij, jj, niri, ghostty, opencode, atuin, helix, starship, direnv,
-  flake-parts, and nixpkgs lib. Use when working on any of these tools and the
-  answer depends on current syntax, APIs, defaults, or behavior that may have
-  changed since training cutoff. Fetches chapters on demand via
-  raw.githubusercontent.com; always cites the raw source URL.
+  Fetch current reference chapters for pinned tools from their upstream repos
+  instead of trusting training data. Use when working on nushell, zellij, jj,
+  niri, ghostty, opencode, atuin, helix, starship, direnv, flake-parts, or
+  nixpkgs lib. Do not use for stable lookups or general shell scripting.
 ---
 
 # Book Refs
 
-Source-of-truth reference material for tools you use, fetched on demand from
-their public git repos. Training data is outdated; this skill exists so the
-agent pulls fresh chapters instead of guessing.
-
-## When to use
-
-Working on any tool in the table below — the per-reference files hold the
-curated chapter index and URL pattern. Especially valuable for tools that
-release frequently or where hallucinated syntax costs real debugging time.
-
-The `nixpkgs-lib` reference is the one to reach for when writing or refactoring
-Nix: `lib.*` semantics shift between nixpkgs revs, so always fetch the doc
-comment at your pinned rev instead of trusting training data.
-
-## When NOT to use
-
-- General shell scripting (bash, fish, zsh) — different tools
-- Languages like Go, Rust, Python — no markdown source of truth available
-- Trivial lookups where the training-data answer is obviously stable
+Source-of-truth reference material fetched on demand from the tools' public git repos. Training data is outdated; pull fresh chapters instead of guessing.
 
 ## Procedure
 
@@ -43,6 +23,10 @@ comment at your pinned rev instead of trusting training data.
    verify the source.
 6. If a chapter is renamed or moved, fall back to the contents API listed in
    the reference file to find the current location.
+
+For writing or refactoring Nix, use the `nixpkgs-lib` reference: `lib.*`
+semantics shift between nixpkgs revs, so fetch the doc comment at the pinned
+rev instead of trusting training data.
 
 ## Tools
 

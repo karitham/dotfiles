@@ -1,16 +1,11 @@
 ---
 name: go
-description: >
-  Reference for idiomatic Go: error handling, context, interfaces, concurrency,
-  naming, allocation, whitespace, comments, and project layout. Use when writing,
-  editing, or reviewing Go code, or when the engineering SOP routes a Go file to
-  a language-specific check. Trigger keywords include go, golang, Effective Go,
-  goroutine, context, and table-driven test.
+description: Idiomatic Go. Use when writing, editing, or reviewing Go code.
 ---
 
 # Go
 
-Idiomatic Go uses explicit error handling, small interfaces, and composition. These principles apply when writing, editing, or reviewing Go code. The engineering SOP loads these principles for Go files.
+Idiomatic Go uses explicit error handling, small interfaces, and composition. These principles apply when writing, editing, or reviewing Go code.
 
 ## Guard Clauses
 

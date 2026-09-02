@@ -1,18 +1,13 @@
 ---
 name: gleam
 description: >
-  Reference for idiomatic Gleam: custom types, Result/Option, decoders, pipelines
-  and use, opaque types, records, labelled arguments, targets and FFI, OTP actors
-  and supervision, wisp middleware, and testing. Use when writing, editing, or
-  reviewing Gleam code. For generic structure, naming, and commenting see
-  engineering and code-writing; this skill covers only Gleam and functional
-  patterns. Trigger keywords include gleam, lustre, wisp, mist, BEAM, OTP,
-  result, option, decode, use, pipeline, gleam.toml, and gleeunit.
+  Idiomatic Gleam, including lustre, wisp, and mist. Use when writing, editing,
+  or reviewing Gleam code. For generic structure, see software-architecture.
 ---
 
 # Gleam
 
-Gleam is a type-safe functional language on the BEAM and JavaScript. Values are immutable, errors are values, and the compiler checks exhaustiveness. There are no nulls, no exceptions, and no implicit conversions. This skill covers Gleam-specific idioms. For general module depth, information hiding, and function tactics see engineering and code-writing.
+Gleam is a type-safe functional language on the BEAM and JavaScript. Values are immutable, errors are values, and the compiler checks exhaustiveness. There are no nulls, no exceptions, and no implicit conversions. This skill covers Gleam-specific idioms. For general module depth, information hiding, and function tactics see software-architecture.
 
 ## Custom Types
 
