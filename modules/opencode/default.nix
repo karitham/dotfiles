@@ -120,7 +120,7 @@ in
           name = "opencode-skills";
           paths = [
             ./skills
-            self'.packages.strands-agents-sops-skills
+            # self'.packages.strands-agents-sops-skills
           ];
         }
       );
