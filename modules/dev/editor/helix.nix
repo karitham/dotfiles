@@ -169,7 +169,7 @@ lib.mkIf config.dev.enable {
         };
 
       editor = {
-        insecure = true; # I hate workspace trust features
+        workspace-trust.level = "servers";
         scrolloff = 10;
         text-width = 120;
         rulers = [ 120 ];
