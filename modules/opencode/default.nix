@@ -125,9 +125,6 @@ in
         }
       );
       settings = {
-        experimental = {
-          batch_tool = true;
-        };
         lsp = { };
         inherit (cfg) theme;
         default_agent = "pair";
