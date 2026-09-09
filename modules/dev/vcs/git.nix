@@ -2,12 +2,21 @@
   config,
   lib,
   pkgs,
+  self',
   ...
 }:
 {
   # Note: `config` here is HM config, and `config.dev.sessionVariables.EDITOR` is set via HM's home.sessionVariables
   config = lib.mkIf config.dev.enable {
-    home.packages = [ pkgs.gh ];
+    home.packages = [
+      pkgs.gh
+      self'.packages.gh-prc
+    ];
+
+    # Register as a local gh extension so `gh prc` dispatches to it.
+    # gh resolves local extensions as <data>/gh/extensions/gh-prc -> directory
+    # containing a `gh-prc` executable.
+    xdg.dataFile."gh/extensions/gh-prc".source = "${self'.packages.gh-prc}/bin";
     programs.git = {
       enable = true;
       ignores = [
