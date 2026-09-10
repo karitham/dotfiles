@@ -14,7 +14,7 @@ let
     pkgs.nixfmt
     pkgs.oxfmt
     pkgs.oxlint
-    pkgs.typescript-go
+    pkgs.typescript
     pkgs.golangci-lint
     pkgs.gopls
     pkgs.sql-formatter
