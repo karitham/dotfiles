@@ -1,25 +1,14 @@
-# gh-prc — list PR reviews and their inline comments via `gh`.
+# gh-prc — list PR reviews and their inline comments via `gh prc`.
 #
-# Installed as `gh-prc`, so the gh CLI picks it up as an extension: `gh prc`.
-# The PR is selected by explicit reference (URL, owner/repo#123, or number),
-# or inferred from the closest bookmarked ancestor of @ via jj.
-#
-# Comments print as `path:line` (relative to cwd when possible) so the
-# location token can be opened directly in helix: `hx path/to/file.rs:42`.
-#
-# Resolved threads are hidden unless --all; review states can be filtered
-# with --state approved,changes-requested.
-#
-# Threads are identifiable by comment id: roots print `thread <id>` (their own
-# comment id doubles as the thread id), replies print `#<id> (thread <id>)`.
-# Pass any visible id to --thread to show just that thread (implies --all).
+# PR: explicit reference (URL, owner/repo#123, or number), or inferred from the
+# closest bookmarked ancestor of @ via jj. Comments print as `path:line` so
+# the location opens directly in helix. Roots print `thread <id>`, replies
+# `#<id> (thread <id>)`; --thread shows one thread by any visible id.
+# Resolved threads are hidden unless --all.
 
-# ---------- PR reference resolution ----------
-
-# Run an external command (given as a closure so gh's own flags aren't
-# consumed by this command's parser); error with its stderr on failure; parse
-# JSON stdout.
 def run-json [ctx: closure]: nothing -> any {
+
+    # Closure so gh's own flags aren't consumed by this command's parser.
     let out = do $ctx | complete
     if $out.exit_code != 0 {
         error make {msg: $"($out.stderr | str trim)"}
@@ -75,11 +64,8 @@ def parse-pr-ref [ref: string] {
 
 def detect-branch []: nothing -> list<string> {
 
-    # Closest bookmarked ancestor of @. jj's `bookmarks` template renders every
-    # bookmark on the commit (local ones with sync markers `*`/`+`/`~`/`??`,
-    # plus remote-tracking `name@remote` entries); normalize to plain local
-    # names, git-matching bookmark first. Falls back to the colocated git
-    # branch when jj has nothing bookmarked (or isn't available).
+    # Bookmarks on the closest bookmarked ancestor of @, normalized to plain
+    # local names (git match first); falls back to the git branch.
     let git = (
         git symbolic-ref --short HEAD
         | complete
@@ -114,11 +100,8 @@ def detect-branch []: nothing -> list<string> {
 def resolve-ref [pr?: string] {
     if ($pr | is-empty) {
         let candidates = (detect-branch)
-        # Several bookmarks may share the matched commit; use the first one
-        # with an OPEN PR (git-matching bookmark tried first). gh pr view
-        # happily resolves merged/closed PRs, so require OPEN explicitly.
-        # Failures that aren't simply "branch has no PR" (auth, network) are
-        # kept as a hint for the final error.
+        # First branch with an OPEN PR; gh also resolves merged/closed ones.
+        # Non-"no PR" failures are kept as a hint for the final error.
         mut failures = []
         for branch in $candidates {
             let v = (
@@ -142,15 +125,11 @@ def resolve-ref [pr?: string] {
     parse-pr-ref $pr
 }
 
-# ---------- GraphQL ----------
-
 def fetch-pr [owner: string, repo: string, number: int]: nothing -> any {
     let query = "query($owner:String!,$repo:String!,$number:Int!){repository(owner:$owner,name:$repo){pullRequest(number:$number){number title state url baseRefName headRefName reviews(last:100){nodes{databaseId state author{login} submittedAt body comments(first:100){nodes{databaseId path line originalLine outdated createdAt author{login} body replyTo{databaseId} pullRequestReview{databaseId}}}}} reviewThreads(first:100){nodes{isResolved comments(first:100){nodes{databaseId}}}}}}}"
     run-json { gh api graphql -f $"query=($query)" -F $"owner=($owner)" -F $"repo=($repo)" -F $"number=($number)" }
     | get data.repository.pullRequest
 }
-
-# ---------- display ----------
 
 def state-color [state: string]: nothing -> string {
     match $state {
@@ -167,9 +146,6 @@ def indent [text: string, pad: int]: nothing -> string {
 
 def comment-loc [c: record, root: string, cwd: string]: nothing -> string {
     let line = $c.line? | default $c.originalLine?
-    # Prefer a path that opens from here: raw repo-relative path if the file
-    # exists in cwd, then anchored to the workspace root (for subdirectory
-    # checkouts), else the raw path (e.g. reviewing a different repo).
     let loc = (if ($c.path | path exists) {
         $c.path
     } else if $root != "" and (($root | path join $c.path) | path exists) {
@@ -181,45 +157,61 @@ def comment-loc [c: record, root: string, cwd: string]: nothing -> string {
     if $line == null { $loc } else { $"($loc):($line)" }
 }
 
-# Shared comment visibility filter: --outdated, --resolved, and hide-resolved
-# (unless --all). Applied uniformly to root comments and replies.
-def visible [
-    c: record
-    outdated: bool
-    resolved: bool
-    all: bool
-] {
-    if $outdated and not $c.outdated { return false }
-    if $resolved { $c.resolved } else if not $all { not $c.resolved } else { true }
+# Thread: {id, review, resolved, root, replies}. Built once from raw GraphQL.
+def build-threads [comments: list<any>, resolved_ids: list<any>]: nothing -> list<any> {
+    let by_root = ($comments
+        | where {|c| $c.replyTo?.databaseId? != null }
+        | group-by {|c| $c.replyTo.databaseId })
+    $comments
+    | where {|c| $c.replyTo?.databaseId? == null }
+    | each {|c| {
+        id: $c.databaseId
+        review: $c.pullRequestReview.databaseId
+        resolved: ($c.databaseId in $resolved_ids)
+        root: $c
+        replies: ($by_root | get -o ($c.databaseId | into string) | default [] | sort-by createdAt)
+    } }
 }
 
-# Does thread `root_id` (root + its replies) contain comment `wanted`?
-# Lets --thread accept a root id or any reply id in the thread.
-def thread-contains [root_id: int, wanted: int, replies_by_root: record]: nothing -> bool {
-    if $root_id == $wanted { return true }
-    $replies_by_root
-    | get -o ($root_id | into string)
-    | default []
-    | any {|rep| $rep.databaseId == $wanted }
+def foreign-reply-count [threads: list<any>, review_id: int]: nothing -> int {
+    $threads
+    | where {|t| $t.review != $review_id }
+    | each {|t| $t.replies | where {|c| $c.pullRequestReview.databaseId == $review_id } }
+    | flatten
+    | length
 }
 
-# Print one comment (or reply) as `path:line · author (tags) · thread <id>`
-# plus its full body. Roots show `thread <id>`; replies show `#<id>` with
-# their thread, so any visible id can be passed to --thread.
-# `resolved` is precomputed from the thread map and attached to the record.
+def thread-has [t: record, id: int]: nothing -> bool {
+    $t.id == $id or $id in ($t.replies | each {|c| $c.databaseId })
+}
+
+def keep-comment [c: record, t: record, flt: record]: nothing -> bool {
+    if $flt.outdated and not $c.outdated { return false }
+    if $flt.resolved { $t.resolved } else if not $flt.show_all { not $t.resolved } else { true }
+}
+
+def keep-thread [t: record, flt: record]: nothing -> bool {
+    if $flt.thread != null and not (thread-has $t $flt.thread) { return false }
+    (keep-comment $t.root $t $flt) or (outdated-replies-visible $t $flt)
+}
+
+def outdated-replies-visible [t: record, flt: record]: nothing -> bool {
+    $flt.outdated and (($t.replies | where {|c| keep-comment $c $t $flt } | is-not-empty))
+}
+
 def print-comment [
     c: record
     pad: int
     root: string
     cwd: string
-    thread: int
-    is_root: bool
+    t: record
 ]: nothing -> nothing {
+    let is_root = $c.databaseId == $t.id
     let tags = ([
         (if $c.outdated { "(outdated)" } else { "" })
-        (if $c.resolved { "(resolved)" } else { "" })
+        (if $t.resolved { "(resolved)" } else { "" })
     ] | where {|s| $s != "" } | str join " ")
-    let id_label = if $is_root { $"thread ($thread)" } else { "#" ++ ($c.databaseId | into string) ++ " (thread " ++ ($thread | into string) ++ ")" }
+    let id_label = if $is_root { $"thread ($t.id)" } else { "#" ++ ($c.databaseId | into string) ++ " (thread " ++ ($t.id | into string) ++ ")" }
     let suffix = [$tags $id_label] | where {|s| $s != "" } | str join " "
     let author = $c.author?.login? | default "ghost"
     let loc = (comment-loc $c $root $cwd)
@@ -228,6 +220,24 @@ def print-comment [
     print $"($lead)(ansi cyan)($loc)(ansi rst)(ansi d) · ($author) ($suffix)(ansi rst)"
     if ($c.body? | default "" | str trim) != "" {
         print (indent $c.body ($pad + 4))
+    }
+}
+
+def print-thread [
+    t: record
+    flt: record
+    root: string
+    cwd: string
+]: nothing -> nothing {
+    if (keep-comment $t.root $t $flt) {
+        print-comment $t.root 2 $root $cwd $t
+    } else {
+        let anchor = (comment-loc $t.root $root $cwd)
+        let note = "(outdated replies under hidden root"
+        print $"  (ansi d)($note) ($anchor))(ansi rst)"
+    }
+    for rep in ($t.replies | where {|c| keep-comment $c $t $flt }) {
+        print-comment $rep 4 $root $cwd $t
     }
 }
 
@@ -273,35 +283,24 @@ def main [
         | each {|t| $t.comments.nodes | get -o databaseId | default [] }
         | flatten)
 
-    # Attach the thread's resolved flag to every comment once.
-    let all_comments = ($data.reviews.nodes
-        | each {|r| $r.comments.nodes }
-        | flatten
-        | insert resolved {|c| $c.databaseId in $resolved_ids })
+    let flt = {
+        outdated: $outdated
+        resolved: $resolved
+        show_all: ($all or ($thread != null))
+        thread: $thread
+    }
+    let threads = (
+        build-threads ($data.reviews.nodes | each {|r| $r.comments.nodes } | flatten) $resolved_ids
+    )
 
-    # Replies may be submitted as their own review records; regroup them under
-    # the root comment of their thread so threads render as a tree.
-    let replies_by_root = ($all_comments
-        | where {|c| $c.replyTo?.databaseId? != null }
-        | group-by {|c| $c.replyTo.databaseId })
-
-    # ...and to each review's own comments (replies included; they are skipped
-    # at render time when their root lives in another review).
-    let comments_by_review = $all_comments | group-by {|c| $c.pullRequestReview.databaseId }
+    let thread_exists = $flt.thread == null or ($threads | any {|t| thread-has $t $flt.thread })
 
     let wanted = (format-states $state)
-
-    # --thread selects one thread by any comment id in it; it implies --all
-    # so a resolved thread still shows (explicit --resolved/--outdated still
-    # narrow further).
-    let show_all = $all or ($thread != null)
-    # Existence is independent of visibility: an id either names a thread or
-    # it doesn't, regardless of --state/--resolved/--outdated hiding it.
-    let thread_exists = if $thread == null { true } else { $all_comments | any {|c| $c.databaseId == $thread } }
 
     let reviews = ($data.reviews.nodes
         | where {|r| ($wanted | is-empty) or ($r.state in $wanted) }
         | each {|r|
+            let owned = $threads | where {|t| $t.review == $r.databaseId }
             {
                 id: $r.databaseId
                 state: $r.state
@@ -309,113 +308,56 @@ def main [
                 # "9999" sorts unsubmitted/pending reviews last
                 date: ($r.submittedAt? | default "9999" | str replace "T" " ")
                 body: ($r.body? | default "")
-                comments: ($comments_by_review
-                    | get -o ($r.databaseId | into string)
-                    | default [])
+                threads: ($owned | where {|t| keep-thread $t $flt })
+                reply_only: (
+                    ($owned | is-empty)
+                    and (foreign-reply-count $threads $r.databaseId) > 0
+                    and (($r.body? | default "" | str trim) == "")
+                )
             }
         }
+        | where {|r| not $r.reply_only and (($flt.thread == null) or ($r.threads | is-not-empty)) }
+        | each {|r| $r | reject reply_only }
         | sort-by date)
 
-    # Rendering is wrapped in try so a closed pipe (e.g. `gh prc ... | head`)
-    # exits quietly instead of spraying broken-pipe errors.
     try {
+
+        # closed pipe (e.g. `... | head`) exits quietly
         print $"(ansi bo)#($data.number) ($data.title) [($data.state)] ($data.baseRefName) <- ($data.headRefName)(ansi rst)"
         print $"($data.url)"
 
         if ($reviews | is-empty) {
-            print "(no reviews)"
+            if $flt.thread != null {
+                if $thread_exists {
+                    print $"thread ($flt.thread) hidden by filters"
+                } else {
+                    print $"no thread matches ($flt.thread)"
+                }
+            } else {
+                print "(no reviews)"
+            }
         } else {
-            mut shown = 0
             for r in $reviews {
                 let color = (state-color $r.state)
                 let date = $r.date | str substring 0..<16
 
-                # Root comments; replies (from any review) render nested below.
-                let roots_all = $r.comments | where {|c| $c.replyTo?.databaseId? == null }
-                let loose = $r.comments | where {|c| $c.replyTo?.databaseId? != null }
-                let roots = ($roots_all
-                    | where {|c| visible $c $outdated $resolved $show_all }
-                    | where {|c| if $thread == null { true } else { thread-contains $c.databaseId $thread $replies_by_root } })
-
-                # A review that is nothing but replies to another review's
-                # threads adds no information of its own — skip it entirely.
-                # Reviews with no comments at all still show (approvals etc.).
-                if ($roots_all | is-empty) and ($loose | is-not-empty) and (($r.body | str trim) == "") {
-                    continue
-                }
-
-                # With --thread, reviews outside the wanted thread are noise —
-                # skip them instead of printing "(no inline comments)".
-                if $thread != null and ($roots | is-empty) {
-                    if not $outdated {
-                        continue
-                    }
-                    let has_kids = ($roots_all
-                        | where {|c| thread-contains $c.databaseId $thread $replies_by_root }
-                        | any {|c| ($replies_by_root
-                            | get -o ($c.databaseId | into string)
-                            | default []
-                            | where {|rep| visible $rep $outdated $resolved $show_all }
-                            | is-not-empty) })
-                    if not $has_kids {
-                        continue
-                    }
-                }
-
-                $shown += 1
                 print $"(ansi d)──(ansi rst) ($color)($r.state)(ansi rst) (ansi bo)($r.author)(ansi rst) (ansi d)($date) · review ($r.id)(ansi rst)"
 
                 if ($r.body | str trim) != "" {
                     print (indent $r.body 2)
                 }
 
-                if ($roots | is-empty) {
-                    # Under --outdated, a current root may still hold outdated
-                    # replies; surface them anchored to the hidden root.
-                    if $outdated {
-                        for c in (
-                            $roots_all
-                            | where {|c| if $thread == null { true } else { thread-contains $c.databaseId $thread $replies_by_root } }
-                        ) {
-                            let children = ($replies_by_root
-                                | get -o ($c.databaseId | into string)
-                                | default []
-                                | where {|rep| visible $rep $outdated $resolved $show_all }
-                                | sort-by createdAt)
-                            if ($children | is-not-empty) {
-                                let anchor = (comment-loc $c $root $cwd)
-                                let note = "(outdated replies under hidden root"
-                                print $"  (ansi d)($note) ($anchor))(ansi rst)"
-                                for rep in $children {
-                                    print-comment $rep 4 $root $cwd $c.databaseId false
-                                }
-                            }
-                        }
-                    } else {
+                if ($r.threads | is-empty) {
+                    if not $flt.outdated {
                         let none = "(no inline comments)"
                         print $"  (ansi d)($none)(ansi rst)"
                     }
                 } else {
-                    for c in $roots {
-                        print-comment $c 2 $root $cwd $c.databaseId true
-                        let children = ($replies_by_root
-                            | get -o ($c.databaseId | into string)
-                            | default []
-                            | where {|rep| visible $rep $outdated $resolved $show_all }
-                            | sort-by createdAt)
-                        for rep in $children {
-                            print-comment $rep 4 $root $cwd $c.databaseId false
-                        }
+                    for t in $r.threads {
+                        print-thread $t $flt $root $cwd
                     }
                 }
                 print ""
-            }
-            if $thread != null and $shown == 0 {
-                if $thread_exists {
-                    print $"thread ($thread) hidden by filters"
-                } else {
-                    print $"no thread matches ($thread)"
-                }
             }
         }
     }
