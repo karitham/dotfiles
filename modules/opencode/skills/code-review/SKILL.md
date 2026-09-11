@@ -2,8 +2,8 @@
 name: code-review
 description: >
   Review a diff, commit, or pull request for demonstrable bugs and material
-  missed opportunities. Use when reviewing completed code. Findings are
-  ranked Tier 0-2; style and low-value comments are suppressed.
+  missed opportunities. Use when reviewing completed code; findings are ranked
+  Tier 0-2.
 ---
 
 # Code review

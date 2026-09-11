@@ -1,6 +1,6 @@
 ---
 name: vcs
-description: This repository's jj workflow: commit style, six local workflows, and hard rules. Use for any VCS operation here. Never run git.
+description: This repository's jj workflow: commit style, local workflows, and hard rules. Use for any VCS operation here; never run git.
 ---
 
 # VCS Skill: Jujutsu (jj)

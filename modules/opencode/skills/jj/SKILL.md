@@ -3,7 +3,7 @@ name: jj
 description: >
   The jj mental model: working copy as commit, change IDs, anonymous branches,
   revsets, merges, and conflicts as data. Use when jj behavior is confusing or
-  when translating git habits. For this repository's commit rules, load vcs.
+  you are translating git habits; vcs holds this repo's commit rules.
 ---
 
 # jj concepts

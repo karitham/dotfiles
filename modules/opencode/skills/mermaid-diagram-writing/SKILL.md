@@ -1,6 +1,6 @@
 ---
 name: mermaid-diagram-writing
-description: Clear, minimal Mermaid diagrams. Use when writing or reviewing sequence diagrams, flowcharts, or architecture diagrams.
+description: Clear, minimal Mermaid diagrams. Use when writing visual aids or diagrams in documentation, or explaining concepts to the user.
 ---
 
 # Mermaid Diagram Writing

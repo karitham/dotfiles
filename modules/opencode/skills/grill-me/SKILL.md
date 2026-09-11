@@ -56,7 +56,7 @@ Do not let the user proceed without acknowledging what they're giving up.
 
 ### 5. Generate Alternatives
 
-The user's first idea is rarely the only one — and almost never the best. You MUST present at least 2-3 alternatives with meaningfully different tradeoff profiles:
+The user's first idea is usually not the only one. Present alternatives with meaningfully different tradeoff profiles when the choice is genuinely contested:
 
 | Profile         | What it optimizes for                       |
 | --------------- | ------------------------------------------- |

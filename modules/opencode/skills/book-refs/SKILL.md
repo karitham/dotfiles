@@ -1,10 +1,9 @@
 ---
 name: book-refs
 description: >
-  Fetch current reference chapters for pinned tools from their upstream repos
-  instead of trusting training data. Use when working on nushell, zellij, jj,
-  niri, ghostty, opencode, atuin, helix, starship, direnv, flake-parts, or
-  nixpkgs lib. Do not use for stable lookups or general shell scripting.
+  Fetch current reference chapters for pinned tools (nushell, zellij, jj, niri,
+  ghostty, opencode, atuin, helix, starship, direnv, flake-parts, nixpkgs lib)
+  from upstream instead of trusting training data.
 ---
 
 # Book Refs

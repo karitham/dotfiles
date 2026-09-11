@@ -2,8 +2,8 @@
 name: knowledge-base
 description: >
   Conventions for the wiki at ~/notes/wiki: record outcomes, ingest sources,
-  answer from the corpus, lint. Use when the user wants something saved to or
-  read from their notes. Do not use for anything outside wiki/.
+  and lint. Use when the user wants something saved to or changed in their
+  notes; use knowledge-query for read-only questions.
 license: MIT
 metadata:
   author: kar

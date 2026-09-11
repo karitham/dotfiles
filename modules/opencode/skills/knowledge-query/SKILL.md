@@ -2,8 +2,7 @@
 name: knowledge-query
 description: >
   Read-only queries against the wiki at ~/notes/wiki. Use when a question may
-  be answered from accumulated notes. It never writes; dispatch the
-  knowledge-worker agent to record or edit.
+  be answered from accumulated notes; it never writes.
 license: MIT
 metadata:
   author: kar
