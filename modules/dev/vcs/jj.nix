@@ -20,6 +20,17 @@
         remotes."origin".auto-track-bookmarks = "glob:*";
         revsets = {
           log = "..@ | branches | curbranch::@ | @::nextbranch | downstream(@, branchesandheads)";
+          bookmark-advance-to = "closest_pushable(@)";
+        };
+        aliases = {
+          tug = [
+            "bookmark"
+            "advance"
+          ];
+          push = [
+            "git"
+            "push"
+          ];
         };
         revset-aliases = {
           "immutable_heads()" = "builtin_immutable_heads() | (trunk().. & ~mine())";
@@ -29,6 +40,7 @@
           "curbranch" = "latest(branches::@- & branches)";
           "nextbranch" = "roots(@:: & branchesandheads)";
           "top" = "heads(mine())";
+          "closest_pushable(to)" = "heads(::to & mutable() & ~description(exact:\"\") & (~empty() | merges()))";
         };
         ui = {
           default-command = [
