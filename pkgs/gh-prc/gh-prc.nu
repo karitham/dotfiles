@@ -9,6 +9,10 @@
 #
 # Resolved threads are hidden unless --all; review states can be filtered
 # with --state approved,changes-requested.
+#
+# Threads are identifiable by comment id: roots print `thread <id>` (their own
+# comment id doubles as the thread id), replies print `#<id> (thread <id>)`.
+# Pass any visible id to --thread to show just that thread (implies --all).
 
 # ---------- PR reference resolution ----------
 
@@ -189,24 +193,39 @@ def visible [
     if $resolved { $c.resolved } else if not $all { not $c.resolved } else { true }
 }
 
-# Print one comment (or reply) as `path:line · author (tags)` plus its full body.
+# Does thread `root_id` (root + its replies) contain comment `wanted`?
+# Lets --thread accept a root id or any reply id in the thread.
+def thread-contains [root_id: int, wanted: int, replies_by_root: record]: nothing -> bool {
+    if $root_id == $wanted { return true }
+    $replies_by_root
+    | get -o ($root_id | into string)
+    | default []
+    | any {|rep| $rep.databaseId == $wanted }
+}
+
+# Print one comment (or reply) as `path:line · author (tags) · thread <id>`
+# plus its full body. Roots show `thread <id>`; replies show `#<id>` with
+# their thread, so any visible id can be passed to --thread.
 # `resolved` is precomputed from the thread map and attached to the record.
 def print-comment [
     c: record
     pad: int
     root: string
     cwd: string
+    thread: int
+    is_root: bool
 ]: nothing -> nothing {
     let tags = ([
         (if $c.outdated { "(outdated)" } else { "" })
         (if $c.resolved { "(resolved)" } else { "" })
-    ] | str join " " | str trim)
-    let tag_str = (if $tags == "" { "" } else { $" (ansi d)($tags)(ansi rst)" })
+    ] | where {|s| $s != "" } | str join " ")
+    let id_label = if $is_root { $"thread ($thread)" } else { "#" ++ ($c.databaseId | into string) ++ " (thread " ++ ($thread | into string) ++ ")" }
+    let suffix = [$tags $id_label] | where {|s| $s != "" } | str join " "
     let author = $c.author?.login? | default "ghost"
     let loc = (comment-loc $c $root $cwd)
     let lead = " " | fill -w $pad
 
-    print $"($lead)(ansi cyan)($loc)(ansi rst)(ansi d) · ($author)($tag_str)(ansi rst)"
+    print $"($lead)(ansi cyan)($loc)(ansi rst)(ansi d) · ($author) ($suffix)(ansi rst)"
     if ($c.body? | default "" | str trim) != "" {
         print (indent $c.body ($pad + 4))
     }
@@ -235,6 +254,7 @@ def main [
     --all # Include comments in resolved threads
     --resolved # Only comments in resolved threads
     --outdated # Only outdated comments
+    --thread (-t): int # Only the thread containing comment <id> (a root id or any reply id in it; implies --all)
 ] {
     let ref = (
         if ($pr | is-empty) { resolve-ref } else { resolve-ref ($pr | str join " ") }
@@ -271,6 +291,14 @@ def main [
 
     let wanted = (format-states $state)
 
+    # --thread selects one thread by any comment id in it; it implies --all
+    # so a resolved thread still shows (explicit --resolved/--outdated still
+    # narrow further).
+    let show_all = $all or ($thread != null)
+    # Existence is independent of visibility: an id either names a thread or
+    # it doesn't, regardless of --state/--resolved/--outdated hiding it.
+    let thread_exists = if $thread == null { true } else { $all_comments | any {|c| $c.databaseId == $thread } }
+
     let reviews = ($data.reviews.nodes
         | where {|r| ($wanted | is-empty) or ($r.state in $wanted) }
         | each {|r|
@@ -297,6 +325,7 @@ def main [
         if ($reviews | is-empty) {
             print "(no reviews)"
         } else {
+            mut shown = 0
             for r in $reviews {
                 let color = (state-color $r.state)
                 let date = $r.date | str substring 0..<16
@@ -304,7 +333,9 @@ def main [
                 # Root comments; replies (from any review) render nested below.
                 let roots_all = $r.comments | where {|c| $c.replyTo?.databaseId? == null }
                 let loose = $r.comments | where {|c| $c.replyTo?.databaseId? != null }
-                let roots = $roots_all | where {|c| visible $c $outdated $resolved $all }
+                let roots = ($roots_all
+                    | where {|c| visible $c $outdated $resolved $show_all }
+                    | where {|c| if $thread == null { true } else { thread-contains $c.databaseId $thread $replies_by_root } })
 
                 # A review that is nothing but replies to another review's
                 # threads adds no information of its own — skip it entirely.
@@ -313,6 +344,25 @@ def main [
                     continue
                 }
 
+                # With --thread, reviews outside the wanted thread are noise —
+                # skip them instead of printing "(no inline comments)".
+                if $thread != null and ($roots | is-empty) {
+                    if not $outdated {
+                        continue
+                    }
+                    let has_kids = ($roots_all
+                        | where {|c| thread-contains $c.databaseId $thread $replies_by_root }
+                        | any {|c| ($replies_by_root
+                            | get -o ($c.databaseId | into string)
+                            | default []
+                            | where {|rep| visible $rep $outdated $resolved $show_all }
+                            | is-not-empty) })
+                    if not $has_kids {
+                        continue
+                    }
+                }
+
+                $shown += 1
                 print $"(ansi d)──(ansi rst) ($color)($r.state)(ansi rst) (ansi bo)($r.author)(ansi rst) (ansi d)($date) · review ($r.id)(ansi rst)"
 
                 if ($r.body | str trim) != "" {
@@ -323,18 +373,21 @@ def main [
                     # Under --outdated, a current root may still hold outdated
                     # replies; surface them anchored to the hidden root.
                     if $outdated {
-                        for c in $roots_all {
+                        for c in (
+                            $roots_all
+                            | where {|c| if $thread == null { true } else { thread-contains $c.databaseId $thread $replies_by_root } }
+                        ) {
                             let children = ($replies_by_root
                                 | get -o ($c.databaseId | into string)
                                 | default []
-                                | where {|rep| visible $rep $outdated $resolved $all }
+                                | where {|rep| visible $rep $outdated $resolved $show_all }
                                 | sort-by createdAt)
                             if ($children | is-not-empty) {
                                 let anchor = (comment-loc $c $root $cwd)
                                 let note = "(outdated replies under hidden root"
                                 print $"  (ansi d)($note) ($anchor))(ansi rst)"
                                 for rep in $children {
-                                    print-comment $rep 4 $root $cwd
+                                    print-comment $rep 4 $root $cwd $c.databaseId false
                                 }
                             }
                         }
@@ -344,18 +397,25 @@ def main [
                     }
                 } else {
                     for c in $roots {
-                        print-comment $c 2 $root $cwd
+                        print-comment $c 2 $root $cwd $c.databaseId true
                         let children = ($replies_by_root
                             | get -o ($c.databaseId | into string)
                             | default []
-                            | where {|rep| visible $rep $outdated $resolved $all }
+                            | where {|rep| visible $rep $outdated $resolved $show_all }
                             | sort-by createdAt)
                         for rep in $children {
-                            print-comment $rep 4 $root $cwd
+                            print-comment $rep 4 $root $cwd $c.databaseId false
                         }
                     }
                 }
                 print ""
+            }
+            if $thread != null and $shown == 0 {
+                if $thread_exists {
+                    print $"thread ($thread) hidden by filters"
+                } else {
+                    print $"no thread matches ($thread)"
+                }
             }
         }
     }
