@@ -62,6 +62,18 @@ in
       default = "catppuccin-macchiato";
       description = "OpenCode theme";
     };
+    modelFast = lib.mkOption {
+      type = lib.types.str;
+      default = "opencode-go/deepseek-v4.1-flash";
+    };
+    modelSmart = lib.mkOption {
+      type = lib.types.str;
+      default = "opencode-go/deepseek-v4.1-flash";
+    };
+    modelAdversarial = lib.mkOption {
+      type = lib.types.str;
+      default = "opencode-go/glm-5.3-flash";
+    };
     sops.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -94,7 +106,7 @@ in
         "opencode-go" = {
           url = "https://opencode.ai/zen/go/v1";
           protocol = "openai";
-          model = "deepseek-v4-pro";
+          model = cfg.modelSmart;
           api_key_cmd = "${lib.getExe pkgs.jq} -r '.[\"opencode-go\"].key' ${config.home.homeDirectory}/.local/share/opencode/auth.json";
         };
       };
@@ -129,10 +141,11 @@ in
         inherit (cfg) theme;
         default_agent = "pair";
         agent = {
-          explore = {
-            model = "opencode-go/deepseek-v4-flash";
-            variant = "high";
-          };
+          pair.model = cfg.modelSmart;
+          reviewer.model = cfg.modelAdversarial;
+          explore.model = cfg.modelFast;
+          hydra-draft.model = cfg.modelFast;
+          hydra-critic.model = cfg.modelAdversarial;
         };
         formatter = {
           nixfmt = {
