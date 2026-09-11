@@ -30,19 +30,19 @@ rev instead of trusting training data.
 
 ## Tools
 
-| Tool | Trigger keywords | Reference |
-|---|---|---|
-| nushell | `nu`, `.nu`, nushell, pipeline, dataframe, polars | `references/nushell.md` |
-| zellij | zellij, layout, keybinding, terminal multiplexer, pane | `references/zellij.md` |
-| jj | `jj`, jujutsu, revset, bookmark, colocate | `references/jj.md` |
-| niri | niri, scrollable-tiling, wayland compositor, output, workspace | `references/niri.md` |
-| ghostty | ghostty, terminal, GPU terminal, shell-integration, terminfo | `references/ghostty.md` |
-| opencode | opencode, coding agent, MCP, LSP, provider, skill, agent | `references/opencode.md` |
-| atuin | atuin, shell history, history sync, ctrl-r | `references/atuin.md` |
-| helix | helix, `hx`, modal editor, treesitter, selection, picker | `references/helix.md` |
-| starship | starship, prompt, cross-shell, module | `references/starship.md` |
-| direnv | direnv, `.envrc`, shell hook, allow | `references/direnv.md` |
-| flake-parts | flake-parts, flake modules, perSystem, mkOption | `references/flake-parts.md` |
+| Tool        | Trigger keywords                                                                                              | Reference                   |
+| ----------- | ------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| nushell     | `nu`, `.nu`, nushell, pipeline, dataframe, polars                                                             | `references/nushell.md`     |
+| zellij      | zellij, layout, keybinding, terminal multiplexer, pane                                                        | `references/zellij.md`      |
+| jj          | `jj`, jujutsu, revset, bookmark, colocate                                                                     | `references/jj.md`          |
+| niri        | niri, scrollable-tiling, wayland compositor, output, workspace                                                | `references/niri.md`        |
+| ghostty     | ghostty, terminal, GPU terminal, shell-integration, terminfo                                                  | `references/ghostty.md`     |
+| opencode    | opencode, coding agent, MCP, LSP, provider, skill, agent                                                      | `references/opencode.md`    |
+| atuin       | atuin, shell history, history sync, ctrl-r                                                                    | `references/atuin.md`       |
+| helix       | helix, `hx`, modal editor, treesitter, selection, picker                                                      | `references/helix.md`       |
+| starship    | starship, prompt, cross-shell, module                                                                         | `references/starship.md`    |
+| direnv      | direnv, `.envrc`, shell hook, allow                                                                           | `references/direnv.md`      |
+| flake-parts | flake-parts, flake modules, perSystem, mkOption                                                               | `references/flake-parts.md` |
 | nixpkgs-lib | nixpkgs, `lib.*`, nixos module, nix module, flake, overlay, package set, callPackage, mkIf, mkMerge, genAttrs | `references/nixpkgs-lib.md` |
 
 ## Caching

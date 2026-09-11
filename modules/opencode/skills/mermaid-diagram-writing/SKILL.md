@@ -14,6 +14,7 @@ Avoid colored rectangles and complex styling. Use `theme: base` or let renderers
 ### 2. Prefer Many Small Diagrams Over One Big Diagram
 
 **Bad** - One large diagram trying to show everything:
+
 ```mermaid
 sequenceDiagram
     participant A
@@ -29,6 +30,7 @@ sequenceDiagram
 ```
 
 **Good** - Multiple focused diagrams:
+
 ```mermaid
 sequenceDiagram
     participant FE
@@ -77,6 +79,7 @@ sequenceDiagram
 ## Common Patterns
 
 ### API Endpoint
+
 ```mermaid
 sequenceDiagram
     participant Client
@@ -89,6 +92,7 @@ sequenceDiagram
 ```
 
 ### Error Handling
+
 ```mermaid
 sequenceDiagram
     participant FE
@@ -102,6 +106,7 @@ sequenceDiagram
 ```
 
 ### Conditional Flow
+
 ```mermaid
 sequenceDiagram
     participant FE

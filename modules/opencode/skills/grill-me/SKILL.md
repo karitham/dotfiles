@@ -58,12 +58,12 @@ Do not let the user proceed without acknowledging what they're giving up.
 
 The user's first idea is rarely the only one — and almost never the best. You MUST present at least 2-3 alternatives with meaningfully different tradeoff profiles:
 
-| Profile | What it optimizes for |
-|---------|----------------------|
-| Simplest | Minimum moving parts, fastest to understand |
-| Most flexible | Extensible, handles future unknowns |
-| Fastest to ship | Shortest path to working code |
-| Easiest to undo | Minimum commitment, reversible |
+| Profile         | What it optimizes for                       |
+| --------------- | ------------------------------------------- |
+| Simplest        | Minimum moving parts, fastest to understand |
+| Most flexible   | Extensible, handles future unknowns         |
+| Fastest to ship | Shortest path to working code               |
+| Easiest to undo | Minimum commitment, reversible              |
 
 If you cannot find meaningful alternatives, state why. "No real alternatives" is a valid conclusion — but only after genuine effort.
 

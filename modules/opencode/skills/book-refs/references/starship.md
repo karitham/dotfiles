@@ -16,13 +16,13 @@
 
 ## Common chapters
 
-| File | Covers |
-|---|---|
-| `guide/README.md` | Conceptual guide (modules, order, format strings) |
-| `config/README.md` | Full config reference — every module, every option (large) |
-| `faq/README.md` | Common questions and gotchas |
-| `installing/README.md` | Install methods |
-| `advanced-config/README.md` | Custom commands, conditional logic, transient prompt |
-| `migrating-to-0.45.0/README.md` | Migration notes from pre-0.45 configs |
-| `presets/README.md` | Curated preset overview |
-| `presets/{name}.md` | Individual preset pages (bracketed-segments, gruvbox-rainbow, nerd-font, etc.) |
+| File                            | Covers                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| `guide/README.md`               | Conceptual guide (modules, order, format strings)                              |
+| `config/README.md`              | Full config reference — every module, every option (large)                     |
+| `faq/README.md`                 | Common questions and gotchas                                                   |
+| `installing/README.md`          | Install methods                                                                |
+| `advanced-config/README.md`     | Custom commands, conditional logic, transient prompt                           |
+| `migrating-to-0.45.0/README.md` | Migration notes from pre-0.45 configs                                          |
+| `presets/README.md`             | Curated preset overview                                                        |
+| `presets/{name}.md`             | Individual preset pages (bracketed-segments, gruvbox-rainbow, nerd-font, etc.) |

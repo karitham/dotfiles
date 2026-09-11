@@ -7,6 +7,10 @@ includes = ["*.nix"]
 command = "nufmt"
 includes = ["*.nu"]
 
+[formatter.md]
+command = "oxfmt"
+includes = ["*md"]
+
 [formatter.json]
 command = "oxfmt"
 options = []

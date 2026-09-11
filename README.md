@@ -4,13 +4,13 @@ The repository contains system and user configuration as a Nix flake. Jujutsu (j
 
 ## Hosts
 
-| Host | Type | Arch | Notes |
-|------|------|------|-------|
-| kiwi | Laptop | x86_64 | Work — Niri, Waybar, YubiKey, Linear/Sentry MCP |
-| belaf | Laptop | x86_64 | Personal — Niri, Secure Boot (Lanzaboote) |
-| ozen | WSL | x86_64 | Dev environment on Windows |
-| reg | Server | x86_64 | Tailscale, SSH, PDS |
-| wakuna | Server | aarch64 | ARM — built as SD image |
+| Host   | Type   | Arch    | Notes                                           |
+| ------ | ------ | ------- | ----------------------------------------------- |
+| kiwi   | Laptop | x86_64  | Work — Niri, Waybar, YubiKey, Linear/Sentry MCP |
+| belaf  | Laptop | x86_64  | Personal — Niri, Secure Boot (Lanzaboote)       |
+| ozen   | WSL    | x86_64  | Dev environment on Windows                      |
+| reg    | Server | x86_64  | Tailscale, SSH, PDS                             |
+| wakuna | Server | aarch64 | ARM — built as SD image                         |
 
 ## Components
 

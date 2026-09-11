@@ -15,10 +15,10 @@
 
 ## Common chapters
 
-| File | Covers |
-|---|---|
-| `installation.md` | Install methods and shell hooks |
-| `hook.md` | Shell hook setup (bash, zsh, fish, nushell, etc.) |
-| `github-actions.md` | Using direnv in CI |
-| `ruby.md` | Ruby / Bundler integration (the canonical example) |
-| `development.md` | Hacking on direnv itself |
+| File                | Covers                                             |
+| ------------------- | -------------------------------------------------- |
+| `installation.md`   | Install methods and shell hooks                    |
+| `hook.md`           | Shell hook setup (bash, zsh, fish, nushell, etc.)  |
+| `github-actions.md` | Using direnv in CI                                 |
+| `ruby.md`           | Ruby / Bundler integration (the canonical example) |
+| `development.md`    | Hacking on direnv itself                           |
