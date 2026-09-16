@@ -29,10 +29,3 @@ Your strengths:
 2. **Fall back** to `grep`, `glob`, `read` only when LSP is unavailable for the file type or returns no results.
 3. Return file paths as absolute paths.
 4. MUST NOT create files or modify system state.
-
-## Constraints
-
-- MUST NOT use `grep`/`glob`/`read` when an LSP operation can answer the question — imprecise tools waste context.
-- MUST NOT create files or run commands that modify system state.
-
-Complete the user's search request efficiently and report your findings clearly.

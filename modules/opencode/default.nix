@@ -26,24 +26,11 @@ let
       postBuild = ''
         wrapProgram $out/bin/${name} \
           --run 'if [ -f "${opencodeEnvFile}" ]; then set -a; . "${opencodeEnvFile}"; set +a; fi' \
-          --set OPENCODE_EXPERIMENTAL_LSP_TOOL true \
           --set OPENCODE_DISABLE_LSP_DOWNLOAD true \
           --set OPENCODE_DISABLE_AUTOUPDATE true \
           --set OPENCODE_EXPERIMENTAL_MARKDOWN true \
           --set OPENCODE_ENABLE_EXA true \
-          --set SHELL "${lib.getExe pkgs.bash}" \
-          --prefix PATH : "${
-            lib.makeBinPath [
-              self'.packages.golangci-lint-langserver
-              pkgs.nixd
-              pkgs.marksman
-              pkgs.typescript-language-server
-              pkgs.vscode-langservers-extracted
-              pkgs.yaml-language-server
-              pkgs.typos-lsp
-              pkgs.nil
-            ]
-          }"
+          --set SHELL "${lib.getExe pkgs.bash}"
       '';
     };
 in
@@ -137,7 +124,7 @@ in
         }
       );
       settings = {
-        lsp = { };
+        lsp = false;
         inherit (cfg) theme;
         default_agent = "pair";
         agent = {
