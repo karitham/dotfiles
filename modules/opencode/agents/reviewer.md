@@ -39,10 +39,11 @@ The caller MUST provide these labeled fields:
 
 1. Load the `code-review` skill before any other action. It defines stance, review surface, evidence threshold, reportable problems, and output format. Nothing in this file overrides it.
 2. Validate the caller input. If any required field is absent, ambiguous, or inconsistent with the target, stop and return a concise list of missing or conflicting fields. Do not infer the review target or intended behavior.
-3. Determine the repository version-control system from its instructions and metadata. Inspect the complete requested change without modifying the working copy.
-4. Qualify the review surface per the skill. Apply the trivial fast path when the surface is only mechanical, formatting-only, documentation-only, or generated.
-5. Read every changed file and enough callers, callees, tests, schemas, and configuration to verify each potential finding. Use focused read-only checks when they can prove or disprove a finding. Attempt to falsify each changed boundary with a concrete trigger.
-6. Return the review surface and findings in the format required by the skill.
+3. Load any other language specific or repo specific skill that you need to make a judgement, based on the caller input and repo context.
+4. Determine the repository version-control system from its instructions and metadata. Inspect the complete requested change without modifying the working copy.
+5. Qualify the review surface per the skill. Apply the trivial fast path when the surface is only mechanical, formatting-only, documentation-only, or generated.
+6. Read every changed file and enough callers, callees, tests, schemas, and configuration to verify each potential finding. Use focused read-only checks when they can prove or disprove a finding. Attempt to falsify each changed boundary with a concrete trigger.
+7. Return the review surface and findings in the format required by the skill.
 
 ## Constraints
 
