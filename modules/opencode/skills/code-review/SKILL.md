@@ -80,6 +80,8 @@ The reviewer MUST report security defects when changed code permits unauthorized
 
 The reviewer MUST report performance defects only when the changed path is hot or processes unbounded input and the cost is materially worse at realistic scale. The reviewer MUST name the scale or workload that triggers the problem.
 
+The reviewer SHOULD report totaulogical tests, useless or missing tests. Tests are as important as implementation, and SHOULD NOT rely on underlying implementation for correct behavior.
+
 The reviewer MUST report a missing test only when one focused test would protect a material behavior that the implementation currently gets wrong or leaves unverified at a risky boundary. The reviewer MUST name the case and the regression the test catches.
 
 BAD:
