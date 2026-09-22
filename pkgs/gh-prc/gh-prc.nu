@@ -3,8 +3,9 @@
 # PR: explicit reference (URL, owner/repo#123, or number), or inferred from the
 # closest bookmarked ancestor of @ via jj. Comments print as `path:line` so
 # the location opens directly in helix. Roots print `thread <id>`, replies
-# `#<id> (thread <id>)`; --thread shows one thread by any visible id.
-# Resolved threads are hidden unless --all.
+# `#<id> (thread <id>)`; --thread shows one thread by any visible id, and
+# --review keeps only threads rooted in one review (their replies stay visible
+# even when posted by another review). Resolved threads are hidden unless --all.
 
 def run-json [ctx: closure]: nothing -> any {
 
@@ -265,6 +266,7 @@ def main [
     --resolved # Only comments in resolved threads
     --outdated # Only outdated comments
     --thread (-t): int # Only the thread containing comment <id> (a root id or any reply id in it; implies --all)
+    --review (-r): int # Only threads whose top-level comment belongs to review <id> (all their replies stay visible)
 ] {
     let ref = (
         if ($pr | is-empty) { resolve-ref } else { resolve-ref ($pr | str join " ") }
@@ -288,6 +290,7 @@ def main [
         resolved: $resolved
         show_all: ($all or ($thread != null))
         thread: $thread
+        review: $review
     }
     let threads = (
         build-threads ($data.reviews.nodes | each {|r| $r.comments.nodes } | flatten) $resolved_ids
@@ -298,7 +301,12 @@ def main [
     let wanted = (format-states $state)
 
     let reviews = ($data.reviews.nodes
-        | where {|r| ($wanted | is-empty) or ($r.state in $wanted) }
+        | where {|r|
+            (
+                (($wanted | is-empty) or ($r.state in $wanted))
+                and (($review == null) or ($r.databaseId == $review))
+            )
+        }
         | each {|r|
             let owned = $threads | where {|t| $t.review == $r.databaseId }
             {
@@ -332,6 +340,12 @@ def main [
                     print $"thread ($flt.thread) hidden by filters"
                 } else {
                     print $"no thread matches ($flt.thread)"
+                }
+            } else if $review != null {
+                if ($data.reviews.nodes | any {|r| $r.databaseId == $review }) {
+                    print $"review ($review) hidden by filters"
+                } else {
+                    print $"no review matches ($review)"
                 }
             } else {
                 print "(no reviews)"
