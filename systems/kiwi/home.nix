@@ -3,10 +3,7 @@
 
   desktop.noctalia.enable = true;
 
-  home.packages = [
-    pkgs.obs-studio
-    pkgs.zed-editor # trying out zed for code review
-  ];
+  home.packages = [ pkgs.obsidian ];
 
   programs.waybar.settings.mainBar.battery.bat = lib.mkForce "BAT0";
 }
