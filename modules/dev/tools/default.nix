@@ -48,5 +48,8 @@ in
     };
   };
 
-  imports = [ ./direnv.nix ];
+  imports = [
+    ./direnv.nix
+    ./tuicr.nix
+  ];
 }

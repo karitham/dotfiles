@@ -119,6 +119,7 @@ in
           name = "opencode-skills";
           paths = [
             ./skills
+            ../dev/tools/tuicr
             # self'.packages.strands-agents-sops-skills
           ];
         }
