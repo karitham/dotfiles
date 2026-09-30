@@ -78,10 +78,7 @@ in
       format = "dotenv";
     };
 
-    home.packages = [
-      (opencodePkg' inputs'.llm-agents.packages.opencode2 "opencode2")
-      self'.packages.open-code-review
-    ];
+    home.packages = [ (opencodePkg' inputs'.llm-agents.packages.opencode2 "opencode2") ];
 
     # OCR config — single source of truth, reuses the opencode-go auth
     # already present in ~/.local/share/opencode/auth.json. The api_key is
@@ -99,20 +96,15 @@ in
       };
     };
 
-    xdg.configFile."opencode/tools" = {
-      source = "${self'.packages.open-code-review}/share/opencode/tools";
-      recursive = true;
-    };
-
     programs.opencode = {
       enable = true;
       package = opencodePkg' inputs'.llm-agents.packages.opencode "opencode";
       enableMcpIntegration = cfg.enableMcp;
-      commands =
-        (lib.mapAttrs' (name: _: lib.nameValuePair (lib.removeSuffix ".md" name) (./commands + "/${name}")) (
+      commands = (
+        lib.mapAttrs' (name: _: lib.nameValuePair (lib.removeSuffix ".md" name) (./commands + "/${name}")) (
           lib.filterAttrs (n: v: v == "regular" && lib.hasSuffix ".md" n) (builtins.readDir ./commands)
-        ))
-        // (self'.packages.open-code-review.passthru.commands or { });
+        )
+      );
       agents = ./agents;
       skills = toString (
         pkgs.symlinkJoin {
