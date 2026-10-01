@@ -21,7 +21,8 @@
 # The agent's self-update (patcher) cannot work on NixOS: it spawns gunzip by
 # name (PATH), resolves its own location via /proc/self/exe (the ld-linux
 # wrapper -> /nix/store), and the binaries it downloads are Debian ELFs.
-# Instead, on every boot ninjarmm-install checks the public version manifest:
+# Instead, ninjarmm-install checks the public version manifest at boot and
+# daily via ninjarmm-patcher.timer:
 #
 #   1. Derive the manifest URL from Host/ClientUID in the extracted
 #      server.conf (no portal auth, region-agnostic):
@@ -37,9 +38,6 @@
 #
 #   - force a check without rebooting:  systemctl restart ninjarmm-install
 #   - disable checks:                    services.ninjaone.autoUpdate = false
-#
-# Caveat: checks only run at boot (or manual restart), so a machine that
-# stays up for months will not self-update until it reboots.
 #
 # Security
 # --------
@@ -84,12 +82,21 @@ let
     unitsDir="${cfg.dataDir}/systemd"
     programfiles="$rootDir/opt/NinjaRMMAgent/programfiles"
     configDir="$programfiles/config"
-    autoUpdate="${toString cfg.autoUpdate}"
+    autoUpdate="${if cfg.autoUpdate then "true" else "false"}"
 
     if [ ! -f "$installerPath" ]; then
       echo "NinjaOne installer not found at $installerPath" >&2
       exit 1
     fi
+
+    # install_file <src> <dst>: copy then rename.  cp -f would truncate the
+    # inode a running agent has mapped (SIGBUS on the next page fault); rename
+    # leaves it on the old inode until restarted.
+    install_file() {
+      cp -f "$1" "$2.new"
+      chown 0:0 "$2.new"
+      mv -f "$2.new" "$2"
+    }
 
     # The agent's distress monitor checks for its upstream systemd units
     # at /lib/systemd/system, which does not exist on NixOS.  Keep the
@@ -164,56 +171,52 @@ let
 
       ${pkgs.gzip}/bin/gzip -dc "$workDir/agent.tgz" | ${pkgs.gnutar}/bin/tar -xf - -C "$workDir"
 
-      # Atomic replace: cp -f would truncate the inode a running agent has
-      # mapped, crashing it with SIGBUS on the next page fault.  Write to a
-      # temp name and rename; the running process keeps its old inode.
-      cp -f "$workDir/ninjarmm-linagent" "$programfiles/ninjarmm-linagent.new"
-      cp -f "$workDir/ninjarmm-linagent.manifest" "$programfiles/ninjarmm-linagent.manifest.new"
-      mv -f "$programfiles/ninjarmm-linagent.new" "$programfiles/ninjarmm-linagent"
-      mv -f "$programfiles/ninjarmm-linagent.manifest.new" "$programfiles/ninjarmm-linagent.manifest"
-      chown 0:0 "$programfiles/ninjarmm-linagent" "$programfiles/ninjarmm-linagent.manifest"
+      install_file "$workDir/ninjarmm-linagent" "$programfiles/ninjarmm-linagent"
+      install_file "$workDir/ninjarmm-linagent.manifest" "$programfiles/ninjarmm-linagent.manifest"
       rm -rf "$workDir"
       echo "NinjaOne agent updated to $latestVersion."
+
+      # --no-block: a blocking restart would deadlock on the agent's
+      # After=ninjarmm-install ordering while we are still in its start job.
+      ${pkgs.systemd}/bin/systemctl try-restart --no-block ninjarmm-agent.service \
+        || echo "NinjaOne update: could not restart the agent." >&2
     }
 
-    if [ -f "$marker" ] && [ "$installerPath" -ot "$marker" ]; then
-      sync_units
-      check_for_updates
-      echo "NinjaOne agent already extracted."
-      exit 0
+    # Extract only when the installer is new (or never extracted).  The portal
+    # .deb embeds the device identity, so preserve the registered NodeId/keys
+    # across re-extracts; programdata is runtime state and is not preserved.
+    if [ ! -f "$marker" ] || [ "$installerPath" -nt "$marker" ]; then
+      backupDir="$(mktemp -d)"
+      if [ -d "$configDir" ]; then cp -a "$configDir" "$backupDir/config"; fi
+
+      echo "Extracting NinjaOne agent from $installerPath..."
+      rm -rf "$rootDir"
+      mkdir -p "$rootDir"
+      ${pkgs.dpkg}/bin/dpkg-deb -x "$installerPath" "$rootDir"
+
+      if [ -d "$backupDir/config" ]; then
+        rm -rf "$configDir"
+        mkdir -p "$(dirname "$configDir")"
+        cp -a "$backupDir/config" "$(dirname "$configDir")/"
+      fi
+      rm -rf "$backupDir"
+
+      # dpkg-deb preserves the archive's uid 1001; the agent runs as root.
+      chown -R 0:0 "$rootDir/opt/NinjaRMMAgent"
+      chmod 600 "$configDir/agent.conf" "$configDir/server.conf"
+      touch "$marker"
     fi
 
-    # Preserve the registered identity (NodeId/keys in agent.conf and
-    # server.conf) across re-extracts so version bumps do not
-    # re-register as a new device.  programdata is runtime state and is
-    # intentionally not preserved.
-    backupDir="$(mktemp -d)"
-    if [ -d "$configDir" ]; then cp -a "$configDir" "$backupDir/config"; fi
-
-    echo "Extracting NinjaOne agent from $installerPath..."
-    rm -rf "$rootDir"
-    mkdir -p "$rootDir"
-    ${pkgs.dpkg}/bin/dpkg-deb -x "$installerPath" "$rootDir"
-
-    if [ -d "$backupDir/config" ]; then
-      rm -rf "$configDir"
-      mkdir -p "$(dirname "$configDir")"
-      cp -a "$backupDir/config" "$(dirname "$configDir")/"
-    fi
-    rm -rf "$backupDir"
-
-    echo "Applying post-install configuration..."
+    # Run on every start, fresh extract or not: the server update only replaces
+    # the binary and its manifest, so the agent's CA bundle (loaded by its
+    # WAMP/TLS worker) and the unit set are installed here, not in the one-shot
+    # extract branch.
     mkdir -p "$programfiles/config"
-    cp -f "$rootDir/tmp/ninja-startup/ninjarmm-curl-ca-bundle.crt" "$programfiles/"
-
+    install_file "$rootDir/tmp/ninja-startup/ninjarmm-curl-ca-bundle.crt" \
+      "$programfiles/ninjarmm-curl-ca-bundle.crt"
     sync_units
+
     check_for_updates
-
-    chown -R 0:0 "$rootDir/opt/NinjaRMMAgent"
-    chmod 600 "$programfiles/config/agent.conf" "$programfiles/config/server.conf"
-
-    touch "$marker"
-    echo "NinjaOne agent extracted to $rootDir."
   '';
 in
 {
@@ -244,8 +247,9 @@ in
       type = lib.types.bool;
       default = true;
       description = ''
-        On every <literal>ninjarmm-install</literal> start (i.e. at boot),
-        check the public version manifest and update the agent when a newer
+        On every <literal>ninjarmm-install</literal> start (at boot, and daily
+        via <literal>ninjarmm-patcher.timer</literal>), check the public
+        version manifest and update the agent when a newer
         version exists.  The manifest URL is derived at runtime from
         <literal>Host</literal>/<literal>ClientUID</literal> in
         <literal>server.conf</literal>, so no portal access or manual steps
@@ -288,8 +292,8 @@ in
       ];
       wants = [ "network-online.target" ];
       serviceConfig = {
+        # No RemainAfterExit, or the timer could not re-trigger this oneshot.
         Type = "oneshot";
-        RemainAfterExit = true;
         StateDirectory = "ninjaone";
         ExecStart = installScript;
       };
@@ -312,12 +316,15 @@ in
       };
     };
 
+    # The agent's patcher script systemctl-enables this exact unit, so the name
+    # is its contract; point it at ninjarmm-install so a long-running machine
+    # re-checks daily (this is the only periodic trigger).
     systemd.timers.ninjarmm-patcher = {
-      description = "Timer for ninjarmm-patcher.service (no-op on NixOS)";
+      description = "Daily NinjaOne agent update check (drives ninjarmm-install.service)";
       wantedBy = [ "timers.target" ];
       timerConfig = {
-        Unit = "ninjarmm-patcher.service";
-        OnUnitActiveSec = "7d";
+        Unit = "ninjarmm-install.service";
+        OnCalendar = "daily";
       };
     };
 
