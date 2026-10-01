@@ -61,6 +61,15 @@ in
       type = lib.types.str;
       default = "opencode-go/glm-5.3-flash";
     };
+    plugins = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = ''
+        OpenCode V2 `plugins` entries: npm package names or paths to a local
+        plugin directory. V2-only; the V1 `opencode` binary ignores this key.
+        Set to `[ ]` on hosts without the referenced plugin.
+      '';
+    };
     sops.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -216,7 +225,8 @@ in
             command = [ "${self'.packages.browsermcp}/bin/mcp-server-browsermcp" ];
           };
         };
-      };
+      }
+      // lib.optionalAttrs (cfg.plugins != [ ]) { inherit (cfg) plugins; };
     };
   };
 }
