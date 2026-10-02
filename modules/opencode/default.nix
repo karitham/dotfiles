@@ -15,22 +15,32 @@ let
   # even on machines where sops can't decrypt.
   opencodeEnvFile = lib.attrByPath [ "opencode/env" "path" ] "/dev/null" config.sops.secrets;
 
+  sliceName = "opencode.slice";
+
+  # systemd-run has to hand off the real binary on the same exec line; as a
+  # --scope it runs that command, it does not wrap a later one. The trailing
+  # space is load-bearing.
+  systemdRunPrefix = lib.optionalString cfg.resourceLimits (
+    "${lib.getExe' pkgs.systemd "systemd-run"} --user --scope --quiet --same-dir --slice=${sliceName} -- "
+  );
+
+  # Hand-written rather than makeWrapper: the systemd-run hand-off has to be the
+  # exec itself, and wrapProgram --run lines land before the final exec.
   opencodePkg' =
     pkg: name:
-    pkgs.symlinkJoin {
-      name = "opencode-wrapped";
-      paths = [ pkg ];
+    pkgs.writeShellApplication {
+      name = name;
+      text = ''
+        # shellcheck disable=SC1091
+        if [ -f "${opencodeEnvFile}" ]; then set -a; . "${opencodeEnvFile}"; set +a; fi
 
-      nativeBuildInputs = [ pkgs.makeWrapper ];
+        export OPENCODE_DISABLE_LSP_DOWNLOAD=true
+        export OPENCODE_DISABLE_AUTOUPDATE=true
+        export OPENCODE_EXPERIMENTAL_MARKDOWN=true
+        export OPENCODE_ENABLE_EXA=true
+        export SHELL=${lib.getExe pkgs.bash}
 
-      postBuild = ''
-        wrapProgram $out/bin/${name} \
-          --run 'if [ -f "${opencodeEnvFile}" ]; then set -a; . "${opencodeEnvFile}"; set +a; fi' \
-          --set OPENCODE_DISABLE_LSP_DOWNLOAD true \
-          --set OPENCODE_DISABLE_AUTOUPDATE true \
-          --set OPENCODE_EXPERIMENTAL_MARKDOWN true \
-          --set OPENCODE_ENABLE_EXA true \
-          --set SHELL "${lib.getExe pkgs.bash}"
+        exec ${systemdRunPrefix}${pkg}/bin/${name} "$@"
       '';
     };
 in
@@ -80,6 +90,16 @@ in
         override it per host to use a different browser.
       '';
     };
+    resourceLimits = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Run opencode in opencode.slice, whose memory, swap and process-count
+        limits contain anything the agent runs, including shell commands and MCP
+        servers. Set false on hosts without a systemd user manager, where the
+        slice cannot exist.
+      '';
+    };
     sops.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -112,6 +132,33 @@ in
           model = cfg.modelSmart;
           api_key_cmd = "${lib.getExe pkgs.jq} -r '.[\"opencode-go\"].key' ${config.home.homeDirectory}/.local/share/opencode/auth.json";
         };
+      };
+    };
+
+    # opencode runs in a scope inside this slice, so everything it spawns —
+    # shell commands, MCP servers — inherits these limits. cgroup v2 applies a
+    # parent's ceiling to the whole subtree, which is what contains a runaway
+    # command: it is throttled and killed inside its own cgroup instead of the
+    # kernel OOM killer picking a victim elsewhere on the machine.
+    #
+    # Sized for a 16G/16-core desktop. MemoryMax is the load-bearing one;
+    # MemoryHigh makes builds slow down rather than die. CPU/IO weights yield to
+    # interactive work under contention without capping throughput.
+    #
+    # Keys are systemd's own: on a slice unit the resource-control directives live
+    # in [Slice]. Anything that isn't a declared home-manager option lands in the
+    # unit verbatim, so a made-up `sliceConfig` key would render as a literal
+    # `[sliceConfig]` section that systemd ignores.
+    systemd.user.slices.opencode = lib.mkIf cfg.resourceLimits {
+      Unit.Description = "OpenCode Slice";
+      Slice = {
+        MemoryMax = "8G";
+        MemoryHigh = "6G";
+        MemorySwapMax = "2G";
+        # Bound fork bombs; nix builds need nowhere near this.
+        TasksMax = "8192";
+        CPUWeight = "50";
+        IOWeight = "50";
       };
     };
 

@@ -95,6 +95,10 @@
                 # path overrides this in modules/desktop/desktop.nix.
                 { programs.niri.package = inputs'.niri.packages.niri-unstable; }
               ]
+              ++ lib.optionals (host.class == "wsl") [
+                # No systemd user manager to host opencode.slice.
+                { dev.opencode.resourceLimits = false; }
+              ]
               ++ lib.optionals (builtins.elem "work" host.tags) [ self.homeModules.work ]
               # Per-host home overrides are optional.
               ++ lib.optionals (builtins.pathExists ./systems/${name}/home.nix) [ ./systems/${name}/home.nix ];
