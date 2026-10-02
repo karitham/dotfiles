@@ -15,4 +15,6 @@ includes = ["*md"]
 command = "oxfmt"
 options = []
 includes = ["*.json"]
-excludes = ["secrets/**", "modules/desktop/audio/**"]
+# npm lockfiles for pkgs/ are committed as npm itself wrote them: nixpkgs rejects
+# a package-lock.json that isn't byte-identical to the one npm regenerates.
+excludes = ["secrets/**", "modules/desktop/audio/**", "pkgs/**/*-lock.json"]

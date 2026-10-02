@@ -70,6 +70,16 @@ in
         Set to `[ ]` on hosts without the referenced plugin.
       '';
     };
+    mcpBrowser = lib.mkOption {
+      type = lib.types.nullOr lib.types.package;
+      default = null;
+      description = ''
+        Browser the chrome-devtools MCP drives, passed as --executablePath.
+        Null leaves the flag off and lets the server look for a Chrome itself.
+        Desktop hosts set this to helium (modules/desktop/apps/browser.nix);
+        override it per host to use a different browser.
+      '';
+    };
     sops.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -199,6 +209,13 @@ in
             enabled = true;
           };
 
+          # nixos needs no secrets, always available
+          nixos = {
+            type = "local";
+            enabled = true;
+            command = [ (lib.getExe pkgs.mcp-nixos) ];
+          };
+
           # These need secrets from sops, only configured when sops is enabled
           github = lib.mkIf cfg.sops.enable {
             type = "remote";
@@ -219,10 +236,17 @@ in
             };
           };
 
-          browsermcp = {
+          # Off by default: it launches a real browser.
+          chrome-devtools = {
             type = "local";
             enabled = false;
-            command = [ "${self'.packages.browsermcp}/bin/mcp-server-browsermcp" ];
+            command = [
+              (lib.getExe self'.packages.chrome-devtools-mcp)
+            ]
+            ++ lib.optionals (cfg.mcpBrowser != null) [
+              "--executablePath"
+              (lib.getExe cfg.mcpBrowser)
+            ];
           };
         };
       }
