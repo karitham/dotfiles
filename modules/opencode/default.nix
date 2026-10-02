@@ -132,7 +132,6 @@ in
         agent = {
           pair.model = cfg.modelSmart;
           reviewer.model = cfg.modelAdversarial;
-          pike.model = cfg.modelAdversarial;
           suckless.model = cfg.modelAdversarial;
           explore.model = cfg.modelFast;
         };
