@@ -133,6 +133,7 @@ in
           pair.model = cfg.modelSmart;
           reviewer.model = cfg.modelAdversarial;
           suckless.model = cfg.modelAdversarial;
+          taste.model = cfg.modelFast;
           explore.model = cfg.modelFast;
         };
         formatter = {
