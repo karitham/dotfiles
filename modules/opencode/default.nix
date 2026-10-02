@@ -24,6 +24,26 @@ let
 
   # Hand-written rather than makeWrapper: the systemd-run hand-off has to be the
   # exec itself, and wrapProgram --run lines land before the final exec.
+  # Shell entrypoint for OpenCode 2's shell tool. Wraps the real shell in a
+  # systemd user scope so each tool command gets its own cgroup: a runaway is
+  # OOM-killed in isolation, and under CPU contention it yields to the rest of
+  # the system. Falls back to an unconfined shell when no user manager is
+  # reachable, so it cannot break machines without systemd.
+  #
+  # OPENCODE_SCOPED_SHELL pins the real shell to the same bash the opencode
+  # wrapper sets as $SHELL, so the two stay consistent.
+  opencodeScopedShell = pkgs.writeShellApplication {
+    name = "opencode-scoped-shell";
+    runtimeInputs = [
+      pkgs.bash
+      pkgs.systemd
+    ];
+    text = ''
+      export OPENCODE_SCOPED_SHELL=${lib.getExe pkgs.bash}
+    ''
+    + builtins.readFile ./shell-scoped.sh;
+  };
+
   opencodePkg' =
     pkg: name:
     pkgs.writeShellApplication {
@@ -186,6 +206,8 @@ in
         lsp = false;
         inherit (cfg) theme;
         default_agent = "pair";
+        # Run tool commands in a systemd user scope (see opencodeScopedShell).
+        shell = lib.getExe opencodeScopedShell;
         agent = {
           pair.model = cfg.modelSmart;
           reviewer.model = cfg.modelAdversarial;
