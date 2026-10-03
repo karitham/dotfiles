@@ -256,13 +256,6 @@ in
             enabled = true;
           };
 
-          # nixos needs no secrets, always available
-          nixos = {
-            type = "local";
-            enabled = true;
-            command = [ (lib.getExe pkgs.mcp-nixos) ];
-          };
-
           # These need secrets from sops, only configured when sops is enabled
           github = lib.mkIf cfg.sops.enable {
             type = "remote";
