@@ -22,24 +22,6 @@ let
     pkgs.nufmt
     self'.packages.gotools
   ];
-
-  tree-sitter-prr = pkgs.stdenv.mkDerivation {
-    pname = "tree-sitter-prr";
-    version = "unstable-2026-04-02";
-    src = pkgs.fetchFromGitHub {
-      owner = "colinmarc";
-      repo = "tree-sitter-prr";
-      rev = "a0c26e79b038940e5e7030209985bfc103ebd8ef";
-      hash = "sha256-iZg/TFAHph49ojTkNCCORIr2B/fAjPOL99FLpmdJBYo=";
-    };
-    buildPhase = ''
-      $CC -fPIC -Isrc -c src/parser.c -o parser.o
-      $CC -shared -o prr.so parser.o
-    '';
-    installPhase = ''
-      install -Dm755 prr.so $out/lib/prr.so
-    '';
-  };
 in
 lib.mkIf config.dev.enable {
   home.packages = global-tools;
@@ -48,43 +30,68 @@ lib.mkIf config.dev.enable {
     (require "plugins.scm")
   '';
 
-  xdg.configFile."helix/runtime/grammars/prr.so".source = "${tree-sitter-prr}/lib/prr.so";
-  xdg.configFile."helix/runtime/queries/prr/highlights.scm".text = ''
-    (file_header) @namespace
-    (index_line) @comment
-    (old_file) @comment
-    (new_file) @comment
-    (hunk_header) @function
-    (addition) @diff.plus
-    (deletion) @diff.minus
-    (tag_name) @keyword
-    (tag_value) @string
-    (comment) @comment
-  '';
-
   programs.helix = {
     enable = true;
     defaultEditor = true;
 
     package =
       (inputs'.helix.packages.helix.override {
-        # The pinned rev for tree-sitter-rpmspec in helix's languages.toml no
-        # longer resolves on the upstream repo, and the latest revs moved
-        # parser.c into a rpmspec/ subdir that the helix grammar build
-        # doesn't understand. Pin to the last rev with the original layout.
-        grammarOverlays = [
-          (final: prev: {
-            rpmspec = prev.rpmspec.overrideAttrs (_: {
-              src = fetchTree {
-                type = "git";
-                url = "https://gitlab.com/cryptomilk/tree-sitter-rpmspec";
-                rev = "7510373ef3384af3d083cdbed93c930bd8b77541";
-                ref = "HEAD";
-                shallow = true;
-              };
-            });
-          })
-        ];
+        # The fork otherwise evaluates and git-fetches all ~295 tree-sitter
+        # grammars on every eval (~24% of a full-system eval). Keep only the
+        # languages actually used; add here if a file stops highlighting.
+        includeGrammarIf =
+          grammar:
+          builtins.elem grammar.name [
+            "bash"
+            "c"
+            "cmake"
+            "comment"
+            "cpp"
+            "css"
+            "diff"
+            "dockerfile"
+            "elixir"
+            "fish"
+            "git-attributes"
+            "git-commit"
+            "git-config"
+            "git-ignore"
+            "git-rebase"
+            "gleam"
+            "go"
+            "gomod"
+            "gotmpl"
+            "gowork"
+            "graphql"
+            "helm"
+            "html"
+            "ini"
+            "javascript"
+            "json"
+            "json5"
+            "jsonc"
+            "lua"
+            "make"
+            "markdown"
+            "nickel"
+            "nix"
+            "nu"
+            "proto"
+            "protobuf"
+            "python"
+            "regex"
+            "ruby"
+            "rust"
+            "scheme"
+            "sql"
+            "textproto"
+            "thrift"
+            "toml"
+            "tsx"
+            "typst"
+            "typescript"
+            "yaml"
+          ];
       }).overrideAttrs
         {
           pname = "helix-steel";
@@ -552,12 +559,6 @@ lib.mkIf config.dev.enable {
             {
               name = "thrift";
               language-servers = [ "thrift-ls" ];
-            }
-            {
-              name = "prr";
-              scope = "source.prr";
-              file-types = [ "prr" ];
-              grammar = "prr";
             }
           ]
           ++ map (name: { inherit name; }) [

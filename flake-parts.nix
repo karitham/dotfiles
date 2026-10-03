@@ -53,20 +53,27 @@
         hosts = import ./systems/hosts.nix;
         homeHosts = lib.filterAttrs (_: h: h.class == "desktop" || h.class == "wsl") hosts;
 
+        # One nixpkgs instantiation per arch, shared by every standalone home
+        # config, instead of re-importing (and re-evaluating) it per host.
+        # Matches the NixOS `nixpkgs.config` (modules/nix.nix) so unfree packages
+        # resolve the same way under `useGlobalPkgs`.
+        pkgsByArch = lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (
+          system:
+          import inputs.nixpkgs {
+            inherit system;
+            config = {
+              allowUnfree = true;
+              input-fonts.acceptLicense = true;
+            };
+          }
+        );
+
         mkHome =
           name: host:
           withSystem "${host.arch}-linux" (
             { self', inputs', ... }:
             let
-              # Match the NixOS `nixpkgs.config` (modules/nix.nix) so unfree
-              # packages resolve the same way under `useGlobalPkgs`.
-              pkgs = import inputs.nixpkgs {
-                system = "${host.arch}-linux";
-                config = {
-                  allowUnfree = true;
-                  input-fonts.acceptLicense = true;
-                };
-              };
+              pkgs = pkgsByArch."${host.arch}-linux";
             in
             inputs.home-manager.lib.homeManagerConfiguration {
               inherit pkgs;
