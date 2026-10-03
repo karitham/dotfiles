@@ -17,7 +17,7 @@ You use jj, not git. Command syntax comes from `jj help <command>`; query syntax
 
 ## Workflows
 
-These are local-only workflows. Fetch is fine, push is not.
+These are local-only workflows in this repository. Fetch is fine, push is not.
 
 ### 1. Stack & Commit
 
@@ -71,7 +71,7 @@ jj rebase -b my-feature -o main    # or a specific bookmark
 jj always succeeds — conflicts are stored in the commit, not errors. Never undo to escape a conflict; resolve in place.
 
 ```
-jj log -r 'conflict()'             # find conflicted commits
+jj log -r 'conflicts()'            # find conflicted commits
 jj new ABC1234                     # sit on the first conflicted commit
 # ...edit conflicted files...
 jj squash                          # move the resolution in; descendants auto-rebase
@@ -103,7 +103,7 @@ One line per command; `jj help <command>` for flags and details.
 - `jj bookmark list --all-remotes` — bookmarks; `jj bookmark create|set|move|delete|track` to manage
 - `jj op log -p` — operation history with changes
 - `jj undo [--operation ID]` — undo an operation, itself reversible
-- `jj git fetch` — the only allowed remote operation
+- `jj git fetch` — the only allowed remote operation in this repository
 
 ## Rules
 
@@ -112,7 +112,7 @@ One line per command; `jj help <command>` for flags and details.
 - **MUST** run `jj st` before any commit operation.
 - **MUST** use `jj log --limit N` to limit output (NOT `@-5..@` — that revset syntax is invalid).
 - **MUST** use `jj file show -r REV PATH` to view file contents at a revision. The `REV:PATH` fileset syntax is NOT accepted.
-- **MUST NOT** run `jj git push` under any circumstances — that's the user's responsibility.
+- **MUST NOT** run `jj git push` in this repository — that's the user's responsibility. A repo-specific skill may authorize pushing another repository (the `knowledge-base` skill pushes `~/notes`).
 - **MUST NOT** use git commands directly — this repo uses jj as the primary VCS.
 - **SHOULD** use `jj absorb` instead of `jj squash` when fixups belong in earlier commits — it's automatic and less error-prone.
 - **SHOULD** use `jj undo` on mistakes — it's safe, reversible, and works on almost any operation.
