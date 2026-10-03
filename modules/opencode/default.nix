@@ -20,9 +20,7 @@ let
   # systemd-run has to hand off the real binary on the same exec line; as a
   # --scope it runs that command, it does not wrap a later one. The trailing
   # space is load-bearing.
-  systemdRunPrefix = lib.optionalString cfg.resourceLimits (
-    "${lib.getExe' pkgs.systemd "systemd-run"} --user --scope --quiet --same-dir --slice=${sliceName} -- "
-  );
+  systemdRunPrefix = lib.optionalString cfg.resourceLimits "${lib.getExe' pkgs.systemd "systemd-run"} --user --scope --quiet --same-dir --slice=${sliceName} -- ";
 
   # Hand-written rather than makeWrapper: the systemd-run hand-off has to be the
   # exec itself, and wrapProgram --run lines land before the final exec.
@@ -69,7 +67,8 @@ in
     };
     modelAdversarial = lib.mkOption {
       type = lib.types.str;
-      default = "opencode-go/glm-5.3-flash";
+      # used to be glm but it's way too slow. I'd prefer to diversify but it is what it is
+      default = "opencode-go/deepseek-v4.1-flash";
     };
     plugins = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -117,7 +116,8 @@ in
       format = "dotenv";
     };
 
-    home.packages = [ (opencodePkg' inputs'.llm-agents.packages.opencode2 "opencode2") ];
+    # `programs.opencode.package` above already installs this wrapper, so it is
+    # not repeated in home.packages.
 
     # OCR config — single source of truth, reuses the opencode-go auth
     # already present in ~/.local/share/opencode/auth.json. The api_key is
@@ -164,7 +164,7 @@ in
 
     programs.opencode = {
       enable = true;
-      package = opencodePkg' inputs'.llm-agents.packages.opencode "opencode";
+      package = opencodePkg' inputs'.llm-agents.packages.opencode2 "opencode2";
       enableMcpIntegration = cfg.enableMcp;
       commands = (
         lib.mapAttrs' (name: _: lib.nameValuePair (lib.removeSuffix ".md" name) (./commands + "/${name}")) (
