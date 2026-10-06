@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ lib, pkgs, ... }:
 let
   inherit (lib)
     mkOption
@@ -19,8 +14,8 @@ in
 
     wallpaper.image = mkOption {
       default = pkgs.fetchurl {
-        url = "https://raw.githubusercontent.com/HoulFloof/wallpapers/f23c1010b93cb97baa7ad7c94fd552f7601496d2/misc/waves_right_colored.png";
-        hash = "sha256-NqqE+pGnCIWAitH86sxu1EudVEEaSO82y3NqbhtDh9k=";
+        url = "https://w.wallhaven.cc/full/8g/wallhaven-8g9kxk.jpg";
+        hash = "sha256-/KXb7sf2w0EgL20CWHIAzraS6ax6Bmqtu//zS6wp9jE=";
       };
       type = types.path;
       description = "the wallpaper to use";
