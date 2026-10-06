@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  self',
   ...
 }:
 {
@@ -19,8 +18,6 @@
         $env.config = {show_banner: false, edit_mode: helix}
 
         source-env (if ("~/.profile.nu" | path exists) { "~/.profile.nu" } else null)
-
-        ${lib.getExe self'.packages.pokego} -l french
       '';
 
       extraLogin = ''
