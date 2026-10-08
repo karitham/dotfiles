@@ -60,7 +60,22 @@
           };
         };
 
-        notification.monitors = [ "eDP-1" ];
+        notification = {
+          monitors = [ "eDP-1" ];
+
+          # Helium sends YouTube Music "now scrobbling" notifications with
+          # app_name "Helium", so the app token cannot distinguish them. Match
+          # the body header instead and keep the toast while dropping the sound
+          # and the history entry.
+          filter."youtube-music" = {
+            enabled = true;
+            match_content = "^YouTube Music";
+            show_toast = true;
+            save_history = false;
+            play_sound = false;
+          };
+        };
+
         osd.monitors = [ "eDP-1" ];
         plugins.enabled = [ ];
 
