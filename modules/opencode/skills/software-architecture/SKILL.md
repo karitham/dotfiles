@@ -12,6 +12,8 @@ Structure code to minimize the concepts a maintainer must track. Line count does
 - **Effects at boundaries.** Network, storage, clocks, randomness, and process state live at explicit boundaries. Test decisions with values, not mocks.
 - **Parse, don't validate.** Convert untrusted input into a type that represents valid data at the earliest boundary that knows enough to reject it. Make invalid states unrepresentable.
 - **Each context owns its model.** Translate vendor, transport, and storage representations at the boundary where they arrive; external schemas never leak inward.
+- **Behavior lives with the data it protects.** A domain type that only holds fields while services, handlers, or helpers enforce its rules is an anemic model. Put invariant checks and state transitions in the module that owns the type, so the type cannot be constructed or moved into an invalid state from outside. Free functions are fine when they operate on one type within that type's module; they are not fine when they let callers bypass the rules.
+- **Name domain operations, not field edits.** Prefer `order.Cancel()` over `order.Status = "cancelled"` plus a caller-side check. If a caller must know the rule to use the type correctly, the model is leaking.
 - **Failure policy lives with the dependency.** Retries, timeouts, and circuit breakers sit in the module that owns the dependency; retryable writes are idempotent.
 - **Designed for deletion.** Evolve public interfaces additively. Every flag, shim, and deprecated path has an owner and an expiry. Dead code is removed in the same task or recorded as debt with both.
 

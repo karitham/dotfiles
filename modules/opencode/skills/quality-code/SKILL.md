@@ -9,6 +9,7 @@ Each function reads as a short list of steps from top to bottom.
 
 - One concern per function. If the name needs "and", or the body mixes policy with mechanics, split it. One level of abstraction per function.
 - Pure by default. Take values, return values. Lift I/O, clocks, randomness, and process state to the caller.
+- No anemic models. When a function enforces a domain rule on a type it does not own, move the rule onto the type or into its module. Don't add a new service method that checks fields a type already exposes. See software-architecture.
 - Guard early. Return on errors and edge cases first; no `else` after a return. Happy path stays left.
 - No cleverness. Straight-line code over dense one-liners.
 - Small contracts. Zero to two arguments; beyond that, an options object or a smaller operation. Few locals, narrow scopes. Never mutate caller-owned data.
