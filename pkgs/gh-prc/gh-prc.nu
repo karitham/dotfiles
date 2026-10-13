@@ -168,7 +168,7 @@ def build-threads [comments: list<any>, resolved_ids: list<any>]: nothing -> lis
     | each {|c| {
         id: $c.databaseId
         review: $c.pullRequestReview.databaseId
-        resolved: ($c.databaseId in $resolved_ids)
+        resolved: ($c.databaseId in $resolved_ids), 
         root: $c
         replies: ($by_root | get -o ($c.databaseId | into string) | default [] | sort-by createdAt)
     } }
@@ -314,9 +314,9 @@ def main [
                 state: $r.state
                 author: ($r.author?.login? | default "ghost")
                 # "9999" sorts unsubmitted/pending reviews last
-                date: ($r.submittedAt? | default "9999" | str replace "T" " ")
-                body: ($r.body? | default "")
-                threads: ($owned | where {|t| keep-thread $t $flt })
+                date: ($r.submittedAt? | default "9999" | str replace "T" " "), 
+                body: ($r.body? | default ""), 
+                threads: ($owned | where {|t| keep-thread $t $flt }), 
                 reply_only: (
                     ($owned | is-empty)
                     and (foreign-reply-count $threads $r.databaseId) > 0

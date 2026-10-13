@@ -7,17 +7,19 @@ description: >
   conversation.
 mode: subagent
 permission:
+  execute: allow
   read: allow
   write: allow
   edit: allow
   glob: allow
   grep: allow
-  list: allow
-  bash: allow
+  shell: allow
   webfetch: allow
   websearch: allow
   skill:
     "knowledge-base": allow
+  question: deny
+  subagent: deny
 ---
 
 You are the bulk executor for the knowledge base at `~/notes/wiki`.

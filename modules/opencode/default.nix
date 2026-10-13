@@ -155,6 +155,15 @@ in
       };
     };
 
+    # The V2 binary ships the built-in tools as native, model-facing tools
+    # (`codemode: false`); everything else is deferred behind Code Mode. This
+    # plugin flips the built-ins into Code Mode, so the model-facing list
+    # collapses to `execute`, `skill` and `subagent`, and every other tool is
+    # callable from inside a Code Mode program. It is discovered from the global
+    # `plugins/` directory; disable it per host with
+    # `settings.plugins = [ "-all-tools-codemode" ]`.
+    xdg.configFile."opencode/plugins/all-tools-codemode.ts".source = ./plugins/all-tools-codemode.ts;
+
     # opencode runs in a scope inside this slice, so everything it spawns —
     # shell commands, MCP servers — inherits these limits. cgroup v2 applies a
     # parent's ceiling to the whole subtree, which is what contains a runaway

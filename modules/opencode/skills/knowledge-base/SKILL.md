@@ -83,6 +83,7 @@ cleanly.
    "Refusing to move bookmark backwards or sideways" — skip it.
    When the vault has no unpushed commits, `roots(...)` is the empty
    working-copy commit `@`, so the rebase is a no-op.
+
 3. Resolve conflicts. `jj log -r 'conflicts()'` lists them.
    - Working copy: edit the file to the intended content and delete every
      conflict marker (their form follows `ui.conflict-marker-style`); jj
@@ -178,6 +179,7 @@ and publishes nothing.
    `@-` is the commit just made; `@` keeps any human or other-scope
    changes uncommitted, and those stay local, so the push carries only
    the wiki commits.
+
 3. If the push is rejected because origin moved, run Sync §3 again:
    `jj git fetch`, rebase the local chain root onto `main@origin`,
    resolve conflicts, verify, then push again.
