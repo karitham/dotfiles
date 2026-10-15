@@ -6,7 +6,7 @@
 
  * Disable without removing it with `settings.plugins = [ "-all-tools-codemode" ]`.
  */
-const excluded = ["execute", "skill", "subagent"];
+const excluded = ["execute", "skill", "subagent", "question"];
 
 export default {
   id: "all-tools-codemode",
