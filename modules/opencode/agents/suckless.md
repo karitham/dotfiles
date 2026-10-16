@@ -6,6 +6,7 @@ description: >
 mode: subagent
 permission:
   "*": allow
+  skill: allow
   "todo*": deny
   question: deny
   subagent: deny
