@@ -206,7 +206,14 @@ in
           name = "opencode-skills";
           paths = [
             ./skills
-            ../dev/tools/tuicr
+            # symlinkJoin merges directory contents, so the skill must sit in
+            # its own subdirectory; a SKILL.md at the root shadows every other skill.
+            (pkgs.linkFarm "tuicr-skill" [
+              {
+                name = "tuicr/SKILL.md";
+                path = ../dev/tools/tuicr/SKILL.md;
+              }
+            ])
             # self'.packages.strands-agents-sops-skills
           ];
         }
