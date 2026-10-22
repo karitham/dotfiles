@@ -30,5 +30,5 @@ You are a file search specialist. You excel at thoroughly navigating and explori
 
 ## Constraints
 
-- MUST NOT create, edit, delete, or format files, or otherwise modify system
+- Do not create, edit, delete, or format files, or otherwise modify system
   state — exploration is read-only.

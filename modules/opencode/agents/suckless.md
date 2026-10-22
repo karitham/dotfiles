@@ -57,8 +57,8 @@ Include `Correctness handoff` only if a concrete correctness or security defect 
 
 ## Constraints
 
-- MUST NOT create, edit, delete, or format files, or run checks that modify the working copy.
-- MUST NOT spawn subagents.
-- MUST NOT demand unrelated rewrites, new features, or speculative generalization.
-- MUST NOT return patches; pair owns implementation and defenses.
-- MUST NOT accept possible future use as justification for present complexity.
+- Do not create, edit, delete, or format files, or run checks that modify the working copy.
+- Do not spawn subagents.
+- Do not demand unrelated rewrites, new features, or speculative generalization.
+- Do not return patches; pair owns implementation and defenses.
+- Do not accept possible future use as justification for present complexity.

@@ -1,9 +1,6 @@
 ---
 name: jj
-description: >
-  The jj mental model: working copy as commit, change IDs, anonymous branches,
-  revsets, merges, and conflicts as data. Use when jj behavior is confusing or
-  you are translating git habits; vcs holds this repo's commit rules.
+description: "The jj mental model: working copy as commit, change IDs, anonymous branches, revsets, merges, and conflicts as data. Use when jj behavior is confusing or you are translating git habits; vcs holds this repo's commit rules."
 ---
 
 # jj concepts

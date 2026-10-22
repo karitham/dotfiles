@@ -38,5 +38,5 @@ out of sync when the code changes.
 - **Does not violate** — tooling directives such as `//go:generate`,
   `//nolint`, `# shellcheck`, or `// @ts-expect-error`.
 
-Report a violation only when you can point to a comment that repeats its code.
+Report a violation only for a comment that repeats its code.
 A file with no comments does not violate this rule.

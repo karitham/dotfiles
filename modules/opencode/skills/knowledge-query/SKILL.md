@@ -1,8 +1,6 @@
 ---
 name: knowledge-query
-description: >
-  Read-only queries against the wiki at ~/notes/wiki. Use when a question may
-  be answered from accumulated notes; it never writes.
+description: "Read-only queries against the wiki at ~/notes/wiki. Use when a question may be answered from accumulated notes; it does not write."
 license: MIT
 metadata:
   author: kar
@@ -39,7 +37,7 @@ Grep across every scope, not only `common/`. Search the human notes outside `wik
 
 **Constraints:**
 
-- MUST NOT restrict the search to one unnamed scope, because matching knowledge often sits in another context.
+- Do not restrict the search to one unnamed scope, because matching knowledge often sits in another context.
 
 ### 3. Answer
 
@@ -47,8 +45,8 @@ State each claim with the path that supports it. Separate what pages state from 
 
 **Constraints:**
 
-- MUST NOT state a fact without a citation, because an uncited claim cannot be checked against its source.
-- MUST NOT fill a gap with freshly derived guesses; a derivation presented as corpus knowledge misleads later sessions.
+- Do not state a fact without a citation, because an uncited claim cannot be checked against its source.
+- Do not fill a gap with freshly derived guesses; a derivation presented as corpus knowledge misleads later sessions.
 
 ### 4. Report gaps
 
@@ -56,7 +54,7 @@ When the corpus cannot answer the question, state that plainly and name the miss
 
 ## Constraints
 
-- MUST NOT create, edit, or delete anything under `~/notes`. Writes belong to the knowledge-worker agent, and everything outside `wiki/` belongs to the human.
+- Do not create, edit, or delete anything under `~/notes`. Writes belong to the knowledge-worker agent, and everything outside `wiki/` belongs to the human.
 - SHOULD prefer citing an existing page over restating its content, so answers stay consistent with the corpus.
 - When pages disagree, cite both claims with their paths and `updated` dates. Prefer neither; contradiction resolution belongs to the write side, and the human decides.
 - A term that appears everywhere but has no page is a recurring-term gap: report it; do not create the page here.

@@ -1,10 +1,6 @@
 ---
 name: knowledge-base
-description: >
-  Conventions for the wiki at ~/notes/wiki: sync with origin, record
-  outcomes, ingest sources, lint, and publish. Use when the user wants
-  something saved to or changed in their notes; use knowledge-query for
-  read-only questions.
+description: "Conventions for the wiki at ~/notes/wiki: sync with origin, record outcomes, ingest sources, lint, and publish. Use when the user wants something saved to or changed in their notes; use knowledge-query for read-only questions."
 license: MIT
 metadata:
   author: kar
@@ -13,8 +9,8 @@ metadata:
 # Knowledge base
 
 Persistent, compounding wiki inside the Obsidian vault at `~/notes`.
-Compile once, keep current, never re-derive from scratch. Everything
-outside `wiki/` is human-written — evidence to read, never to edit.
+Compile once, keep current, and do not re-derive from scratch. Everything
+outside `wiki/` is human-written — evidence to read, not to edit.
 
 ## Layout
 
@@ -94,11 +90,11 @@ cleanly.
      the conflicted path (`wiki/index.md`, `wiki/<scope>/...`) so
      untracked or out-of-scope files in the working copy are not swept
      into C. Repeat until `jj log -r 'conflicts()'` is empty.
-   - Never `jj new C` or `jj edit C`: moving the working copy onto the
+   - Do not run `jj new C` or `jj edit C`: moving the working copy onto the
      conflicted revision deletes uncommitted files outside `wiki/`.
-   - A conflict outside `wiki/` is never guessed at: stop and report.
-4. Verify the rebase kept the local work: `jj log -r 'conflicts()'` must be
-   empty and `jj diff -r 'main@origin..@'` must show the local wiki
+   - A conflict outside `wiki/` is not guessed at: stop and report.
+4. Verify the rebase kept the local work: `jj log -r 'conflicts()'` is
+   empty and `jj diff -r 'main@origin..@'` shows the local wiki
    changes. If a local edit is missing, stop and report before writing
    anything.
 5. Commit pre-existing work in this operation's paths so it does not mix
@@ -111,8 +107,8 @@ cleanly.
    `wiki/<scope>: <subject>`, matching recent commits (`wiki/upf: ...`).
    Run it only when `jj diff wiki/<scope> wiki/index.md wiki/log.md` is
    non-empty; a `jj commit` whose paths match nothing still creates an
-   empty commit. Read the diff and name what changed, never `wip`.
-   Changes outside those paths stay in the working copy; never move or
+   empty commit. Read the diff and name what changed; do not use `wip`.
+   Changes outside those paths stay in the working copy; do not move or
    discard them.
 
 ### 4. Record / Ingest
@@ -133,7 +129,7 @@ For each unit of knowledge (session outcome, source, decision):
 - Update backlinks in both directions; revise any summary the new
   evidence changes. One source typically touches several pages.
 - Contradictions: replace the old claim together with a dated note of
-  what changed and why — never silently overwritten, never left standing
+  what changed and why — not silently overwritten, not left standing
   unflagged next to its successor.
 
 ### 5. Query
@@ -156,7 +152,7 @@ After every operation append to `log.md`:
     ## [YYYY-MM-DD] <record|ingest|query|lint> | [scope] <subject>
 
 and update `index.md` in the same pass. Gaps and open questions go into
-`log.md`, never into speculative prose.
+`log.md`, not into speculative prose.
 
 ### 8. Publish
 
@@ -187,28 +183,28 @@ and publishes nothing.
 
 ## Constraints
 
-- MUST NOT create, edit, or delete anything under `~/notes` except within
+- Do not create, edit, or delete anything under `~/notes` except within
   `wiki/` — everything else belongs to the human. The jj sync/publish
   commands are the sanctioned exception: they touch VCS metadata and
-  remote state, never file content outside `wiki/`.
-- MUST NOT commit or push paths outside `wiki/<scope>`, `wiki/index.md`,
+  remote state, not file content outside `wiki/`.
+- Do not commit or push paths outside `wiki/<scope>`, `wiki/index.md`,
   and `wiki/log.md` — other scopes and human notes stay uncommitted in
   the working copy.
-- MUST stop and report a rebase conflict outside `wiki/` — never guess at
+- Stop and report a rebase conflict outside `wiki/` — do not guess at
   human prose.
-- MUST leave pre-existing out-of-scope changes untouched; never reset,
-  move, or discard them. In particular, never run `jj new` or `jj edit`
+- Leave pre-existing out-of-scope changes untouched; do not reset,
+  move, or discard them. In particular, do not run `jj new` or `jj edit`
   onto a revision while the working copy holds uncommitted human or
   other-scope files — it deletes them. Squash conflict resolutions into
   a committed revision with `jj squash --into C <path>`, path-limited to
   the conflicted `wiki/` file.
-- MUST run Sync and Publish only around a run that writes to `wiki/`; a
-  question answered without filing anything must not touch VCS state.
-- MUST NOT delete wiki pages — mark superseded/archived instead so
+- Run Sync and Publish only around a run that writes to `wiki/`; a
+  question answered without filing anything does not touch VCS state.
+- Do not delete wiki pages — mark superseded/archived instead so
   history and inbound links survive.
-- MUST NOT state facts without a citation — if the corpus cannot answer,
+- Do not state facts without a citation — if the corpus cannot answer,
   say so and log the gap.
-- MUST NOT create a new scope without explicit request — guessed scopes
+- Do not create a new scope without explicit request — guessed scopes
   fragment the knowledge base.
 - SHOULD prefer enriching an existing page over near-duplicates.
 - SHOULD convert PDF/DOCX sources with `pandoc` before ingestion.

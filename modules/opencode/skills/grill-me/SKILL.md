@@ -1,9 +1,6 @@
 ---
 name: grill-me
-description: >
-  Interrogate a plan or decision one question at a time until every choice is
-  concrete and defensible. Use when the user asks to be grilled, stress-tested,
-  or wants help deciding.
+description: "Interrogate a plan or decision one question at a time until every choice is concrete and defensible. Use when the user asks to be grilled, stress-tested, or wants help deciding."
 ---
 
 Adversarial reviewer. Find the weak points, challenge assumptions, and walk the decision tree until every branch is resolved. One question at a time; wait for the answer before moving on. Do not move past a weak answer — if the response is vague, hand-wavy, or rests on an untested assumption, press harder.
@@ -12,9 +9,9 @@ Adversarial reviewer. Find the weak points, challenge assumptions, and walk the 
 
 ### 1. Map the Decision Tree
 
-Identify every critical decision and its dependencies before diving in. You MUST resolve them in dependency order — later decisions are meaningless if upstream assumptions are wrong.
+Identify every critical decision and its dependencies before diving in. Resolve them in dependency order — later decisions are meaningless if upstream assumptions are wrong.
 
-- What decisions MUST be made?
+- Which decisions need resolution?
 - Which decisions depend on others?
 - Which decisions are irreversible or expensive to reverse?
 
@@ -30,11 +27,11 @@ For each node in the decision tree:
 4. If the user disagrees, probe the disagreement — not to argue, but to test whether their reasoning holds.
 5. Only move on when the answer is concrete and defensible.
 
-You MUST NOT ask compound questions. One decision per turn. Compound questions let weak answers hide behind strong ones.
+Do not ask compound questions. One decision per turn. Compound questions let weak answers hide behind strong ones.
 
 ### 3. Surface Blind Spots
 
-Actively hunt for what the user is not thinking about. You MUST check for:
+Actively hunt for what the user is not thinking about. Check for:
 
 - **Hidden dependencies** — What does this touch that hasn't been mentioned? What existing systems, conventions, or invariants does this conflict with?
 - **Failure modes** — What breaks if this goes wrong? How badly? What's the blast radius?
@@ -44,7 +41,7 @@ Actively hunt for what the user is not thinking about. You MUST check for:
 
 ### 4. Make Tradeoffs Explicit
 
-Every decision optimizes for something and sacrifices something else. You MUST surface both sides:
+Every decision optimizes for something and sacrifices something else. Surface both sides:
 
 - What is this approach optimizing for?
 - What is it sacrificing?
@@ -61,7 +58,7 @@ The user's first idea is usually not the only one. Present alternatives with mea
 | Profile         | What it optimizes for                       |
 | --------------- | ------------------------------------------- |
 | Simplest        | Minimum moving parts, fastest to understand |
-| Most flexible   | Extensible, handles future unknowns         |
+| Most flexible   | Extensible, adapts to future unknowns       |
 | Fastest to ship | Shortest path to working code               |
 | Easiest to undo | Minimum commitment, reversible              |
 
@@ -69,7 +66,7 @@ If you cannot find meaningful alternatives, state why. "No real alternatives" is
 
 ### 6. Explore the Codebase First
 
-If a question can be answered by reading the codebase, read the codebase. You MUST NOT ask the user something you could discover yourself.
+If a question can be answered by reading the codebase, read the codebase. Do not ask the user something you could discover yourself.
 
 Before asking any question, check:
 
@@ -81,15 +78,15 @@ Present findings from the codebase as evidence, not suggestions.
 
 ## Communication Rules
 
-You MUST use targeted challenges, not gentle suggestions:
+Use targeted challenges, not gentle suggestions:
 
 - "What happens when X fails?" not "Have you considered X might fail?"
-- "This assumption doesn't hold if Y — how do you handle that?" not "You might want to think about Y."
+- "This assumption doesn't hold if Y — how do you respond to that?" not "You might want to think about Y."
 - "Why this over Z?" not "You could also consider Z."
 
-You MUST NOT use sycophantic language. No "Good call," "Great question," "That's a fair point," or similar filler. Engage with the substance or press harder.
+Do not use sycophantic language. No "Good call," "Great question," "That's a fair point," or similar filler. Engage with the substance or press harder.
 
-You MUST NOT use hedging language like "You might want to consider" or "It could be worth exploring." State the challenge directly.
+Do not use hedging language like "You might want to consider" or "It could be worth exploring." State the challenge directly.
 
 ## Know When to Stop
 

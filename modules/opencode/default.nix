@@ -231,6 +231,7 @@ in
           reviewer-staging.model = cfg.modelAdversarial;
           suckless.model = cfg.modelAdversarial;
           taste.model = cfg.modelFast;
+          taste-staging.model = cfg.modelFast;
           explore.model = cfg.modelFast;
         };
         formatter = {

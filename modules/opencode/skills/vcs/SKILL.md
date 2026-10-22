@@ -1,6 +1,6 @@
 ---
 name: vcs
-description: This repository's jj workflow: commit style, local workflows, and hard rules. Use for any VCS operation here; never run git.
+description: "This repository's jj workflow: commit style, local workflows, and hard rules. Use for any VCS operation here; do not run git."
 ---
 
 # VCS Skill: Jujutsu (jj)
@@ -31,9 +31,9 @@ jj commit -m "feat: add widget"
 jj commit -m "feat: wire up widget API"
 ```
 
-Before writing new commits, inspect 2-3 existing commits in the repo and match their style exactly: subject line length, prefix conventions (`feat:`, `fix:`, `drop`, etc.), body vs single-line, capitalisation. Never invent a new style.
+Before writing new commits, inspect 2-3 existing commits in the repo and match their style exactly: subject line length, prefix conventions (`feat:`, `fix:`, `drop`, etc.), body vs single-line, capitalisation. Do not invent a new style.
 
-**Commit message subject line MUST be 50 characters or fewer.** Body lines SHOULD wrap at 72 characters. If wrapping at 72 would introduce ambiguity, match the existing repo convention instead.
+**Commit message subject line is 50 characters or fewer.** Body lines SHOULD wrap at 72 characters. If wrapping at 72 would introduce ambiguity, match the existing repo convention instead.
 
 ### 2. Fixup on Top
 
@@ -58,7 +58,7 @@ jj absorb
 
 ### 4. Rebase Stack onto Main
 
-Sync the stack with upstream. Rebase the whole branch in one step — never individual commits one by one.
+Sync the stack with upstream. Rebase the whole branch in one step — not individual commits one by one.
 
 ```
 jj git fetch
@@ -68,7 +68,7 @@ jj rebase -b my-feature -o main    # or a specific bookmark
 
 ### 5. Conflict Resolution
 
-jj always succeeds — conflicts are stored in the commit, not errors. Never undo to escape a conflict; resolve in place.
+jj succeeds — conflicts are stored in the commit, not errors. Do not undo to escape a conflict; resolve in place.
 
 ```
 jj log -r 'conflicts()'            # find conflicted commits
@@ -100,20 +100,20 @@ One line per command; `jj help <command>` for flags and details.
 - `jj restore [PATH] [--from REV]` — discard changes; `--changes-in ABC1234` reverts a whole revision
 - `jj resolve [PATH]` — interactive conflict resolution
 - `jj prev` / `jj next` / `jj edit REV` — move the working copy commit
-- `jj bookmark list --all-remotes` — bookmarks; `jj bookmark create|set|move|delete|track` to manage
+- `jj bookmark list --all-remotes` — bookmarks; `jj bookmark create|set|move|delete|track` to change them
 - `jj op log -p` — operation history with changes
 - `jj undo [--operation ID]` — undo an operation, itself reversible
 - `jj git fetch` — the only allowed remote operation in this repository
 
 ## Rules
 
-- **MUST** use `jj commit -m "message"` to commit (NOT `jj describe`, NOT `jj new` alone) — `commit` is the atomic "set message + start fresh" checkpoint.
-- **MUST** use **change IDs** (first 7 chars from `jj log`) to refer to revisions, not git commit hashes.
-- **MUST** run `jj st` before any commit operation.
-- **MUST** use `jj log --limit N` to limit output (NOT `@-5..@` — that revset syntax is invalid).
-- **MUST** use `jj file show -r REV PATH` to view file contents at a revision. The `REV:PATH` fileset syntax is NOT accepted.
-- **MUST NOT** run `jj git push` in this repository — that's the user's responsibility. A repo-specific skill may authorize pushing another repository (the `knowledge-base` skill pushes `~/notes`).
-- **MUST NOT** use git commands directly — this repo uses jj as the primary VCS.
+- **Use** `jj commit -m "message"` to commit (NOT `jj describe`, NOT `jj new` alone) — `commit` is the atomic "set message + start fresh" checkpoint.
+- **Use** **change IDs** (first 7 chars from `jj log`) to refer to revisions, not git commit hashes.
+- **Run** `jj st` before any commit operation.
+- **Use** `jj log --limit N` to limit output (NOT `@-5..@` — that revset syntax is invalid).
+- **Use** `jj file show -r REV PATH` to view file contents at a revision. The `REV:PATH` fileset syntax is NOT accepted.
+- **Do not** run `jj git push` in this repository — that's the user's responsibility. A repo-specific skill may authorize pushing another repository (the `knowledge-base` skill pushes `~/notes`).
+- **Do not** use git commands directly — this repo uses jj as the primary VCS.
 - **SHOULD** use `jj absorb` instead of `jj squash` when fixups belong in earlier commits — it's automatic and less error-prone.
 - **SHOULD** use `jj undo` on mistakes — it's safe, reversible, and works on almost any operation.
 - **SHOULD** run `jj git fetch` before `jj rebase -b @ -o main` to stay synced.

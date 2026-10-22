@@ -1,0 +1,13 @@
+extends: existence
+message: "Name the actor instead of '%s'."
+level: error
+ignorecase: true
+tokens:
+  - you
+  - your
+  - yours
+  - yourself
+  - we
+  - our
+  - ours
+  - us

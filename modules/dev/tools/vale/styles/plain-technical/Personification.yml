@@ -1,0 +1,9 @@
+extends: existence
+message: "Name the component and its action instead of '%s'."
+level: error
+ignorecase: true
+tokens:
+  - wants
+  - knows
+  - decides
+  - tries

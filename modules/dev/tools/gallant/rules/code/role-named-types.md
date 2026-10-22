@@ -29,5 +29,5 @@ invalid.
 - **Does not violate** — a type that implements an interface required by a
   framework or library, such as `http.Handler`.
 
-Report a violation only when you can point to such a type in the file. A file
+Report a violation only for such a type in the file. A file
 with no role-named type does not violate this rule.

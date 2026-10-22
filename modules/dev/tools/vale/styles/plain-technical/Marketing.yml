@@ -1,0 +1,11 @@
+extends: existence
+message: "Replace the marketing term '%s' with the property it names."
+level: error
+ignorecase: true
+tokens:
+  - powerful
+  - seamless
+  - blazing fast
+  - best-in-class
+  - effortless
+  - robust

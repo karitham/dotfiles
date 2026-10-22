@@ -1,8 +1,6 @@
 ---
 name: gleam
-description: >
-  Idiomatic Gleam, including lustre, wisp, and mist. Use when writing, editing,
-  or reviewing Gleam code. For generic structure, see software-architecture.
+description: "Idiomatic Gleam, including lustre, wisp, and mist. Use when writing, editing, or reviewing Gleam code. For generic structure, see software-architecture."
 ---
 
 # Gleam
@@ -27,9 +25,9 @@ GOOD:
       case s { Ready -> True Loading -> False Failed(_) -> False }
     }
 
-- MUST model a closed set with a custom type, because a string allows values the domain forbids.
-- MUST put data on the variant that needs it, because a shared record with optional fields allows inconsistent combinations.
-- MUST handle every variant in a case, because exhaustiveness keeps logic in sync with the type.
+- Model a closed set with a custom type, because a string allows values the domain forbids.
+- Put data on the variant that needs it, because a shared record with optional fields allows inconsistent combinations.
+- Match every variant in a case, because exhaustiveness keeps logic in sync with the type.
 
 ## Result and Option
 
@@ -59,7 +57,7 @@ GOOD:
       case dict.get(users, id) { Ok(u) -> Some(u) Error(_) -> None }
     }
 
-- MUST return Result with a custom error type per failure mode at application boundaries, because a string or Nil error loses structure for matching.
+- Return Result with a custom error type per failure mode at application boundaries, because a string or Nil error loses structure for matching.
 - MAY use Result(_, Nil) for low-level primitives where the caller adds context; stdlib does this for dict.get, int.parse, and list.first, and internal wisp and mist code uses Error(Nil) where the next step maps immediately to a Response.
 - SHOULD use Option for stored fields and for find-style lookups where absence is not an error, but note stdlib's own docs prefer Result even for absence and reserve Option for arguments and stored data; pick one style per package and stay consistent.
 - SHOULD thread Results with result.try, result.map, result.map_error, and list.try_map over nested cases.
@@ -89,14 +87,14 @@ GOOD:
       }
     }
 
-- MUST NOT use let assert on external input, decodes, or dict lookups in production where failure is possible.
-- MAY use let assert or panic as on a proven invariant such as a math domain, a subject that must have an owner, or a branch the type system cannot prove but the programmer can; keep the proof local and obvious.
+- Do not use let assert on external input, decodes, or dict lookups in production where failure is possible.
+- MAY use let assert or panic as on a proven invariant such as a math domain, a subject with an owner, or a branch the type system cannot prove but the programmer can; keep the proof local and obvious.
 - MAY use let assert in tests with literal fixtures.
 - SHOULD prefer echo for ad-hoc debug printing over io.debug, because echo works for any type and is removed before commit.
 
 ## Pattern Matching
 
-Case is the primary control flow. The compiler checks reachability and exhaustiveness. Guards add only a simple predicate. Stdlib never uses if for control; it uses case True/False and bool.guard.
+Case is the primary control flow. The compiler checks reachability and exhaustiveness. Guards add only a simple predicate. Stdlib does not use if for control; it uses case True/False and bool.guard.
 
 BAD:
 
@@ -120,8 +118,8 @@ GOOD:
       next(req)
     }
 
-- MUST match exhaustively without a wildcard that hides a variant.
-- MUST keep guards simple and side-effect free, because guards cannot call functions.
+- Match exhaustively without a wildcard that hides a variant.
+- Keep guards simple and side-effect free, because guards cannot call functions.
 - SHOULD prefer case True -> ... False -> ... and bool.guard with use <- for early return over if, because the stdlib and wisp idiom uses this shape and it composes with use.
 
 ## Pipelines
@@ -143,9 +141,9 @@ GOOD:
       items |> list.map(string.append(p, _))
     }
 
-- MUST design the subject of a pipelinable function as its first argument.
+- Design the subject of a pipelinable function as its first argument.
 - SHOULD use a capture with _ to pipe into a non-first position.
-- MUST NOT nest pipelines inside other calls.
+- Do not nest pipelines inside other calls.
 
 ## Use
 
@@ -165,9 +163,9 @@ GOOD:
       validate(data)
     }
 
-- MUST use use only when the right-hand side is a function that takes a callback as its final argument.
+- Use use only when the right-hand side is a function that takes a callback as its final argument.
 - SHOULD combine use with result.try for chains of fallible steps.
-- MUST keep the right-hand side a plain call; a complex expression obscures the desugaring.
+- Keep the right-hand side a plain call; a complex expression obscures the desugaring.
 
 ## Decoders
 
@@ -212,8 +210,8 @@ GOOD:
       decode.success(Item(name:, tags:, kind:))
     }
 
-- MUST build decoders with decode.field, decode.optional_field, decode.list, decode.optional, decode.one_of, and combine with use and decode.success, because manual dynamic access bypasses the typed decoder contract.
-- MUST run decode.run and match on Result; MUST NOT use let assert on external data.
+- Build decoders with decode.field, decode.optional_field, decode.list, decode.optional, decode.one_of, and combine with use and decode.success, because manual dynamic access bypasses the typed decoder contract.
+- Run decode.run and match on Result; do not use let assert on external data.
 - SHOULD use decode.then and decode.map when a field needs validation into an opaque type, because then chains a Result-returning constructor into the decoder.
 - SHOULD prefer decode.optional_field with a default over a bare optional when the field has a sensible default, because the call site avoids Option plumbing.
 
@@ -241,8 +239,8 @@ GOOD:
       do_send(a, body)
     }
 
-- MUST make validated domain values opaque.
-- MUST return Result from the parse function and put all checks inside it.
+- Make validated domain values opaque.
+- Return Result from the parse function and put all checks inside it.
 - SHOULD use decode.then to lift a parse function into a decoder so the opaque invariant holds at the wire boundary.
 
 ## Records
@@ -260,8 +258,8 @@ GOOD:
       case c.port { Some(_) -> c None -> Config(..c, port: Some(8080)) }
     }
 
-- MUST use User(..user, field: value) to derive a new record.
-- MUST NOT assume accessor works for every field of a multi-variant type; only fields at the same position and type on every variant are directly accessible.
+- Use User(..user, field: value) to derive a new record.
+- Do not assume accessor works for every field of a multi-variant type; only fields at the same position and type on every variant are directly accessible.
 
 ## Labelled Arguments
 
@@ -303,7 +301,7 @@ GOOD:
       items |> list.map(string.uppercase) |> list.filter(fn(s) { s != "" })
     }
 
-- MUST keep value imports qualified; the qualifier documents origin.
+- Keep value imports qualified; the qualifier documents origin.
 - SHOULD import types unqualified with {type X} when the type name is the subject; this is conventional in stdlib and wisp.
 - MAY alias a module only to avoid a collision.
 
@@ -337,8 +335,8 @@ GOOD:
 
 - SHOULD provide both targets or a Gleam fallback where the package supports both; BEAM-only packages like gleam_otp and mist correctly use only @external(erlang, ...).
 - SHOULD use @target(erlang) and @target(javascript) for platform constants or imports rather than runtime branching when the implementation differs per target; lustre and stdlib gate entire modules this way.
-- MUST validate any value returned from external code before wrapping it in an opaque type.
-- MUST NOT let an external type leak into the core; the adapter translates at the edge.
+- Validate any value returned from external code before wrapping it in an opaque type.
+- Do not let an external type leak into the core; the adapter translates at the edge.
 - SHOULD use @internal for helpers that are public for cross-module use but not part of the public API, and hide them with internal_modules in gleam.toml.
 
 ## OTP and Concurrency
@@ -389,11 +387,11 @@ GOOD:
       |> supervision.restart(supervision.Transient)
     }
 
-- MUST model shared state as an actor that owns its state and communicates via subjects and process.Selector, because the BEAM has no shared heap.
+- Model shared state as an actor that owns its state and communicates via subjects and process.Selector, because the BEAM has no shared heap.
 - SHOULD use the builder pattern actor.new |> on_message |> named |> restart_tolerance |> start, because gleam_otp configurers chain this way.
-- SHOULD merge selectors with select_other and merge_selector to handle user and unexpected messages together.
+- SHOULD merge selectors with select_other and merge_selector to combine user and unexpected messages.
 - SHOULD use supervision.ChildSpecification and strategies OneForOne, OneForAll, RestForOne; prefer factory_supervisor for dynamic children.
-- MUST give every spawned process an owner and a shutdown path; a leaked actor prevents clean shutdown.
+- Give every spawned process an owner and a shutdown path; a leaked actor prevents clean shutdown.
 
 ## Wisp, Lustre, and Effects
 
@@ -431,7 +429,7 @@ GOOD:
       next(req)
     }
 
-- MUST model wisp middleware as fn(Request, fn(Request) -> Response) -> Response and invoke with use <- middleware(req) or use x <- require_x(req), because wisp's simulate harness depends on this shape.
+- Model wisp middleware as fn(Request, fn(Request) -> Response) -> Response and invoke with use <- middleware(req) or use x <- require_x(req), because wisp's simulate harness depends on this shape.
 - SHOULD use bool.guard and bool.lazy_guard for guard clauses inside middleware, because they desugar to early return without case nesting.
 - SHOULD model lustre effects as data Effect(sync, before_paint, after_paint) with batch and map, not as side-effecting callbacks; lustre's runtime dispatches them and tests assert on the data.
 - MAY return Result(_, Response) or Error(Nil) at the framework boundary where the error maps immediately to an HTTP response.
@@ -456,7 +454,7 @@ GOOD:
       router.handle_request(req, ctx) |> should.equal(201)
     }
 
-- MUST name tests with a _test suffix in test/, because gleeunit discovers them by convention.
+- Name tests with a _test suffix in test/, because gleeunit discovers them by convention.
 - SHOULD use should.equal when the failure message matters and assert when the literal is obvious; stdlib and the gleam new template use bare assert, and both are canonical.
 - SHOULD use wisp/simulate or lustre's test helpers for handler and component tests rather than hand-building requests.
 
@@ -477,7 +475,7 @@ GOOD:
     /// Parse an email. Returns MissingAt when the string has no @.
     pub fn parse(input: String) -> Result(Email, EmailError) { todo }
 
-- MUST document public types and functions with /// and the module with //// at the top for HexDocs; empty /// is acceptable for code-generated per-tag helpers where prose would be noise.
+- Document public types and functions with /// and the module with //// at the top for HexDocs; empty /// is acceptable for code-generated per-tag helpers where prose would be noise.
 
 ## Tooling
 
@@ -486,8 +484,8 @@ The Gleam toolchain is the gate.
 GOOD:
 
     gleam check          # fast type feedback
-    gleam format --check # CI must fail on unformatted code
+    gleam format --check # CI fails on unformatted code
     gleam test           # runs gleeunit
 
-- MUST run gleam format and treat its output as final.
-- MUST run gleam check and gleam test before considering Gleam code complete.
+- Run gleam format and treat its output as final.
+- Run gleam check and gleam test before considering Gleam code complete.

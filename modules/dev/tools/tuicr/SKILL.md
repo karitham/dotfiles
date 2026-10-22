@@ -7,7 +7,7 @@ description: Use tuicr's review CLI to read and add comments in active TUI revie
 
 Use `tuicr review` as the default agent interface. The TUI is where the human
 reviews code; the CLI is how the agent discovers active sessions, reads user
-comments, and, only when appropriate, adds agent-authored comments.
+comments, and, when the human asks for them, adds agent-authored comments.
 
 ## Core Rule
 

@@ -52,5 +52,6 @@ in
     ./direnv.nix
     ./gallant.nix
     ./tuicr.nix
+    ./vale.nix
   ];
 }

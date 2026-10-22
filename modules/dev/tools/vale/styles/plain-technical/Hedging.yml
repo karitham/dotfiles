@@ -1,0 +1,12 @@
+extends: existence
+message: "Remove the hedge '%s'."
+level: error
+ignorecase: true
+tokens:
+  - simply
+  - just
+  - basically
+  - really
+  - very
+  - it is worth noting that
+  - in order to

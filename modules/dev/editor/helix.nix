@@ -110,6 +110,8 @@ lib.mkIf config.dev.enable {
         yaml-language-server
         typos-lsp
         nil
+        vale
+        vale-ls
       ]
       ++ [ self'.packages.golangci-lint-langserver ]
       ++ global-tools;
@@ -304,6 +306,9 @@ lib.mkIf config.dev.enable {
               ''
             ];
           };
+        };
+        vale-ls = {
+          command = "vale-ls";
         };
         rubocop = {
           command = "rubocop";
@@ -518,7 +523,7 @@ lib.mkIf config.dev.enable {
               // {
                 language-servers = [
                   "marksman"
-                  # "vale-ls"
+                  "vale-ls"
                 ];
                 text-width = 100;
                 rulers = [ 100 ];

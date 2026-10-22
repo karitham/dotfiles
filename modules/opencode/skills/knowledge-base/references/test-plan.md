@@ -13,8 +13,8 @@ and enhance** accumulated research over time.
   copies under `~/.config/opencode/skills/` are frozen home-manager
   snapshots that only refresh on rebuild, so registered-skill loading
   tests outdated instructions. Path-reads see every edit instantly.
-- **Disk-state-only memory**: each run starts from a fresh dispatch. What
-  the worker "knows" is exactly what previous runs left in `~/notes/wiki/`.
+- **Disk-state-only memory**: each run starts from a fresh dispatch. The
+  worker's state is exactly what previous runs left in `~/notes/wiki/`.
   This makes the vault itself the test fixture.
 - **Deterministic where possible**: structural rules are enforced by
   `scripts/lint.sh`, not judgment. Judgment lives in the rubric and audits.

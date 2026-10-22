@@ -27,8 +27,8 @@ These are not violations; do not report them:
 Report a violation only when a domain rule is real and the file re-checks it by
 hand at the use sites instead of proving it once when the value is built. There
 is a violation only if the file compares a value to literal values of a
-built-in type, or repeats the same check, rather than using a named type. If you
-cannot point to such a comparison or repeated check, answer no; structs, maps,
+built-in type, or repeats the same check, rather than using a named type. If no
+such comparison or repeated check is present, answer no; structs, maps,
 and functions around named types do not change that.
 
 - **Violates** — a value that must be one of a fixed set (a status, a kind, a

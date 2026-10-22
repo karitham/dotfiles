@@ -40,13 +40,13 @@ GOOD:
         return parseConfig(data)
     }
 
-- MUST return early on error or edge cases before the main work.
-- MUST keep the happy path at the left margin.
-- MUST NOT use else after return, because the early return already exits the branch and else adds nesting that obscures flow.
+- Return early on error or edge cases before the main work.
+- Keep the happy path at the left margin.
+- Do not use else after return, because the early return already exits the branch and else adds nesting that obscures flow.
 
 ## Errors
 
-The caller decides how to handle an error. The callee returns it with context. Panic signals an unrecoverable programming error, not bad input.
+The caller decides how to respond to an error. The callee returns it with context. Panic signals an unrecoverable programming error, not bad input.
 
 BAD:
 
@@ -66,13 +66,13 @@ GOOD:
         return ErrInvalidInput
     }
 
-- MUST wrap an error with fmt.Errorf("...: %w", err) when the error crosses a package boundary, because the caller needs context to diagnose the failure.
-- MUST add context that names the operation that failed, because an incorrect message sends debugging toward the wrong code.
-- MUST handle each error result once, because duplicate checks obscure control flow and leave stale branches after refactoring.
-- MUST use errors.Is and errors.As for sentinel and typed errors, because direct comparison fails on wrapped errors.
-- MUST NOT compare error strings with ==, because wrapped errors fail equality checks and messages are not a stable API.
-- MUST NOT discard an error with _ without a comment that states the reason, because an ignored error hides a failure.
-- MUST NOT panic on bad input, because panic is for unrecoverable programming errors and crashes the process.
+- Wrap an error with fmt.Errorf("...: %w", err) when the error crosses a package boundary, because the caller needs context to diagnose the failure.
+- Add context that names the operation that failed, because an incorrect message sends debugging toward the wrong code.
+- Check each error result once, because duplicate checks obscure control flow and leave stale branches after refactoring.
+- Use errors.Is and errors.As for sentinel and typed errors, because direct comparison fails on wrapped errors.
+- Do not compare error strings with ==, because wrapped errors fail equality checks and messages are not a stable API.
+- Do not discard an error with _ without a comment that states the reason, because an ignored error hides a failure.
+- Do not panic on bad input, because panic is for unrecoverable programming errors and crashes the process.
 
 ## Context
 
@@ -90,8 +90,8 @@ GOOD:
         return db.QueryContext(ctx, id)
     }
 
-- MUST take ctx context.Context as the first argument for I/O and request-scoped functions, because cancellation and deadlines propagate through the call tree.
-- MUST NOT store Context in a struct, because storage binds the value to a single lifetime and prevents per-call cancellation and makes the owner unclear.
+- Take ctx context.Context as the first argument for I/O and request-scoped functions, because cancellation and deadlines propagate through the call tree.
+- Do not store Context in a struct, because storage binds the value to a single lifetime and prevents per-call cancellation and makes the owner unclear.
 - SHOULD check ctx.Err() or ctx.Done() before expensive work when cancellation matters, because an early check avoids wasted work.
 
 ## Boundaries
@@ -114,7 +114,7 @@ GOOD:
         return validate(p.Details.Code)
     }
 
-- MUST reject missing required dependencies and malformed nested input at the boundary, because delayed nil failures turn invalid input or configuration into a panic.
+- Reject missing required dependencies and malformed nested input at the boundary, because delayed nil failures turn invalid input or configuration into a panic.
 
 ## Ownership and Mutation
 
@@ -134,7 +134,7 @@ GOOD:
         return append(out, src...)
     }
 
-- MUST document or enforce whether a function may mutate caller-owned slices, maps, or pointed-to values, because aliasing makes ownership implicit.
+- Document or enforce whether a function may mutate caller-owned slices, maps, or pointed-to values, because aliasing makes ownership implicit.
 - SHOULD return independent values from functions that promise not to mutate their inputs.
 - SHOULD treat inputs to retryable callbacks as immutable, because a retry can observe mutations from an earlier attempt.
 
@@ -160,8 +160,8 @@ GOOD:
     func NewHandler(fetch userFetcher) *Handler { ... }
 
 - SHOULD define interfaces with one or two methods at the consumer, because the consumer knows the minimal behavior it needs.
-- MUST NOT export a large interface from a producer package, because the producer cannot predict consumer needs and large interfaces force unnecessary implementations.
-- MUST NOT use any where a concrete type or small interface suffices, because any erases compile-time checks.
+- Do not export a large interface from a producer package, because the producer cannot predict consumer needs and large interfaces force unnecessary implementations.
+- Do not use any where a concrete type or small interface suffices, because any erases compile-time checks.
 - SHOULD model small interfaces on io.Reader and io.Writer, because those demonstrate minimal focused contracts.
 
 ## Concurrency
@@ -194,13 +194,13 @@ GOOD:
     }
     wg.Wait()
 
-- MUST synchronize shared state with sync.Mutex, sync.Map, or channels, because unsynchronized access causes data races.
+- Synchronize shared state with sync.Mutex, sync.Map, or channels, because unsynchronized access causes data races.
 - SHOULD use golang.org/x/sync/errgroup.WithContext for concurrent work that can fail, because it propagates the first error and cancels sibling work.
-- MUST choose a concurrency primitive according to failure and cancellation semantics: use errgroup.WithContext when one failure should cancel siblings, and use sync.WaitGroup when siblings must finish independently.
+- Choose a concurrency primitive according to failure and cancellation semantics: use errgroup.WithContext when one failure should cancel siblings, and use sync.WaitGroup when siblings finish independently.
 - SHOULD pass the cancellation-aware context into the work performed by each goroutine, because canceling a context does not stop work that ignores it.
-- MUST protect read-modify-write decisions that trigger side effects with an atomic or conditional update or an idempotency key, because a local check does not serialize concurrent callers.
-- MUST NOT leak goroutines, because each leaked goroutine retains memory and prevents clean shutdown; every go statement requires a clear owner and termination via ctx.Done or WaitGroup.
-- SHOULD replace cached entries wholesale rather than mutating shared structs, because immutable values never go stale and avoid races.
+- Protect read-modify-write decisions that trigger side effects with an atomic or conditional update or an idempotency key, because a local check does not serialize concurrent callers.
+- Do not leak goroutines, because each leaked goroutine retains memory and prevents clean shutdown; every go statement requires a clear owner and termination via ctx.Done or WaitGroup.
+- SHOULD replace cached entries wholesale rather than mutating shared structs, because immutable values do not go stale and avoid races.
 
 ## Defer and Cleanup
 
@@ -218,8 +218,8 @@ GOOD:
     }
     defer f.Close()
 
-- MUST check the error from the open before deferring Close, because defer on a nil file panics and masks the open error.
-- SHOULD handle Close errors where close can fail and the result matters, because data loss hides in an unchecked close.
+- Check the error from the open before deferring Close, because defer on a nil file panics and masks the open error.
+- SHOULD check Close errors where close can fail and the result matters, because data loss hides in an unchecked close.
 
 ## Naming and Zero Values
 
@@ -243,9 +243,9 @@ GOOD:
     m := make(map[string]int)
     type Counter struct { mu sync.Mutex; n int } // zero value is ready to use
 
-- MUST NOT stutter the package name, because the call site already qualifies the identifier with the package and stutter adds no information.
+- Do not stutter the package name, because the call site already qualifies the identifier with the package and stutter adds no information.
 - SHOULD design zero values that are valid, because a valid zero value allows declaration without a constructor and reduces initialization bugs; bytes.Buffer and sync.Mutex are examples.
-- MUST make the choice between var and make explicit for slices, maps, and channels, because nil and empty behave differently and an implicit choice hides panic risk.
+- Make the choice between var and make explicit for slices, maps, and channels, because nil and empty behave differently and an implicit choice hides panic risk.
 
 ## Allocation
 
@@ -267,7 +267,7 @@ GOOD:
 
 - SHOULD allocate an exact-length slice and fill it by index when every input produces one output.
 - SHOULD use a zero-length slice with capacity and append when filtering or when the output length is unknown.
-- MUST NOT allocate an exact-length result when inputs can be skipped, because skipped entries leave misleading zero values.
+- Do not allocate an exact-length result when inputs can be skipped, because skipped entries leave misleading zero values.
 
 ## Exports
 
@@ -290,10 +290,10 @@ GOOD:
 
     func Format(input string) string { return normalize(input) }
 
-- MUST keep the exported surface minimal — only export identifiers that callers outside the package require, because every export is a long-term compatibility constraint.
-- MUST use MixedCaps for exported identifiers and mixedCaps for unexported ones, and demote a helper to unexported as soon as it is only used within its own package.
+- Keep the exported surface minimal — only export identifiers that callers outside the package require, because every export is a long-term compatibility constraint.
+- Use MixedCaps for exported identifiers and mixedCaps for unexported ones, and demote a helper to unexported as soon as it is only used within its own package.
 - SHOULD treat adding a new export as a design review — if the identifier serves only an internal step, keep it unexported.
-- MUST NOT export implementation details that can be hidden behind a deep module's single exported function; the module should expose one simple function and hide helpers inside.
+- Do not export implementation details that can be hidden behind a deep module's single exported function; the module should expose one simple function and hide helpers inside.
 
 ## Whitespace
 
@@ -342,10 +342,10 @@ GOOD:
         }
     }
 
-- MUST separate logical blocks inside a function with a blank line, because blocks represent distinct steps and separation reduces cognitive load; examples are gather, process, and return.
-- MUST separate top-level declarations with one blank line, because separation marks independent definitions.
+- Separate logical blocks inside a function with a blank line, because blocks represent distinct steps and separation reduces cognitive load; examples are gather, process, and return.
+- Separate top-level declarations with one blank line, because separation marks independent definitions.
 - SHOULD extract a method when a section represents a named operation, not merely because it is a block, because a trivial helper hides the surrounding flow.
-- MUST NOT split a function into trivial helpers solely to reduce a complexity metric, because fragmentation hides the operation's flow.
+- Do not split a function into trivial helpers solely to reduce a complexity metric, because fragmentation hides the operation's flow.
 
 ## Comments
 
@@ -367,10 +367,10 @@ GOOD:
     // has no entry. The returned config is safe for concurrent use.
     func (c *Cache) Get(path string) (*Config, error) { ... }
 
-- MUST write interface comments before implementation, because the interface defines the contract and a concise comment tests whether the abstraction is sound.
-- Interface comments MUST describe what the exported identifier does, its parameters and constraints, what it returns, and what can go wrong. The comment MUST NOT describe how the identifier is implemented, because the implementation is hidden detail and the comment would become stale.
+- Write interface comments before implementation, because the interface defines the contract and a concise comment tests whether the abstraction is sound.
+- Interface comments describe what the exported identifier does, its parameters and constraints, what it returns, and what can go wrong. The comment does not describe how the identifier is implemented, because the implementation is hidden detail and the comment would become stale.
 - Implementation comments SHOULD appear only when the code cannot express the why, because why is not visible in syntax; examples are pooling rationale or ordering constraints.
-- MUST delete comments that restate the code, because restatement adds no information and obscures useful comments; when a name needs a comment to explain it, rename the identifier.
+- Delete comments that restate the code, because restatement adds no information and obscures useful comments; when a name needs a comment to explain it, rename the identifier.
 
 ## Project Layout
 
@@ -388,8 +388,8 @@ GOOD:
     package stripeadapter
     func toCore(s stripe.Charge) core.Payment { return core.Payment{ID: s.ID, Amount: s.Amount} }
 
-- MUST keep internal/ for non-public packages, because internal enforces encapsulation at the compiler level.
-- MUST NOT let core import adapters, because dependencies must point one way toward the core and reversal creates cycles and leaks external types.
+- Keep internal/ for non-public packages, because internal enforces encapsulation at the compiler level.
+- Do not let core import adapters, because dependencies point one way toward the core and reversal creates cycles and leaks external types.
 - SHOULD hide complexity behind a deep module, because the module exposes a simple function and hides pooling and caching inside and reduces API surface; Format(*Document, Options) (string, error) is an example shape, with hidden internals.
 - SHOULD run go vet and golangci-lint before considering Go code complete, because static checks catch idiom violations early.
 
@@ -436,11 +436,11 @@ GOOD:
         }
     }
 
-- MUST use table-driven tests with t.Run per case, because the table makes cases visible and t.Run isolates failures and enables selective runs; each case has a name field that identifies the failing case.
-- MUST mark helpers with t.Helper(), because the helper must report failures at the caller line.
-- SHOULD check idempotency where the operation claims it, because repeated application must produce the same result.
-- MUST test each abstraction at its own boundary: unit tests assert behavior, while serializer and adapter tests assert wire contracts, because testing both through one layer couples tests to implementation details.
+- Use table-driven tests with t.Run per case, because the table makes cases visible and t.Run isolates failures and enables selective runs; each case has a name field that identifies the failing case.
+- Mark helpers with t.Helper(), because the helper reports failures at the caller line.
+- SHOULD check idempotency where the operation claims it, because repeated application produces the same result.
+- Test each abstraction at its own boundary: unit tests assert behavior, while serializer and adapter tests assert wire contracts, because testing both through one layer couples tests to implementation details.
 - SHOULD assert dependency interactions only when they are part of the contract, because mock expectations can restate setup without detecting regressions.
 - SHOULD include zero, one, many, malformed, and nondeterministic cases when collection or ordering semantics can differ.
-- MUST sort output when order is part of the contract, and MUST use order-independent assertions when it is not, because map iteration order is unspecified.
+- Sort output when order is part of the contract, and use order-independent assertions when it is not, because map iteration order is unspecified.
 - SHOULD test pure logic with values alone and test I/O edges with integration helpers that exercise the real dependency, because mocks hide real behavior.
