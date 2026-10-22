@@ -10,9 +10,9 @@ buildGo127Module {
   src = fetchFromGitHub {
     owner = "karitham";
     repo = "gallant";
-    # exit-on-failed-check branch: exits 1 when a rule fails.
-    rev = "c3bdde119b56b558d0370fd8d7f157d294b88ab4";
-    hash = "sha256-ZQkCiWDKufD1PCu5gTRfzDtvGMpI4EX/OIsJKSoBXLc=";
+    # config-env-defaults branch: env defaults and the resolved config.
+    rev = "820b9eeccfa9a3d370d77a9d211dccbef6b2b28d";
+    hash = "sha256-hZZ5n2bGesU1eymM0xbXJTPgqOdenx8tj0UZFBUB5gI=";
   };
 
   vendorHash = "sha256-/jAJ1jeLiRsFxfflj8sqD85rluauepXODoEeGK4l8FQ=";
