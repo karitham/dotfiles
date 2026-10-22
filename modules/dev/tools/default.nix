@@ -50,6 +50,7 @@ in
 
   imports = [
     ./direnv.nix
+    ./gallant.nix
     ./tuicr.nix
   ];
 }
