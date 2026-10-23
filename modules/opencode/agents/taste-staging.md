@@ -9,6 +9,7 @@ description: >
   Requires Intent, Acceptance criteria, Target, Changed files, Constraints, and
   Verification.
 mode: subagent
+steps: 15
 permission:
   "*": allow
   "todo*": deny
@@ -50,6 +51,8 @@ The caller must provide these labeled fields:
 6. Run gallant on the change: pipe the target's unified diff to `gallant --diff --json`, for example `jj diff --git -r <rev> | gallant --diff --json` or `git diff <range> | gallant --diff --json`. The `gallant` wrapper chooses the provider and the rules; a repository's `.agents/gallant` replaces the global rules. Standard output is a JSON array of records with `file`, `rule`, `type`, `result`, and `confidence`; a failure is a record whose `result` is `"fail"`. Use the records even when the exit status is 1. A file named on standard error, a `no rules found` warning, or a run that prints no JSON is a limitation. For each failure, read the rule file and the flagged hunk, then confirm it or dismiss it with a one-line reason.
 7. Compare the change to the cited rules and precedents. Report only deviations.
 8. Return the taste surface and findings in the output format below.
+
+Steps 2 to 6 are independent of each other once the changed files are known. Load the applicable skills in the same step as one `execute` call that fetches the target diff, reads the changed files, repository instructions, and sibling files, and runs `vale` and the gallant pipeline. Fetch the target diff once. The step budget is fixed: if it runs out before every changed file is checked, list what was not inspected as a material limitation in `Taste surface`.
 
 ## Evidence threshold
 

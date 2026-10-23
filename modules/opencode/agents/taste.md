@@ -7,6 +7,7 @@ description: >
   ignores. Requires Intent, Acceptance criteria,
   Target, Changed files, Constraints, and Verification.
 mode: subagent
+steps: 15
 permission:
   "*": allow
   "todo*": deny
@@ -44,6 +45,8 @@ The caller must provide these labeled fields:
 5. If the target adds or modifies existing files, run `vale` on those files without `--fix`; skip deleted paths. From the repository root, use `nix run nixpkgs#vale -- --config modules/dev/tools/vale/.vale.ini <files>` when that config exists; otherwise use the installed `~/.config/vale/.vale.ini`. The config routes technical documents and code comments to `plain-technical` (with pronoun and document-structure rules disabled on code comments) and instruction files (`agents/*.md`, `commands/*.md`, `gallant/rules/*/*.md`, `references/**.md`, `AGENTS.md`, `CLAUDE.md`, `SKILL.md`) to `Prompts`. The `plain-technical` style encodes the deterministic prose, RFC, and Mermaid rules; `Prompts` encodes the instruction-file rules from the vendor guidance linked in each rule. Treat an alert as evidence, not a finding: confirm it against the cited rule or skill and the changed line. A pre-existing alert is a limitation, not a deviation. Quoted examples are wrapped in `<!-- vale off -->`; do not report alerts Vale suppresses that way. Vale exits 1 when it reports errors; read the alerts rather than the status. If `vale` is unavailable, state the limitation.
 6. Compare the change to the cited rules and precedents. Report only deviations.
 7. Return the taste surface and findings in the output format below.
+
+Steps 2 to 5 are independent of each other once the changed files are known. Load the applicable skills in the same step as one `execute` call that fetches the target diff, reads the changed files, repository instructions, and sibling files, and runs `vale`. Fetch the target diff once. The step budget is fixed: if it runs out before every changed file is checked, list what was not inspected as a material limitation in `Taste surface`.
 
 ## Evidence threshold
 

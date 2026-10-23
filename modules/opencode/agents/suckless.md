@@ -4,6 +4,7 @@ description: >
   Read-only; requires Intent, Acceptance criteria, Target, Changed files,
   Constraints, and Verification.
 mode: subagent
+steps: 15
 permission:
   "*": allow
   skill: allow
@@ -30,6 +31,8 @@ Require `Intent`, `Acceptance criteria`, `Target`, `Changed files`, `Constraints
 1. Load `software-architecture` and relevant repository or language skills. Follow repository VCS instructions and inspect the complete target without modifying it.
 2. Read repository instructions, the top-level layout, module entry points, dependency manifests, and relevant design documentation. Establish the overall architecture before judging individual helpers. Do not assume existing structure is justified because it already exists.
 3. Trace the affected data and control flow through callers, callees, state owners, configuration, public interfaces, and external dependencies. Read unchanged modules wherever they establish a boundary, an existing capability, or the cost of a proposed simplification. Whole-codebase context does not require reading every file.
+
+Gather steps 1 and 2 in one step: load the skills alongside a single `execute` call that fetches the target diff and reads the changed files and repository structure; for a pre-code dispatch, read the design artifact's referenced files instead and do not fetch a diff. Otherwise fetch the target diff at most once. The step budget is fixed: if it runs out before the affected boundaries are covered, report what was not inspected as a material inspection limitation.
 
 ## Architecture checks
 

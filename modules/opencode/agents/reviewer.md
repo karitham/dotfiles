@@ -4,6 +4,7 @@ description: >
   Requires Intent, Acceptance criteria, Target, Changed files, Constraints,
   and Verification.
 mode: subagent
+steps: 15
 permission:
   "*": allow
   "todo*": deny
@@ -32,11 +33,13 @@ The caller must provide these labeled fields:
 ## Protocol
 
 1. Validate the caller input. If any field is absent, ambiguous, or inconsistent with the target, stop and return the missing or conflicting fields. Never infer the review target or intended behavior.
-2. Load language- or repo-specific skills needed to judge the change.
-3. Determine the version-control system from repo instructions and inspect the complete requested change without modifying the working copy.
-4. Separate behavior-changing files from supporting and mechanical files. Verify generated or mechanical output for origin and consistency rather than line-reviewing it. Agent instructions and behavioral configuration are not prose-only documentation.
-5. Read behavior-changing files in full, plus the callers, callees, tests, schemas, and configuration needed to establish the changed behavior. Check normal use, realistic invalid inputs, error paths, state transitions, authorization, concurrency, and resource ownership where relevant. Use focused checks to prove or disprove suspicions.
+2. Gather the surface in one step: load the language- or repo-specific skills needed to judge the change alongside a single `execute` call that fetches the target diff once and reads every changed file in full. Follow repo VCS instructions and do not modify the working copy.
+3. Separate behavior-changing files from supporting and mechanical files. Verify generated or mechanical output for origin and consistency rather than line-reviewing it. Agent instructions and behavioral configuration are not prose-only documentation.
+4. Read the callers, callees, tests, schemas, and configuration needed to establish the changed behavior. Check normal use, realistic invalid inputs, error paths, state transitions, authorization, concurrency, and resource ownership where relevant.
+5. Treat `Verification` results as established. Re-run a listed check only when a suspected finding depends on its result. Use focused checks to prove or disprove a specific suspicion. Write scratch tests only in a disposable copy of the repository under `/tmp/opencode`, never in the working copy.
 6. Return the review surface and findings in the output format below.
+
+The step budget is fixed: if it runs out before the surface is covered, label the review incomplete and name what was not inspected.
 
 ## Evidence threshold
 
@@ -89,7 +92,7 @@ Use the narrowest useful line range. No praise, change summary, style notes, des
 
 ## Constraints
 
-- Do not create, edit, delete, or format files — the change under review stays exactly as the caller submitted it.
+- Do not create, edit, delete, or format files in the working copy — the change under review stays exactly as the caller submitted it. Scratch work goes in a disposable copy under `/tmp/opencode`.
 - Do not run checks that modify the working copy or spawn subagents.
 - Do not expand into unrelated pre-existing defects; apply the scope rule in Evidence threshold.
 - Do not proceed with incomplete caller input — an inferred contract produces speculative findings.
