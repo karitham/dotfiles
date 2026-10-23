@@ -20,9 +20,6 @@ export default {
   id: "all-tools-codemode",
   async setup(ctx) {
     await ctx.tool.transform((editor) => {
-      editor.update("execute", (definition) => {
-        definition.description = definition.description + batching;
-      });
       for (const tool of editor.list()) {
         if (excluded.includes(tool.id)) continue;
         if (tool.options?.codemode !== false) continue;
@@ -31,6 +28,13 @@ export default {
           definition.options = { ...definition.options, codemode: true };
         });
       }
+    });
+    // `execute` is not in the tool editor, so `editor.update` misses it; the
+    // context hook sees the assembled tool list before every agent-loop call.
+    await ctx.session.hook("context", (event) => {
+      const execute = event.tools.execute;
+      if (!execute || execute.description.includes(batching)) return;
+      execute.description = execute.description + batching;
     });
   },
 };
