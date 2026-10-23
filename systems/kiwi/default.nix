@@ -17,6 +17,9 @@
     # https://gitlab.freedesktop.org/drm/amd/-/issues/3647
     # kernelParams = ["amdgpu.dcdebugmask=0x10"];
 
+    # kiwi doesn't serve SMB; keep the in-kernel SMB server from loading.
+    blacklistedKernelModules = [ "ksmbd" ];
+
     loader.systemd-boot = {
       enable = true;
       configurationLimit = 10;
