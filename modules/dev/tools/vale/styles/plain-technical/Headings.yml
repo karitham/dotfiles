@@ -1,0 +1,9 @@
+extends: existence
+message: "Name the subject in heading '%s', not the reading experience or a question."
+level: warning
+scope: heading
+ignorecase: true
+nonword: true
+tokens:
+  - '^(?:how (?:to|a|an|the)|why|what (?:is|are)|when to|understanding|introduction to|overview of)\b'
+  - '\?$'

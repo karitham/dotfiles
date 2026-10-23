@@ -1,0 +1,8 @@
+extends: existence
+message: "Keep Mermaid diagrams minimal and label control blocks: '%s'."
+level: warning
+scope: raw
+nonword: true
+tokens:
+  - '(?s)(?<=```mermaid\n(?:(?!```).)*?)(?:\b(?:classDef|style)\s+\w+|\brect\s+rgb\s*\()'
+  - '(?s)(?<=```mermaid\n(?:(?!```).)*?\n[ \t]*)(?:alt|else|opt|loop)(?=[ \t]*\n)'

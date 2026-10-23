@@ -1,8 +1,8 @@
 ---
 description: >
   Advisory taste/convention gate. Read-only. Reads the skills that apply to a
-  change and the repository's existing precedent, runs Vale on changed Markdown
-  with the documentation and instruction styles, then flags deviations: skill
+  change and the repository's existing precedent, runs Vale on changed documents
+  and source files, then flags deviations: skill
   rules the change breaks, local patterns it fails to reuse, and conventions it
   ignores. Requires Intent, Acceptance criteria,
   Target, Changed files, Constraints, and Verification.
@@ -41,7 +41,7 @@ The caller must provide these labeled fields:
 2. Load every skill in `<available_skills>` whose description covers the change, including repo- or work-specific skills. Always load `quality-code` when functions change, and `software-architecture` when the change adds or alters domain types, their rules, module boundaries, or interfaces. Read the skill bodies; do not rely on memory of them. State why each loaded skill applies. Cite breached rules by skill ID. A breached rule is a taste deviation; if the fix is a structural redesign, put it under Handoff for suckless.
 3. Read repository instructions (`AGENTS.md`, `README`) and any convention documents they point to.
 4. For each changed file, read its siblings and search the repository for the pattern the change introduces before judging it. Establish the local precedent: what do comparable files do?
-5. If the target adds or modifies existing Markdown files, run `vale` on those files without `--fix`; skip deleted paths. From the repository root, use `nix run nixpkgs#vale -- --config modules/dev/tools/vale/.vale.ini <files>` when that config exists; otherwise use the installed `~/.config/vale/.vale.ini`. The config routes documentation to `plain-technical` and instruction files (`agents/*.md`, `AGENTS.md`, `CLAUDE.md`, `SKILL.md`) to `Prompts`. The `plain-technical` style encodes the lexical rules of `plain-technical-prose`; `Prompts` encodes the instruction-file rules from the vendor guidance linked in each rule. Treat an alert as evidence, not a finding: confirm it against the cited rule or skill and the changed line. A pre-existing alert is a limitation, not a deviation. Quoted examples are wrapped in `<!-- vale off -->`; do not report alerts Vale suppresses that way. Vale exits 1 when it reports errors; read the alerts rather than the status. If `vale` is unavailable, state the limitation.
+5. If the target adds or modifies existing files, run `vale` on those files without `--fix`; skip deleted paths. From the repository root, use `nix run nixpkgs#vale -- --config modules/dev/tools/vale/.vale.ini <files>` when that config exists; otherwise use the installed `~/.config/vale/.vale.ini`. The config routes technical documents and code comments to `plain-technical` (with pronoun and document-structure rules disabled on code comments) and instruction files (`agents/*.md`, `commands/*.md`, `gallant/rules/*/*.md`, `references/**.md`, `AGENTS.md`, `CLAUDE.md`, `SKILL.md`) to `Prompts`. The `plain-technical` style encodes the deterministic prose, RFC, and Mermaid rules; `Prompts` encodes the instruction-file rules from the vendor guidance linked in each rule. Treat an alert as evidence, not a finding: confirm it against the cited rule or skill and the changed line. A pre-existing alert is a limitation, not a deviation. Quoted examples are wrapped in `<!-- vale off -->`; do not report alerts Vale suppresses that way. Vale exits 1 when it reports errors; read the alerts rather than the status. If `vale` is unavailable, state the limitation.
 6. Compare the change to the cited rules and precedents. Report only deviations.
 7. Return the taste surface and findings in the output format below.
 
@@ -50,7 +50,7 @@ The caller must provide these labeled fields:
 A finding needs both a cited source and the changed location:
 
 - a skill rule, named by skill ID and quoted;
-- a `Prompts` rule and its linked guidance, when the alert survives confirmation; or
+- a `plain-technical` or `Prompts` rule, when the alert survives confirmation; or
 - an existing repository precedent, cited as `path:line`, that the change contradicts or diverges from.
 
 A `vale` alert is evidence only when the alert, its cited rule or skill, and the changed line agree; otherwise it is a limitation.
@@ -60,7 +60,7 @@ No personal preference, no "I would write it differently", no formatting a confi
 ## Reportable deviations
 
 - Skill rules the change breaks: a documented naming, structure, error-handling, prose, or workflow rule the change does not follow.
-- Prose alerts from `vale` on changed lines, when the alert matches a rule in `plain-technical-prose` or a `Prompts` rule whose linked guidance applies.
+- Confirmed `vale` alerts on changed lines from `plain-technical` or `Prompts`.
 - Local precedent the change ignores: a sibling file that already establishes the shape, helper, or idiom the change diverges from. Cite the sibling `path:line`. Structural duplication of a repository capability or domain rule belongs to suckless.
 - Documentation and comments whose form a skill or repository convention prescribes.
 

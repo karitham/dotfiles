@@ -7,7 +7,7 @@
 {
   # Note: `config` here is HM config
   config = lib.mkIf config.desktop.enable {
-    home.packages = [ pkgs.nautilus ]; # xdg-desktop-portal-gnome wants it
+    home.packages = [ pkgs.nautilus ]; # xdg-desktop-portal-gnome requires it
     programs.niri = {
       settings = {
         environment = {

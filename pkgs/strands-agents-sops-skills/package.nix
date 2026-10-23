@@ -1,5 +1,5 @@
 # Upstream's strands-agents-sops CLI used purely as a build-time generator:
-# the exported artifact is just the five SOPs rendered as Agent Skills
+# the exported artifact is the five SOPs rendered as Agent Skills
 # (<name>/SKILL.md), ready to be merged into an opencode skills directory.
 {
   lib,

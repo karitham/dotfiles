@@ -1,0 +1,12 @@
+extends: existence
+message: "Replace non-ASCII character '%s' with plain ASCII punctuation or words."
+level: error
+nonword: true
+tokens:
+  - '—'
+  - '–'
+  - '[→←↔⇒⇐⇔⟶⟵]'
+  - '×'
+  - '[≥≤≠±]'
+  - '…'
+  - '[“”‘’]'

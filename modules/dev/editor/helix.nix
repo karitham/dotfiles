@@ -38,7 +38,7 @@ lib.mkIf config.dev.enable {
       (inputs'.helix.packages.helix.override {
         # The fork otherwise evaluates and git-fetches all ~295 tree-sitter
         # grammars on every eval (~24% of a full-system eval). Keep only the
-        # languages actually used; add here if a file stops highlighting.
+        # languages in use; add here if a file stops highlighting.
         includeGrammarIf =
           grammar:
           builtins.elem grammar.name [
@@ -381,7 +381,10 @@ lib.mkIf config.dev.enable {
 
       language =
         let
-          defaults = [ "typos" ];
+          defaults = [
+            "typos"
+            "vale-ls"
+          ];
 
           # tsgo handles LSP features, oxfmt formats, oxlint lints.
           tsFamily =
@@ -521,10 +524,7 @@ lib.mkIf config.dev.enable {
             (
               (prettier "markdown" "md")
               // {
-                language-servers = [
-                  "marksman"
-                  "vale-ls"
-                ];
+                language-servers = [ "marksman" ];
                 text-width = 100;
                 rulers = [ 100 ];
                 soft-wrap = {

@@ -302,7 +302,7 @@ in
     # The agent expects a ninjarmm-* unit set: its patcher script
     # systemctl-enables ninjarmm-patcher.timer and it looks for
     # ninjarmm-agent to detect how it is managed.  Declare no-op units here
-    # rather than writing them to /etc/systemd/system at runtime — that path
+    # rather than writing them to /etc/systemd/system at runtime; that path
     # is regenerated per rebuild and is read-only with
     # system.immutable.enable.  NixOS pre-enables them, so the agent's own
     # `systemctl enable` calls are idempotent no-ops that need no /etc write
@@ -350,7 +350,7 @@ in
       #
       # This is the "stats-ok" half of the access trim: tools needed for
       # CPU/mem/disk/network/hardware telemetry.  Deliberately absent are the
-      # process-introspection tools (top/ps/lsof) — the process list stays
+      # process-introspection tools (top/ps/lsof); the process list stays
       # hidden from the agent even though procps ships top alongside free.
       path = [
         pkgs.gzip
@@ -398,7 +398,7 @@ in
         ProtectHome = true;
         PrivateTmp = true;
         # Sensitive files made fully inaccessible.  Only list paths that
-        # exist on the system: systemd refuses to set up the namespace if an
+        # exist on the system: systemd fails to set up the namespace if an
         # InaccessiblePaths entry is missing (NixOS has no /etc/gshadow).
         InaccessiblePaths = [
           "/etc/shadow"

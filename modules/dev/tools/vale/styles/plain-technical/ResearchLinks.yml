@@ -1,0 +1,8 @@
+extends: existence
+message: "Do not reference disposable 'research/' notes from committed documents: '%s'."
+level: error
+scope: raw
+nonword: true
+tokens:
+  - '\]\((?:\.\.?/)*research/[^)]*\)'
+  - '\bresearch/[\w.-]+\.md\b'

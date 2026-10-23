@@ -1,0 +1,8 @@
+extends: existence
+message: "State the content directly instead of announcing it with '%s'."
+level: error
+ignorecase: true
+tokens:
+  - 'this (?:document|section|rfc|pr|pull request|issue|ticket|task|readme|guide|spec|specification|page|chapter) (?:explains|describes|covers|outlines|details|discusses|presents|introduces|summarizes|documents|addresses|defines|proposes|implements|walks through|shows|examines|explores)'
+  - 'the (?:purpose|goal|aim) of this (?:document|section|rfc|pr|pull request|issue|ticket|task|readme|guide|spec|specification) is'
+  - 'in this (?:document|section|rfc|readme|guide|spec|specification)'

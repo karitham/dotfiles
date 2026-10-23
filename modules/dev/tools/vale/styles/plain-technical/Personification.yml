@@ -1,9 +1,28 @@
 extends: existence
-message: "Name the component and its action instead of '%s'."
-level: error
+message: "Name the component and its operation instead of '%s'."
+level: warning
 ignorecase: true
 tokens:
   - wants
+  - wanted
   - knows
+  - knew
   - decides
+  - decided
   - tries
+  - tried
+  - chooses
+  - chose
+  - promises
+  - promised
+  - believes
+  - believed
+  - thinks
+  - refuses
+  - refused
+  - cares
+  - hopes
+  - hoped
+  - pretends
+  - wishes
+  - fears

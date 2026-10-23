@@ -13,8 +13,8 @@ buildNpmPackage {
 
   # The published tarball ships the rollup bundle in build/ but no lockfile, and
   # its devDependencies (puppeteer, typescript, rollup, ...) only exist to rebuild
-  # that bundle. Drop them so npm resolves an empty tree — the runtime is fully
-  # bundled — and commit the prod-only lockfile next to this file.
+  # that bundle. Drop them so npm resolves an empty tree (the runtime is fully
+  # bundled) and commit the prod-only lockfile next to this file.
   postPatch = ''
     cp ${./chrome-devtools-mcp-lock.json} package-lock.json
     # npm ci rejects devDependencies that the lockfile doesn't cover, so strip them

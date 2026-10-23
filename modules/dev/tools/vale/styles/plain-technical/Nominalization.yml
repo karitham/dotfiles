@@ -1,0 +1,9 @@
+extends: existence
+message: "Replace buried verb '%s' with a concrete subject and active verb."
+level: warning
+ignorecase: true
+tokens:
+  - 'the \w+(?:tion|ment|ance|ence) of\b[^.!?]+\b(?:occurs|happens|takes place|is performed|is done|is executed|is handled|is conducted)'
+  - '(?:make|makes|made) a (?:decision|determination|choice|modification|adjustment)'
+  - '(?:perform|performs|performed|conduct|conducts|conducted|carry out|carries out|carried out) (?:an?|the) \w+(?:tion|ment|sis)'
+  - '(?:is|are|was|were) (?:responsible for|in charge of)'

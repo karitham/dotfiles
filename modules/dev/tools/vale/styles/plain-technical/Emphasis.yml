@@ -1,0 +1,9 @@
+extends: existence
+message: "Remove typographic emphasis '%s'; state the emphasis in plain prose."
+level: warning
+scope:
+  - strong
+  - emphasis
+nonword: true
+tokens:
+  - '.+'

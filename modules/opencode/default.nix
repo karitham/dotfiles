@@ -139,7 +139,7 @@ in
     # `programs.opencode.package` above already installs this wrapper, so it is
     # not repeated in home.packages.
 
-    # OCR config — single source of truth, reuses the opencode-go auth
+    # OCR config: single source of truth, reuses the opencode-go auth
     # already present in ~/.local/share/opencode/auth.json. The api_key is
     # resolved via api_key_cmd so no secret lands in the nix store.
     # Endpoint + model verified against https://opencode.ai/docs/go/#endpoints
@@ -164,8 +164,8 @@ in
     # `settings.plugins = [ "-all-tools-codemode" ]`.
     xdg.configFile."opencode/plugins/all-tools-codemode.ts".source = ./plugins/all-tools-codemode.ts;
 
-    # opencode runs in a scope inside this slice, so everything it spawns —
-    # shell commands, MCP servers — inherits these limits. cgroup v2 applies a
+    # opencode runs in a scope inside this slice, so everything it spawns (shell
+    # commands, MCP servers) inherits these limits. cgroup v2 applies a
     # parent's ceiling to the whole subtree, which is what contains a runaway
     # command: it is throttled and killed inside its own cgroup instead of the
     # kernel OOM killer picking a victim elsewhere on the machine.

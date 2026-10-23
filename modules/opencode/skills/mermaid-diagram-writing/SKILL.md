@@ -7,11 +7,7 @@ description: Clear, minimal Mermaid diagrams. Use when writing visual aids or di
 
 ## Core Rules
 
-### 1. Keep Diagrams Simple
-
-Avoid colored rectangles and complex styling. Use `theme: base` or let renderers use their default minimal style.
-
-### 2. Prefer Many Small Diagrams Over One Big Diagram
+### 1. Prefer Many Small Diagrams Over One Big Diagram
 
 **Bad** - One large diagram trying to show everything:
 
@@ -39,20 +35,20 @@ sequenceDiagram
     BE-->>FE: Response
 ```
 
-### 3. Diagram Scope Guidelines
+### 2. Diagram Scope Guidelines
 
 - **Max 4-5 participants** per diagram
 - **Max 10-15 messages** per sequence diagram
-- Each diagram should tell one coherent story
+- Each diagram should tell one coherent story; split when unrelated flows mix together
 
-### 4. Participant Naming
+### 3. Participant Naming
 
 - Use short, clear names: `FE`, `BE`, `DB`, `Provider`, `User`
 - Avoid: `FrontendApplication`, `BackendService`
 
-### 5. Use Structured Flow Control
+### 4. Use Structured Flow Control
 
-Leverage `alt`/`else`, `loop`, and `opt`:
+Leverage labeled `alt`/`else`, `loop`, and `opt` blocks, and include status codes when relevant:
 
 ```mermaid
 sequenceDiagram
@@ -66,15 +62,14 @@ sequenceDiagram
     end
 ```
 
-### 6. Consistent Message Patterns
+### 5. Consistent Message Patterns
 
 - **Queries**: `Source->>Target: Action`
 - **Responses**: `Target-->>Source: Result`
 
-### 7. Label Everything
+### 6. Verification
 
-- Always label `alt`/`else` blocks
-- Include status codes when relevant
+When the diagram lives in a Markdown file, run `vale <file.md>` to verify that diagrams contain no custom node styling (`style`, `classDef`, `rect rgb`) and no unlabeled `alt`/`else`/`opt`/`loop` blocks.
 
 ## Common Patterns
 
@@ -122,9 +117,3 @@ sequenceDiagram
         BE-->>FE: { status: deleted }
     end
 ```
-
-## When to Split
-
-- More than 5 participants
-- More than 15 messages
-- Multiple unrelated flows mixed together

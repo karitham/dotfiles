@@ -13,11 +13,11 @@ Register rules apply to all prose. Sentence mechanics apply only to declarative 
 
 ## Rules
 
-Sentences. One idea per sentence. For descriptive and capability prose, use short declarative sentences in active voice and present tense for behaviour (past only for history). For procedural instructions such as setup steps and local commands, use imperative mood ("Start PostgreSQL:", "Run `docker-compose up -d`"). Use active voice unless the actor is genuinely unknown or irrelevant.
+Sentences. One idea per sentence. State the fact and its consequence in order. For descriptive and capability prose, use short declarative sentences in active voice and present tense for behaviour (past only for history). For procedural instructions such as setup steps and local commands, use imperative mood ("Start PostgreSQL:", "Run `docker-compose up -d`"). Use active voice unless the actor is genuinely unknown or irrelevant.
 
-Person. Name the true actor and choose mood by discourse type. For descriptive prose about system behaviour, use third person and name the component that performs the action (the user, the compositor, the host desktop, the caller, the backend). For capability and feature prose, the actor is the user or caller, not the feature: "Users roll and claim characters", not "Character collection rolls"; "Users give characters to other users", not "Trading system gives". For procedural instructions, use imperative with no actor ("Start PostgreSQL:", "Build the backend:") or an actorless label ("PostgreSQL:", "Backend:"); do not invent an actor such as "the operator" or "the developer" to satisfy third person when the reader performs the action. Do not use "you", "your", "we", "our", or "us" in descriptive prose; imperatives contain no pronoun and need none. "our fork" becomes "the fork"; "you can't read your editor with the headset on" becomes "the editor is not readable with the headset on".
+Person. Name the true actor and choose mood by discourse type. For descriptive prose about system behaviour, use third person and name the component that performs the action (the user, the compositor, the host desktop, the caller, the backend). For capability and feature prose, the actor is the user or caller, not the feature: "Users roll and claim characters", not "Character collection rolls"; "Users give characters to other users", not "Trading system gives". For procedural instructions, use imperative with no actor ("Start PostgreSQL:", "Build the backend:") or an actorless label ("PostgreSQL:", "Backend:"); do not invent an actor such as "the operator" or "the developer" to satisfy third person when the reader performs the action.
 
-Personification. Software does not choose, want, know, promise, or decide. Name the actor and the action: "the fold records the home page", not "the home the capture chose". A component described as having intent obscures which code performs the action.
+Personification. Software has no intent; name the component and the operation it performs: "the fold records the home page", not "the home the capture chose".
 
 Terminology. Choose one term per concept and keep it. Synonym variation for stylistic relief obscures whether two names mean the same thing. If a document uses both "Rust" and "the native layer", decide which one each context needs and apply it consistently.
 
@@ -25,40 +25,28 @@ Definitions. Define a term where the reader first meets it, and define it once. 
 
 Figures of speech. No metaphor, idiom, rhetorical question, or aside. No sentence fragments used for effect. No punchlines, no understatement, no self-deprecation. No aphorism: a sentence shaped as a maxim, such as "text is evidence of an identity, not an identity", states a mechanism indirectly, so state the mechanism. No loaded noun standing in for one, such as a trap, a spine, a promise, or a warning, where the thing itself can be named.
 
-Punctuation. No em-dash asides. Split the aside into its own sentence, or replace the dash with a colon when the second clause expands the first. Parentheses are acceptable for short references and qualifications.
-
-Markdown. Keep headings, tables, code blocks, inline code, links, and lists that enumerate a real set. Remove bold, italics, and bolded lead-in labels. A bolded lead-in becomes an ordinary sentence opener: "**Import is zero-copy and per-buffer.** Wayland clients cycle..." becomes "Import is zero-copy and per-buffer. Wayland clients cycle...". Remove any formatting whose purpose is emphasis rather than structure. The result is never line-wrapped. Each paragraph occupies a single source line, and a newline ends a paragraph, a list item, or a block. Hard-wrapped prose renders as fragmented paragraphs in Markdown viewers, so wrapping corrupts the output as well as the source.
+Markdown. Keep headings, tables, code blocks, inline code, links, and lists that enumerate a real set. The result is never line-wrapped. Each paragraph occupies a single source line, and a newline ends a paragraph, a list item, or a block. Hard-wrapped prose renders as fragmented paragraphs in Markdown viewers, so wrapping corrupts the output as well as the source.
 
 One exception applies to agent instruction files, meaning `SKILL.md` and similar. Those keep bolded lead-in labels on numbered workflow steps, where the label names the step and acts as structure. The register rules still apply to the prose that follows each label.
 
-Headings. Name the subject, not the reading experience. "How a click reaches an application" becomes "Path of an input event". "Two details that bite if ignored" becomes "Two details matter if ignored", or the sentence is dropped and the list stands alone.
+Headings. Name the subject, not the reading experience. "Two details that bite if ignored" becomes "Two details matter if ignored", or the sentence is dropped and the list stands alone.
 
-Self-reference. A document does not describe itself. "This document explains", "this section covers", and "the purpose of this issue is" announce content instead of stating it. Write the content. A genuine navigational statement, such as a table of contents entry or a cross-reference to another document, is not self-reference.
-
-<!-- vale off -->
-Emphasis. Emphasis carried by typography or by a catchy line is carried by plain prose instead. State the fact and its consequence in order. "Dead handles go inert. Ugly. Less ugly than a race taking down your desktop." becomes "Dead handles go inert rather than raising errors. This is a compromise, made because it is less disruptive than a race condition taking down the session."
-<!-- vale on -->
-
-Generated-sounding phrasing. Avoid formulaic contrasts, staged candour, and generic signposting when they add no information. Phrases such as "not X, but Y", "the honest take", "the important thing to understand", "let's unpack this", and "the bottom line" often announce a point instead of stating it. Replace them with the claim, action, or consequence directly. Prefer concrete verbs over abstract management or assistant phrasing such as "synthesize", "surface", "navigate", "operationalize", "land", and "align" when a simpler verb is available.
-
-Avoid implicature: a sentence that gestures at a conclusion without stating it, such as "the answer is owed", "this deserves attention", or "the question arises". State the conclusion, or state what depends on it.
+Generated-sounding phrasing. Avoid formulaic contrasts ("not X, but Y") and implicature (gesturing at a conclusion without stating what depends on it). State the claim, action, or consequence directly. Prefer concrete verbs over abstract management or assistant phrasing such as "synthesize", "surface", "navigate", "land", and "align" when a simpler verb is available. Terms such as "synthesize", "seam", "shape", and "load-bearing", along with parentheticals, become a problem when they are repeated mechanically, used as vague abstractions, or substituted for a concrete mechanism; judge them by context and density. A component can be "load-bearing" when a specific dependency relies on it; an integration boundary can be a "seam".
 
 Avoid describing a set by its size where its members can be named. "None of the three is implemented" leaves the reader counting; "the supersede, retract, and redate events are not implemented" does not.
 
-Use technical terms and punctuation when they describe something precise. Terms such as "synthesize", "seam", "shape", and "load-bearing", along with em dashes and parentheticals, become a problem when they are repeated mechanically, used as vague abstractions, or substituted for a concrete mechanism. Judge the wording by its context and density. A component can be "load-bearing" when a specific dependency relies on it; an integration boundary can be a "seam".
-
-Do not simulate personal experience that the writer does not have. Avoid claims about memories, feelings, recurring observations, or physical experiences, such as "What I often feel" or "I can't tell you how many times I've...". State the observation and its evidence directly.
-
+<!-- vale off -->
 Judgements. Keep every judgement, and state it as a claim with a reason. Drop the attitude, not the position. "which is a debugging surface we don't need" becomes "would add a debugging surface with no offsetting benefit". "exactly backwards" becomes "counterproductive".
+<!-- vale on -->
 
-Characters. Use ASCII where a Unicode character adds nothing: `1920x1080`, not `1920×1080`; `2 to 4 buffers`, not `2–4 buffers`. Keep Unicode in proper nouns and in code.
+Characters. Keep Unicode only in proper nouns and in code.
 
 ## Sentence mechanics
 
 Every declarative sentence puts its story character in the subject and the character's action in the verb. Imperative procedural steps ("Start PostgreSQL:", "Run `docker-compose up -d`") are exempt.
 
 - The subject is the main character: a short, concrete noun or noun phrase, not a long abstract phrase.
-- The verb is the character's action. Convert nominalizations (`evaluate` → `evaluation`, `decide` → `decision`, `argue` → `argument`) to verbs when they bury the clause's key action and force vague `to be` / `to have` verbs.
+- The verb is the character's action. Convert nominalizations (`evaluate` -> `evaluation`, `decide` -> `decision`, `argue` -> `argument`) to verbs when they bury the clause's key action and force vague `to be` / `to have` verbs.
 - Lead with subject and verb within the first few words. No long phrase before the subject or between subject and verb. An introductory phrase that contains its own character and action becomes its own sentence.
 - `to be` is allowed only to link old information to new for cohesion, never to carry a hidden action. When `is + nominalization` can become a verb, use the verb.
 
@@ -85,16 +73,13 @@ GOOD:
 
 ## Scope
 
-This skill governs register, not structure. Follow the structure the target dictates — an issue template, the repository's commit conventions, a README's existing shape — and write the prose to these rules.
+This skill governs register, not structure. Follow the structure the target dictates: an issue template, the repository's commit conventions, or a README's existing shape, and write the prose to these rules.
 
 Two carve-outs for code comments: comments stay short, and a comment that is already a single plain sentence needs no change. Do not rewrite comments in a file that the task did not otherwise touch.
 
 ## Verification
 
-Before presenting a rewrite, check:
+Before presenting a rewrite:
 
-- No bold, italics, or em-dashes used for emphasis; no line breaks inside a paragraph; headings name the subject.
-- No "you", "your", "we", "our" in descriptive prose; imperative steps are exempt.
-- No self-reference ("this document", "this section"); no component that chooses, wants, knows, or promises; no invented actor ("the operator") where the reader performs the action.
-- No set described by its size where members could be named; no term used but never defined.
-- No nominalization hiding the verb, no long abstract subject, no subject separated from verb by a long phrase, no new information before old.
+- Run `vale` on every written or modified document or source file (`vale --config modules/dev/tools/vale/.vale.ini <files>` in this repository, or `vale <files>` against `~/.config/vale/.vale.ini` elsewhere) and fix its alerts across technical documents (`.md`, `.txt`, `.rst`, `.adoc`, `.org`, `.typ`), commit descriptions (`.jjdescription`), and code comments (`.go`, `.rs`, `.ts`, `.js`, `.py`, `.rb`, `.gleam`, `.nix`, `.nu`, `.sh`, `.sql`, `.thrift`, etc.; pronoun checks are disabled on code comments and commit descriptions).
+- Check what `vale` cannot judge: no line breaks inside a paragraph; headings name the subject; no component or feature acting as a personified subject; no invented actor ("the operator") where the reader performs the action; no set described by its size where members can be named; every term defined at first use; concrete subject and active verb leading each declarative sentence with old information before new.

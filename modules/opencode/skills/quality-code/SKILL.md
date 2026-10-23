@@ -15,5 +15,5 @@ Each function reads as a short list of steps from top to bottom.
 - Small contracts. Zero to two arguments; beyond that, an options object or a smaller operation. Few locals, narrow scopes. Never mutate caller-owned data.
 - Fail explicitly. Return failures in the signature; preserve cause and context; never swallow.
 - Names carry the design. Name what, not how; include units (`timeoutMs`); booleans read as questions; disclose side effects in the name.
-- Comments state what code cannot: invariants, constraints, reasons. Delete commented-out code.
+- Comments state what code cannot: invariants, constraints, reasons. Delete commented-out code. Run `vale` on modified files to check comments for hedges, marketing terms, non-ASCII punctuation, and signposting.
 - Match the surrounding code's conventions.

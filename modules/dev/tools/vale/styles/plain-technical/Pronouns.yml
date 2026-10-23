@@ -11,3 +11,11 @@ tokens:
   - our
   - ours
   - us
+  - my
+  - mine
+  - myself
+  - i'm
+  - i've
+  - i'll
+  - i'd
+  - 'i (?:am|was|have|had|will|would|can|cannot|can''t|could|should|think|feel|believe|find|often|recommend|suggest|prefer|want|need|noticed|observed)'

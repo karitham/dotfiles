@@ -1,4 +1,4 @@
-# gh-prc — list PR reviews and their inline comments via `gh prc`.
+# gh-prc: list PR reviews and their inline comments via `gh prc`.
 #
 # PR: explicit reference (URL, owner/repo#123, or number), or inferred from the
 # closest bookmarked ancestor of @ via jj. Comments print as `path:line` so

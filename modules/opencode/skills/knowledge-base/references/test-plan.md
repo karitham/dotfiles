@@ -16,7 +16,7 @@ and enhance** accumulated research over time.
 - **Disk-state-only memory**: each run starts from a fresh dispatch. The
   worker's state is exactly what previous runs left in `~/notes/wiki/`.
   This makes the vault itself the test fixture.
-- **Deterministic where possible**: structural rules are enforced by
+- **Deterministic checks**: structural rules are enforced by
   `scripts/lint.sh`, not judgment. Judgment lives in the rubric and audits.
 
 ## Golden tasks

@@ -7,7 +7,7 @@
 
   # Block outgoing UDP from Tailscale CGNAT addresses on non-tailscale interfaces.
   # Prevents WebRTC (e.g. Discord voice) from selecting a broken ICE candidate
-  # that uses the Tailscale IP — responses can't route back to 100.x addresses.
+  # that uses the Tailscale IP; responses can't route back to 100.x addresses.
   networking.firewall.extraCommands = ''
     iptables -A OUTPUT -p udp -s 100.64.0.0/10 ! -o tailscale0 -j DROP
   '';
