@@ -36,6 +36,7 @@ Generated-sounding phrasing. Avoid formulaic contrasts ("not X, but Y") and impl
 Avoid describing a set by its size where its members can be named. "None of the three is implemented" leaves the reader counting; "the supersede, retract, and redate events are not implemented" does not.
 
 <!-- vale off -->
+
 Judgements. Keep every judgement, and state it as a claim with a reason. Drop the attitude, not the position. "which is a debugging surface we don't need" becomes "would add a debugging surface with no offsetting benefit". "exactly backwards" becomes "counterproductive".
 <!-- vale on -->
 

@@ -60,7 +60,9 @@ def parse-pr-ref [ref: string] {
             number: ($num.number.0 | into int)
         }
     }
-    error make {msg: $"can't parse PR reference '($ref)': expected a URL, owner/repo#123, owner/repo/123, or a number"}
+    error make {
+        msg: $"can't parse PR reference '($ref)': expected a URL, owner/repo#123, owner/repo/123, or a number"
+    }
 }
 
 def detect-branch []: nothing -> list<string> {
@@ -121,7 +123,9 @@ def resolve-ref [pr?: string] {
         let hint = (
             if ($failures | is-not-empty) { $" - ($failures | str join '; ')" } else { "" }
         )
-        error make {msg: $"no open PR found for branches: ($candidates | str join ', ')($hint)"}
+        error make {
+            msg: $"no open PR found for branches: ($candidates | str join ', ')($hint)"
+        }
     }
     parse-pr-ref $pr
 }
@@ -250,7 +254,9 @@ def format-states [wanted?: string]: nothing -> list<string> {
         | each {|s| $s | str trim | str uppercase | str replace -a "-" "_" | str replace -a " " "_" })
     let known = $parsed | where {|s| $s in $valid }
     if ($known | is-empty) {
-        error make {msg: $"no valid review states in '($wanted)' - valid: approved, changes-requested, commented, pending, dismissed"}
+        error make {
+            msg: $"no valid review states in '($wanted)' - valid: approved, changes-requested, commented, pending, dismissed"
+        }
     }
     let unknown = $parsed | where {|s| $s not-in $valid }
     if ($unknown | is-not-empty) {
