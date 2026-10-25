@@ -7,6 +7,11 @@
 {
   my.username = "root";
 
+  nix.gc = {
+    automatic = true;
+    options = "--delete-older-than 14d";
+  };
+
   services = {
     tailscale = {
       enable = true;
