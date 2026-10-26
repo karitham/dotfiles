@@ -20,7 +20,7 @@ let
     pkgs.sql-formatter
     pkgs.prettier
     pkgs.nufmt
-    self'.packages.gotools
+    pkgs.gotools
   ];
 in
 lib.mkIf config.dev.enable {
