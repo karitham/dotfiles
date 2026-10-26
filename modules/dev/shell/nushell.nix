@@ -9,6 +9,8 @@
     home.packages = [ pkgs.moreutils ]; # vipe, chronic, pee
     programs.nushell = {
       enable = true;
+      # stateVersion is 26.05, so the 26.11 default does not apply.
+      loadSessionVariables = true;
       shellAliases = {
         k = "kubectl";
         fg = "job unfreeze";
@@ -18,16 +20,6 @@
         $env.config = {show_banner: false, edit_mode: helix}
 
         source-env (if ("~/.profile.nu" | path exists) { "~/.profile.nu" } else null)
-      '';
-
-      extraLogin = ''
-        bash -c ". /etc/profile && env"
-         | parse "{n}={v}"
-         | where n not-in $env or v != ($env | get $it.n)
-         | where n not-in ["_", "LAST_EXIT_CODE", "DIRS_POSITION"]
-         | transpose --header-row
-         | into record
-         | load-env
       '';
     };
   };
