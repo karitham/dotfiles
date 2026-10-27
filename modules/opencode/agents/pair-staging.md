@@ -75,8 +75,6 @@ Read the final diff once more and answer:
 
 Then run the checks the repository defines for the files you changed: formatter,
 linter, type checker, tests, and `vale` on changed documents and instruction
-files. Read the command from repository instructions and the relevant skill. In
-this repository, `vale` runs as
-`nix run nixpkgs#vale -- --config modules/dev/tools/vale/.vale.ini <files>`.
+files. Read the command from repository instructions and the relevant skill.
 Report each check with its result, and name any check that could not run and
 why.
