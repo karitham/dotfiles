@@ -109,6 +109,22 @@ in
         override it per host to use a different browser.
       '';
     };
+    attachBrowser = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = ''
+        DevToolsActivePort file of a browser that is already running, as a path
+        this machine can read. When set, the chrome-devtools MCP attaches to
+        that browser over CDP instead of launching one, so the agent sees the
+        tabs and logged-in sessions of the user's own profile.
+
+        The file holds two lines: the CDP port, then the
+        /devtools/browser/<uuid> socket path. Chromium serves no
+        /json/version on that implicit endpoint, so the server needs
+        --wsEndpoint rather than --browserUrl, and it must read the file at
+        connect time because the uuid changes on every browser start.
+      '';
+    };
     resourceLimits = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -315,17 +331,28 @@ in
             };
           };
 
-          # Off by default: it launches a real browser.
+          # Off unless a host points it at a running browser: the fallback
+          # branch launches one, which is a blank profile and no sessions.
           chrome-devtools = {
             type = "local";
-            enabled = false;
-            command = [
-              (lib.getExe self'.packages.chrome-devtools-mcp)
-            ]
-            ++ lib.optionals (cfg.mcpBrowser != null) [
-              "--executablePath"
-              (lib.getExe cfg.mcpBrowser)
-            ];
+            enabled = cfg.attachBrowser != null;
+            command =
+              if cfg.attachBrowser != null then
+                [
+                  "bash"
+                  "-lc"
+                  (
+                    "f=${lib.escapeShellArg cfg.attachBrowser}; "
+                    + "exec ${lib.getExe self'.packages.chrome-devtools-mcp} "
+                    + "--wsEndpoint \"ws://127.0.0.1:$(sed -n 1p \"$f\")$(sed -n 2p \"$f\")\""
+                  )
+                ]
+              else
+                [ (lib.getExe self'.packages.chrome-devtools-mcp) ]
+                ++ lib.optionals (cfg.mcpBrowser != null) [
+                  "--executablePath"
+                  (lib.getExe cfg.mcpBrowser)
+                ];
           };
         };
       }
