@@ -243,7 +243,6 @@ in
         agent = {
           pair.model = cfg.modelSmart;
           reviewer.model = cfg.modelAdversarial;
-          pair-staging.model = cfg.modelSmart;
           suckless.model = cfg.modelAdversarial;
           taste.model = cfg.modelFast;
           explore.model = cfg.modelFast;
