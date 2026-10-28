@@ -6,4 +6,7 @@
 # DevToolsActivePort is written by Helium at every launch and holds the CDP port
 # on line 1 and /devtools/browser/<uuid> on line 2. The uuid changes on each
 # start, so the path is read at connect time instead of pinned here.
-{ ... }: { dev.opencode.attachBrowser = "/mnt/c/Users/kar/AppData/Local/imput/Helium/User Data/DevToolsActivePort"; }
+{ ... }: {
+  dev.opencode.attachBrowser = "/mnt/c/Users/kar/AppData/Local/imput/Helium/User Data/DevToolsActivePort";
+  dev.gallant.local.enable = true;
+}
