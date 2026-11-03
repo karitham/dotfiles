@@ -44,10 +44,15 @@ let
     + builtins.readFile ./shell-scoped.sh;
   };
 
-  opencodePkg' =
-    pkg: name:
+  # The wrapper hides the package's own version, which home-manager reads to
+  # pick its V2 code path (programs.opencode.cli instead of tui).
+  opencodePkg =
+    pkg:
     pkgs.writeShellApplication {
-      name = name;
+      name = "opencode";
+      meta = pkg.meta or { };
+      passthru = pkg.passthru or { };
+      derivationArgs.version = pkg.version;
       text = ''
         # shellcheck disable=SC1091
         if [ -f "${opencodeEnvFile}" ]; then set -a; . "${opencodeEnvFile}"; set +a; fi
@@ -58,7 +63,7 @@ let
         export OPENCODE_ENABLE_EXA=true
         export SHELL=${lib.getExe pkgs.bash}
 
-        exec ${systemdRunPrefix}${pkg}/bin/${name} "$@"
+        exec ${systemdRunPrefix}${lib.getExe pkg} "$@"
       '';
     };
 in
@@ -209,7 +214,7 @@ in
 
     programs.opencode = {
       enable = true;
-      package = opencodePkg' inputs'.llm-agents.packages.opencode2 "opencode2";
+      package = opencodePkg pkgs.opencode;
       enableMcpIntegration = cfg.enableMcp;
       commands = (
         lib.mapAttrs' (name: _: lib.nameValuePair (lib.removeSuffix ".md" name) (./commands + "/${name}")) (
@@ -234,13 +239,15 @@ in
           ];
         }
       );
+      cli = {
+        theme.name = cfg.theme;
+      };
       settings = {
         lsp = false;
-        inherit (cfg) theme;
         default_agent = "pair";
         # Run tool commands in a systemd user scope (see opencodeScopedShell).
         shell = lib.getExe opencodeScopedShell;
-        agent = {
+        agents = {
           pair.model = cfg.modelSmart;
           reviewer.model = cfg.modelAdversarial;
           suckless.model = cfg.modelAdversarial;
@@ -294,64 +301,78 @@ in
             extensions = [ ".nu" ];
           };
         };
-        permission = {
-          todoread = "deny";
-          todowrite = "deny";
-          external_directory = {
-            "~/*" = "allow"; # yolo.
-            "/tmp/*" = "allow";
-          };
-        };
+        permissions = [
+          {
+            action = "todoread";
+            resource = "*";
+            effect = "deny";
+          }
+          {
+            action = "todowrite";
+            resource = "*";
+            effect = "deny";
+          }
+          {
+            action = "external_directory";
+            resource = "~/*"; # yolo.
+            effect = "allow";
+          }
+          {
+            action = "external_directory";
+            resource = "/tmp/*";
+            effect = "allow";
+          }
+        ];
         mcp = lib.mkIf cfg.enableMcp {
-          # outline doesn't need secrets, always available
-          outline = {
-            type = "remote";
-            url = "https://outline.dolly-ruffe.ts.net/mcp";
-            enabled = true;
-          };
-
-          # These need secrets from sops, only configured when sops is enabled
-          github = lib.mkIf cfg.sops.enable {
-            type = "remote";
-            url = "https://api.githubcopilot.com/mcp/";
-            enabled = true;
-            headers = {
-              Authorization = "Bearer {env:GITHUB_TOKEN}";
+          servers = {
+            # outline doesn't need secrets, always available
+            outline = {
+              type = "remote";
+              url = "https://outline.dolly-ruffe.ts.net/mcp";
             };
-          };
 
-          kagi = lib.mkIf cfg.sops.enable {
-            type = "remote";
-            url = "https://mcp.kagi.com/mcp";
-            oauth = false;
-            enabled = false;
-            headers = {
-              Authorization = "Bearer {env:KAGI_API_KEY}";
+            # These need secrets from sops, only configured when sops is enabled
+            github = lib.mkIf cfg.sops.enable {
+              type = "remote";
+              url = "https://api.githubcopilot.com/mcp/";
+              headers = {
+                Authorization = "Bearer {env:GITHUB_TOKEN}";
+              };
             };
-          };
 
-          # Off unless a host points it at a running browser: the fallback
-          # branch launches one, which is a blank profile and no sessions.
-          chrome-devtools = {
-            type = "local";
-            enabled = cfg.attachBrowser != null;
-            command =
-              if cfg.attachBrowser != null then
-                [
-                  "bash"
-                  "-lc"
-                  (
-                    "f=${lib.escapeShellArg cfg.attachBrowser}; "
-                    + "exec ${lib.getExe self'.packages.chrome-devtools-mcp} "
-                    + "--wsEndpoint \"ws://127.0.0.1:$(sed -n 1p \"$f\")$(sed -n 2p \"$f\")\""
-                  )
-                ]
-              else
-                [ (lib.getExe self'.packages.chrome-devtools-mcp) ]
-                ++ lib.optionals (cfg.mcpBrowser != null) [
-                  "--executablePath"
-                  (lib.getExe cfg.mcpBrowser)
-                ];
+            kagi = lib.mkIf cfg.sops.enable {
+              type = "remote";
+              url = "https://mcp.kagi.com/mcp";
+              oauth = false;
+              disabled = true;
+              headers = {
+                Authorization = "Bearer {env:KAGI_API_KEY}";
+              };
+            };
+
+            # Off unless a host points it at a running browser: the fallback
+            # branch launches one, which is a blank profile and no sessions.
+            chrome-devtools = {
+              type = "local";
+              disabled = cfg.attachBrowser == null;
+              command =
+                if cfg.attachBrowser != null then
+                  [
+                    "bash"
+                    "-lc"
+                    (
+                      "f=${lib.escapeShellArg cfg.attachBrowser}; "
+                      + "exec ${lib.getExe self'.packages.chrome-devtools-mcp} "
+                      + "--wsEndpoint \"ws://127.0.0.1:$(sed -n 1p \"$f\")$(sed -n 2p \"$f\")\""
+                    )
+                  ]
+                else
+                  [ (lib.getExe self'.packages.chrome-devtools-mcp) ]
+                  ++ lib.optionals (cfg.mcpBrowser != null) [
+                    "--executablePath"
+                    (lib.getExe cfg.mcpBrowser)
+                  ];
+            };
           };
         };
       }

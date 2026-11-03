@@ -4,10 +4,6 @@
     # https://deer.social/profile/did:plc:mojgntlezho4qt7uvcfkdndg/post/3loogwsoqok2w
     # nixpkgs.url = "https://channels.nixos.org/nixpkgs-unstable/nixexprs.tar.xz";
     nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     home-manager = {
       type = "github";
       owner = "nix-community";
@@ -84,7 +80,6 @@
     extra-substituters = [
       "https://helix.cachix.org"
       "https://niri.cachix.org"
-      "https://cache.numtide.com"
       "https://nix-cache.karitham.dev/dotfiles"
       "https://noctalia.cachix.org"
       "https://handy-computer.cachix.org"
@@ -92,7 +87,6 @@
     extra-trusted-public-keys = [
       "helix.cachix.org-1:ejp9KQpR1FBI2onstMQ34yogDm4OgU2ru6lIwPvuCVs="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
-      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       "dotfiles:1EQBeGcPmLGKAW4WxYGfyyKOVI4rd/hM58QnIPQdMGI="
       "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
       "handy-computer.cachix.org-1:Sihzctn6DC0CJM5QeL+9nBEL3CL8c33m777C+eIv748="
