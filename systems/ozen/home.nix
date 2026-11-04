@@ -9,4 +9,5 @@
 { ... }: {
   dev.agents.attachBrowser = "/mnt/c/Users/kar/AppData/Local/imput/Helium/User Data/DevToolsActivePort";
   dev.gallant.local.enable = true;
+  dev.albedo.enable = true;
 }
