@@ -45,10 +45,10 @@ modules/
 ├── home/              # home-manager, Catppuccin
 ├── desktop/           # Niri/Noctalia, Ghostty, audio, apps
 ├── dev/               # Nushell, Helix, jj, Docker, OpenCode
+├── agents/            # Agents, commands, skills, MCP, OpenCode and albedo config
 ├── server/            # Tailscale, SSH
 ├── wsl/               # NixOS-WSL
-├── tags/              # work, secureboot
-└── opencode/          # Agents, skills, plugins, commands
+└── tags/              # work, secureboot
 systems/
 ├── default.nix        # easy-hosts definitions
 ├── kiwi/ belaf/ ozen/ reg/ wakuna/

@@ -9,8 +9,8 @@ and enhance** accumulated research over time.
 
 - **Executor-agnostic**: every task is phrased so any agent can run it.
   During iteration, executors ALWAYS read the live skill from its repo
-  path (`modules/opencode/skills/knowledge-base/SKILL.md`) — deployed
-  copies under `~/.config/opencode/skills/` are frozen home-manager
+  path (`modules/agents/skills/knowledge-base/SKILL.md`) — deployed
+  copies under `~/.agents/skills/` are frozen home-manager
   snapshots that only refresh on rebuild, so registered-skill loading
   tests outdated instructions. Path-reads see every edit instantly.
 - **Disk-state-only memory**: each run starts from a fresh dispatch. The
@@ -52,7 +52,7 @@ Record one row per run in the run ledger (below).
 
 1. Prepare fixture state (empty wiki for T1; populated for others).
 2. Dispatch fresh executor with the task text and the skill path:
-   `/home/kar/dotfiles/modules/opencode/skills/knowledge-base/SKILL.md`
+   `/home/kar/dotfiles/modules/agents/skills/knowledge-base/SKILL.md`
 3. Worker self-lints with `scripts/lint.sh` before reporting.
 4. External grade: re-run linter, fence audit, judgment items above.
 5. Append ledger row. If failures: refine SKILL.md only (never the

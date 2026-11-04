@@ -1,21 +1,23 @@
+# OpenCode, the agent: the switch that turns it on, the wrapper that carries the
+# agent secrets, the resource-confined shell, and everything else it is given —
+# the agents and commands under ./opencode, the MCP servers from ./mcp.nix, and
+# the settings that shape them.
 {
   config,
-  inputs,
   lib,
   pkgs,
-  inputs',
   ...
 }:
 let
   cfg = config.dev.opencode;
 
-  # The agents' decrypted secrets (modules/agents). The wrapper uses
+  # The agents' decrypted secrets (modules/agents/mcp.nix). The wrapper uses
   # `[ -f ... ]` to skip if missing, so opencode always starts even on machines
   # where sops can't decrypt.
   opencodeEnvFile = config.dev.agents.envFile;
 
   # The shared MCP servers, in this agent's own shape.
-  render = import ../agents/lib.nix { inherit lib; };
+  render = import ./lib.nix { inherit lib; };
 
   sliceName = "opencode.slice";
 
@@ -43,7 +45,7 @@ let
     text = ''
       export OPENCODE_SCOPED_SHELL=${lib.getExe pkgs.bash}
     ''
-    + builtins.readFile ./shell-scoped.sh;
+    + builtins.readFile ./opencode/shell-scoped.sh;
   };
 
   # The wrapper hides the package's own version, which home-manager reads to
@@ -71,8 +73,6 @@ let
 
 in
 {
-  imports = [ inputs.sops-nix.homeManagerModules.sops ];
-
   options.dev.opencode = {
     enable = lib.mkEnableOption "OpenCode AI-assisted development environment";
     enableMcp = lib.mkOption {
@@ -120,7 +120,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # `programs.opencode.package` above already installs this wrapper, so it is
+    # `programs.opencode.package` below already installs this wrapper, so it is
     # not repeated in home.packages.
 
     # OCR config: single source of truth, reuses the opencode-go auth
@@ -146,7 +146,7 @@ in
     # callable from inside a Code Mode program. It is discovered from the global
     # `plugins/` directory; disable it per host with
     # `settings.plugins = [ "-all-tools-codemode" ]`.
-    xdg.configFile."opencode/plugins/all-tools-codemode.ts".source = ./plugins/all-tools-codemode.ts;
+    xdg.configFile."opencode/plugins/all-tools-codemode.ts".source = ./opencode/plugins/all-tools-codemode.ts;
 
     # opencode runs in a scope inside this slice, so everything it spawns (shell
     # commands, MCP servers) inherits these limits. cgroup v2 applies a
@@ -180,11 +180,11 @@ in
       package = opencodePkg pkgs.opencode;
       enableMcpIntegration = cfg.enableMcp;
       commands = (
-        lib.mapAttrs' (name: _: lib.nameValuePair (lib.removeSuffix ".md" name) (./commands + "/${name}")) (
-          lib.filterAttrs (n: v: v == "regular" && lib.hasSuffix ".md" n) (builtins.readDir ./commands)
+        lib.mapAttrs' (name: _: lib.nameValuePair (lib.removeSuffix ".md" name) (./opencode/commands + "/${name}")) (
+          lib.filterAttrs (n: v: v == "regular" && lib.hasSuffix ".md" n) (builtins.readDir ./opencode/commands)
         )
       );
-      agents = ./agents;
+      agents = ./opencode/agents;
       cli = {
         theme.name = cfg.theme;
       };
@@ -269,7 +269,7 @@ in
             effect = "allow";
           }
         ];
-        # The servers are declared once, in modules/agents.
+        # The servers are declared once, in ./mcp.nix.
         mcp = lib.mkIf cfg.enableMcp { servers = lib.mapAttrs (_: render.toOpencode) config.dev.agents.mcpServers; };
       }
       // lib.optionalAttrs (cfg.plugins != [ ]) { inherit (cfg) plugins; };

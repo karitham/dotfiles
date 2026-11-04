@@ -3,6 +3,7 @@
 # adds a host's own servers with `dev.agents.mcpServers.<name> = { ... };`.
 {
   config,
+  inputs,
   lib,
   self',
   ...
@@ -95,6 +96,11 @@ let
   };
 in
 {
+  # This module owns the encrypted agents' secrets, so it brings in the
+  # home-manager side of sops itself instead of leaving it to whichever agent
+  # module happens to be imported.
+  imports = [ inputs.sops-nix.homeManagerModules.sops ];
+
   options.dev.agents = {
     sops.enable = lib.mkOption {
       type = lib.types.bool;

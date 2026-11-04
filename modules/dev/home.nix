@@ -6,8 +6,8 @@
 
   config.dev.enable = lib.mkDefault true;
 
-  # opencode gates on its own flag; importing the dev bundle turns it on
-  # unless overridden (e.g. dev.agents.sops.enable = false per host).
+  # OpenCode is configured by modules/agents; the dev bundle turns it on
+  # unless a host says otherwise.
   config.dev.opencode.enable = lib.mkDefault true;
 
   imports = [
@@ -15,7 +15,6 @@
     ./editor
     ./vcs
     ./tools
-    ../opencode
     ../agents
   ];
 }
