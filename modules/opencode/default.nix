@@ -3,17 +3,19 @@
   inputs,
   lib,
   pkgs,
-  self',
   inputs',
   ...
 }:
 let
   cfg = config.dev.opencode;
 
-  # Path to the sops-decrypted env file, or /dev/null if not configured.
-  # The wrapper uses `[ -f ... ]` to skip if missing, so opencode always starts
-  # even on machines where sops can't decrypt.
-  opencodeEnvFile = lib.attrByPath [ "opencode/env" "path" ] "/dev/null" config.sops.secrets;
+  # The agents' decrypted secrets (modules/agents). The wrapper uses
+  # `[ -f ... ]` to skip if missing, so opencode always starts even on machines
+  # where sops can't decrypt.
+  opencodeEnvFile = config.dev.agents.envFile;
+
+  # The shared MCP servers, in this agent's own shape.
+  render = import ../agents/lib.nix { inherit lib; };
 
   sliceName = "opencode.slice";
 
@@ -67,23 +69,6 @@ let
       '';
     };
 
-  # OpenCode and albedo both discover the portable Agent Skills directory,
-  # ~/.agents/skills. symlinkJoin merges directory contents, so each skill
-  # must sit in its own subdirectory; a SKILL.md at the root shadows every
-  # other skill.
-  agentSkills = pkgs.symlinkJoin {
-    name = "agent-skills";
-    paths = [
-      ./skills
-      (pkgs.linkFarm "tuicr-skill" [
-        {
-          name = "tuicr/SKILL.md";
-          path = ../dev/tools/tuicr/SKILL.md;
-        }
-      ])
-      # self'.packages.strands-agents-sops-skills
-    ];
-  };
 in
 {
   imports = [ inputs.sops-nix.homeManagerModules.sops ];
@@ -122,32 +107,6 @@ in
         Set to `[ ]` on hosts without the referenced plugin.
       '';
     };
-    mcpBrowser = lib.mkOption {
-      type = lib.types.nullOr lib.types.package;
-      default = null;
-      description = ''
-        Browser the chrome-devtools MCP drives, passed as --executablePath.
-        Null leaves the flag off and lets the server look for a Chrome itself.
-        Desktop hosts set this to helium (modules/desktop/apps/browser.nix);
-        override it per host to use a different browser.
-      '';
-    };
-    attachBrowser = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      description = ''
-        DevToolsActivePort file of a browser that is already running, as a path
-        this machine can read. When set, the chrome-devtools MCP attaches to
-        that browser over CDP instead of launching one, so the agent sees the
-        tabs and logged-in sessions of the user's own profile.
-
-        The file holds two lines: the CDP port, then the
-        /devtools/browser/<uuid> socket path. Chromium serves no
-        /json/version on that implicit endpoint, so the server needs
-        --wsEndpoint rather than --browserUrl, and it must read the file at
-        connect time because the uuid changes on every browser start.
-      '';
-    };
     resourceLimits = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -158,31 +117,9 @@ in
         slice cannot exist.
       '';
     };
-    sops.enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Use sops-backed secrets for opencode MCP servers (Linear, Sentry, GitHub, Kagi).
-        Disable on machines that don't have a registered SSH key in .sops.yaml —
-        the wrapper will still let opencode start, just without the secret-needing MCPs.
-      '';
-    };
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets."opencode/env" = lib.mkIf cfg.sops.enable {
-      sopsFile = ../../secrets/opencode.env;
-      format = "dotenv";
-    };
-
-    # OpenCode and albedo both discover ~/.agents/skills. The recursive link
-    # keeps the directory shared: home-manager owns the links it creates and
-    # leaves other entries, such as work skills, in place.
-    home.file.".agents/skills" = {
-      source = agentSkills;
-      recursive = true;
-    };
-
     # `programs.opencode.package` above already installs this wrapper, so it is
     # not repeated in home.packages.
 
@@ -332,58 +269,8 @@ in
             effect = "allow";
           }
         ];
-        mcp = lib.mkIf cfg.enableMcp {
-          servers = {
-            # outline doesn't need secrets, always available
-            outline = {
-              type = "remote";
-              url = "https://outline.dolly-ruffe.ts.net/mcp";
-            };
-
-            # These need secrets from sops, only configured when sops is enabled
-            github = lib.mkIf cfg.sops.enable {
-              type = "remote";
-              url = "https://api.githubcopilot.com/mcp/";
-              headers = {
-                Authorization = "Bearer {env:GITHUB_TOKEN}";
-              };
-            };
-
-            kagi = lib.mkIf cfg.sops.enable {
-              type = "remote";
-              url = "https://mcp.kagi.com/mcp";
-              oauth = false;
-              disabled = true;
-              headers = {
-                Authorization = "Bearer {env:KAGI_API_KEY}";
-              };
-            };
-
-            # Off unless a host points it at a running browser: the fallback
-            # branch launches one, which is a blank profile and no sessions.
-            chrome-devtools = {
-              type = "local";
-              disabled = cfg.attachBrowser == null;
-              command =
-                if cfg.attachBrowser != null then
-                  [
-                    "bash"
-                    "-lc"
-                    (
-                      "f=${lib.escapeShellArg cfg.attachBrowser}; "
-                      + "exec ${lib.getExe self'.packages.chrome-devtools-mcp} "
-                      + "--wsEndpoint \"ws://127.0.0.1:$(sed -n 1p \"$f\")$(sed -n 2p \"$f\")\""
-                    )
-                  ]
-                else
-                  [ (lib.getExe self'.packages.chrome-devtools-mcp) ]
-                  ++ lib.optionals (cfg.mcpBrowser != null) [
-                    "--executablePath"
-                    (lib.getExe cfg.mcpBrowser)
-                  ];
-            };
-          };
-        };
+        # The servers are declared once, in modules/agents.
+        mcp = lib.mkIf cfg.enableMcp { servers = lib.mapAttrs (_: render.toOpencode) config.dev.agents.mcpServers; };
       }
       // lib.optionalAttrs (cfg.plugins != [ ]) { inherit (cfg) plugins; };
     };

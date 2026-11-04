@@ -7,6 +7,6 @@
 # on line 1 and /devtools/browser/<uuid> on line 2. The uuid changes on each
 # start, so the path is read at connect time instead of pinned here.
 { ... }: {
-  dev.opencode.attachBrowser = "/mnt/c/Users/kar/AppData/Local/imput/Helium/User Data/DevToolsActivePort";
+  dev.agents.attachBrowser = "/mnt/c/Users/kar/AppData/Local/imput/Helium/User Data/DevToolsActivePort";
   dev.gallant.local.enable = true;
 }

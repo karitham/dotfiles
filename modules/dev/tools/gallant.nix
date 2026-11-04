@@ -6,9 +6,9 @@
   ...
 }:
 let
-  # The sops switch lives on opencode because it means "this host has a key in
-  # .sops.yaml", which is true of gallant's secret too.
-  useSops = config.dev.opencode.sops.enable;
+  # The sops switch lives on the agents because it means "this host has a key
+  # in .sops.yaml", which is true of gallant's secret too.
+  useSops = config.dev.agents.sops.enable;
   envFile = lib.attrByPath [ "gallant/env" "path" ] "/dev/null" config.sops.secrets;
   rulesDir = "${config.xdg.configHome}/gallant/rules";
 

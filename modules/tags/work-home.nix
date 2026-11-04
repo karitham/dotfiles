@@ -9,19 +9,17 @@
         path = "~/upf/.gitconfig"
   '';
 
-  programs.opencode.settings.mcp = {
+  # Work's MCP servers, in the shared shape (modules/agents): opencode and
+  # albedo are both generated from these.
+  dev.agents.mcpServers = {
     linear = {
-      type = "remote";
+      type = "http";
       url = "https://mcp.linear.app/mcp";
-      enabled = true;
-      headers = {
-        Authorization = "Bearer {env:LINEAR_API_KEY}";
-      };
+      bearerEnv = "LINEAR_API_KEY";
     };
     sentry = {
-      type = "remote";
-      enabled = true;
-      url = "{env:SENTRY_MCP_URL}";
+      type = "http";
+      urlEnv = "SENTRY_MCP_URL";
       oauth = { };
     };
   };

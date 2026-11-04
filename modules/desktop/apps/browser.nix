@@ -14,6 +14,6 @@
 
     # The chrome-devtools MCP would otherwise hunt for a Chrome, and this
     # machine has none.
-    dev.opencode.mcpBrowser = lib.mkDefault inputs'.helium.packages.default;
+    dev.agents.mcpBrowser = lib.mkDefault inputs'.helium.packages.default;
   };
 }
