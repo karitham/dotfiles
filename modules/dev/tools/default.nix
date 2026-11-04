@@ -49,6 +49,7 @@ in
   };
 
   imports = [
+    ./albedo.nix
     ./direnv.nix
     ./gallant.nix
     ./tuicr.nix

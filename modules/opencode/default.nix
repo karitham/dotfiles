@@ -66,6 +66,24 @@ let
         exec ${systemdRunPrefix}${lib.getExe pkg} "$@"
       '';
     };
+
+  # OpenCode and albedo both discover the portable Agent Skills directory,
+  # ~/.agents/skills. symlinkJoin merges directory contents, so each skill
+  # must sit in its own subdirectory; a SKILL.md at the root shadows every
+  # other skill.
+  agentSkills = pkgs.symlinkJoin {
+    name = "agent-skills";
+    paths = [
+      ./skills
+      (pkgs.linkFarm "tuicr-skill" [
+        {
+          name = "tuicr/SKILL.md";
+          path = ../dev/tools/tuicr/SKILL.md;
+        }
+      ])
+      # self'.packages.strands-agents-sops-skills
+    ];
+  };
 in
 {
   imports = [ inputs.sops-nix.homeManagerModules.sops ];
@@ -157,6 +175,14 @@ in
       format = "dotenv";
     };
 
+    # OpenCode and albedo both discover ~/.agents/skills. The recursive link
+    # keeps the directory shared: home-manager owns the links it creates and
+    # leaves other entries, such as work skills, in place.
+    home.file.".agents/skills" = {
+      source = agentSkills;
+      recursive = true;
+    };
+
     # `programs.opencode.package` above already installs this wrapper, so it is
     # not repeated in home.packages.
 
@@ -222,23 +248,6 @@ in
         )
       );
       agents = ./agents;
-      skills = toString (
-        pkgs.symlinkJoin {
-          name = "opencode-skills";
-          paths = [
-            ./skills
-            # symlinkJoin merges directory contents, so the skill must sit in
-            # its own subdirectory; a SKILL.md at the root shadows every other skill.
-            (pkgs.linkFarm "tuicr-skill" [
-              {
-                name = "tuicr/SKILL.md";
-                path = ../dev/tools/tuicr/SKILL.md;
-              }
-            ])
-            # self'.packages.strands-agents-sops-skills
-          ];
-        }
-      );
       cli = {
         theme.name = cfg.theme;
       };

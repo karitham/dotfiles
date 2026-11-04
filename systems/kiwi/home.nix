@@ -3,6 +3,8 @@
 
   desktop.noctalia.enable = true;
 
+  dev.albedo.enable = true;
+
   dev.gallant.local = {
     enable = true;
     package = pkgs.callPackage ../../pkgs/llama-cpp-d1/package.nix { vulkanSupport = true; };

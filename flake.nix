@@ -52,6 +52,10 @@
       url = "github:karitham/knixpkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    albedo = {
+      url = "git+https://tangled.org/karitham.dev/albedo";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     handy = {
       url = "github:cjpais/handy";
     };
