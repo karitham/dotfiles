@@ -34,6 +34,7 @@ let
   # albedo's config too, while servers added from albedo's own UI stay.
   state = "$HOME/.albedo/nix-mcp.json";
   target = "$HOME/.albedo/extensions.json";
+  creds = "$HOME/.albedo/creds.json";
 
   fragment = pkgs.writeText "albedo-mcp.json" (
     builtins.toJSON {
@@ -126,6 +127,22 @@ in
           jq -c -n --slurpfile f "${fragment}" '{ servers: ($f[0].servers | keys) }' > "$work/nix-mcp.json"
           chmod 600 "$work/nix-mcp.json"
           $DRY_RUN_CMD mv -f "$work/nix-mcp.json" "${state}"
+
+          # Exa's search provider reads its key from creds.json, not from the
+          # environment the wrapper exports, so the key is copied in. Only a
+          # changed key rewrites the file: every other section belongs to
+          # albedo, and rewriting an identical one would race its own writes.
+          saved="$(jq -r '.exa.apiKey // ""' "${creds}" 2>/dev/null || true)"
+          if [ -n "''${EXA_API_KEY:-}" ] && [ "$saved" != "$EXA_API_KEY" ]; then
+            if [ -r "${creds}" ]; then
+              cp "${creds}" "$work/creds.json"
+            else
+              echo '{}' > "$work/creds.json"
+            fi
+            jq --arg key "$EXA_API_KEY" '.exa.apiKey = $key' "$work/creds.json" > "$work/creds-exa.json"
+            chmod 600 "$work/creds-exa.json"
+            $DRY_RUN_CMD mv -f "$work/creds-exa.json" "${creds}"
+          fi
           )
         '';
   };
