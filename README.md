@@ -28,10 +28,14 @@ The repository contains system and user configuration as a Nix flake. Jujutsu (j
 nh os switch                    # rebuild & switch (uses ~/dotfiles)
 nixos-rebuild switch --flake .#kiwi  # explicit host
 nix build .#wakuna-image        # SD image for wakuna
+nix build .#albedo-config       # albedo config + skills for an image
+nix run .#albedo-seed -- --help # install both into a home
 nix fmt                         # format (nixfmt, nufmt, biome)
 ```
 
 `nh os switch` rebuilds and switches for the current host and assumes the repository at `~/dotfiles`. `nixos-rebuild switch` targets an explicit host. `nix build` produces the `wakuna` image. `nix fmt` formats the repository.
+
+The MCP servers and skills under `modules/agents` are not only for the hosts here: `.#albedo-config` renders them into `/etc/albedo` (`extensions.json` plus the shared skills) and `.#albedo-seed` installs that tree into a home, merging into what albedo already wrote. An install without home-manager — the albedo image built in the infra repository — carries both and runs the seed before the daemon starts.
 
 ## Repository structure
 

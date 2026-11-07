@@ -13,22 +13,44 @@
 
   imports = [ ./systems/default.nix ];
 
-  perSystem = { pkgs, lib, ... }: {
-    packages = lib.packagesFromDirectoryRecursive {
-      inherit (pkgs) callPackage;
-      directory = ./pkgs;
+  perSystem =
+    {
+      pkgs,
+      lib,
+      self',
+      ...
+    }:
+    let
+      # albedo's config and skills for an install home-manager does not manage:
+      # the image the infra repo builds carries both
+      # (modules/agents/albedo-config.nix).
+      albedoInstall = import ./modules/agents/albedo-config.nix {
+        inherit lib pkgs self';
+        # The image this feeds has no browser for the DevTools server to drive.
+        without = [ "chrome-devtools" ];
+      };
+    in
+    {
+      packages =
+        lib.packagesFromDirectoryRecursive {
+          inherit (pkgs) callPackage;
+          directory = ./pkgs;
+        }
+        // {
+          albedo-config = albedoInstall.config;
+          albedo-seed = albedoInstall.seed;
+        };
+      formatter = pkgs.treefmt;
+      devShells.default = pkgs.mkShell {
+        packages = with pkgs; [
+          sops
+          treefmt
+          nixfmt
+          nufmt
+          oxfmt
+        ];
+      };
     };
-    formatter = pkgs.treefmt;
-    devShells.default = pkgs.mkShell {
-      packages = with pkgs; [
-        sops
-        treefmt
-        nixfmt
-        nufmt
-        oxfmt
-      ];
-    };
-  };
 
   flake = {
     homeModules = {

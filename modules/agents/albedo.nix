@@ -1,6 +1,7 @@
-# Albedo's side of the shared agent config: the MCP servers, written into
-# $ALBEDO_HOME/extensions.json, and a wrapper that puts the agent secrets in
-# the daemon's environment, which is where albedo resolves `{ "env": ... }`.
+# Albedo's side of the shared agent config: the MCP servers, merged into
+# $ALBEDO_HOME/extensions.json on activation, and a wrapper that puts the agent
+# secrets in the daemon's environment, which is where albedo resolves
+# `{ "env": ... }`.
 {
   config,
   lib,
@@ -30,12 +31,6 @@ let
     '';
   };
 
-  # Server names this repo owns, so a server deleted here is deleted from
-  # albedo's config too, while servers added from albedo's own UI stay.
-  state = "$HOME/.albedo/nix-mcp.json";
-  target = "$HOME/.albedo/extensions.json";
-  creds = "$HOME/.albedo/creds.json";
-
   fragment = pkgs.writeText "albedo-mcp.json" (
     builtins.toJSON {
       servers = lib.mapAttrs (_: render.toAlbedo) cfg.mcpServers;
@@ -45,27 +40,12 @@ let
 
   render = import ./lib.nix { inherit lib; };
 
-  # Deep merge, nix wins per field: a server declared here is added, its
-  # fields are kept current, and every other server, toggle and setting in
-  # extensions.json is left alone.
-  merge = ''
-    def resolve:
-      walk(if type == "string" and startswith("@env:")
-           then (.[5:] as $name | (env[$name] // .))
-           else . end);
-    def unresolved: [.. | strings | select(startswith("@env:"))] | length > 0;
-
-    ($f[0] | resolve) as $frag
-    | ($frag.servers | with_entries(select(.value | unresolved | not))) as $servers
-    | ($servers | keys) as $owned
-    | ($before - $owned) as $gone
-    | .mcp = (.mcp // {})
-    | .mcp.servers = (
-        ((.mcp.servers // {}) | with_entries(select(.key as $name | ($gone | index($name)) | not)))
-        * $servers
-      )
-    | .enabled = ((.enabled // {}) * ($frag.enabled // {}))
-  '';
+  # The install itself is shared with the image the infra repo builds, so a
+  # merged extensions.json looks the same on a desktop and in a container.
+  seed = import ./albedo-seed.nix {
+    inherit lib pkgs;
+    inherit fragment;
+  };
 in
 {
   options.dev.agents.albedo = {
@@ -89,60 +69,17 @@ in
     home.activation.albedoMcp =
       lib.hm.dag.entryAfter ([ "writeBoundary" ] ++ lib.optional (cfg.envFile != "/dev/null") "sops-nix")
         ''
-          # A subshell, so the tools this needs stay out of every other
-          # activation entry's PATH.
+          # A subshell, so sourcing the secrets stays out of every other
+          # activation entry's environment.
           (
-          export PATH="${
-            lib.makeBinPath [
-              pkgs.coreutils
-              pkgs.jq
-            ]
-          }:$PATH"
-
-          # Secrets first: the fragment carries @env:NAME@ for URLs that are
-          # themselves secret, and jq resolves them from this environment.
+          # Secrets first: the fragment carries @env:NAME for URLs that are
+          # themselves secret, and the seed resolves them from this
+          # environment. It also copies EXA_API_KEY into creds.json, which is
+          # the only place Exa looks for it.
           # shellcheck disable=SC1091
           if [ -f "${cfg.envFile}" ]; then set -a; . "${cfg.envFile}"; set +a; fi
 
-          $VERBOSE_ARG mkdir -p "$HOME/.albedo"
-          work="$(mktemp -d)"
-          trap 'rm -rf "$work"' EXIT
-
-          before='[]'
-          if [ -r "${state}" ]; then
-            before="$(jq -c '.servers // []' "${state}" 2>/dev/null || echo '[]')"
-          fi
-
-          if [ -r "${target}" ]; then
-            cp "${target}" "$work/extensions.json"
-          else
-            echo '{}' > "$work/extensions.json"
-          fi
-
-          jq --slurpfile f "${fragment}" --argjson before "$before" '${merge}' \
-            "$work/extensions.json" > "$work/merged.json"
-          chmod 600 "$work/merged.json"
-          $DRY_RUN_CMD mv -f "$work/merged.json" "${target}"
-
-          jq -c -n --slurpfile f "${fragment}" '{ servers: ($f[0].servers | keys) }' > "$work/nix-mcp.json"
-          chmod 600 "$work/nix-mcp.json"
-          $DRY_RUN_CMD mv -f "$work/nix-mcp.json" "${state}"
-
-          # Exa's search provider reads its key from creds.json, not from the
-          # environment the wrapper exports, so the key is copied in. Only a
-          # changed key rewrites the file: every other section belongs to
-          # albedo, and rewriting an identical one would race its own writes.
-          saved="$(jq -r '.exa.apiKey // ""' "${creds}" 2>/dev/null || true)"
-          if [ -n "''${EXA_API_KEY:-}" ] && [ "$saved" != "$EXA_API_KEY" ]; then
-            if [ -r "${creds}" ]; then
-              cp "${creds}" "$work/creds.json"
-            else
-              echo '{}' > "$work/creds.json"
-            fi
-            jq --arg key "$EXA_API_KEY" '.exa.apiKey = $key' "$work/creds.json" > "$work/creds-exa.json"
-            chmod 600 "$work/creds-exa.json"
-            $DRY_RUN_CMD mv -f "$work/creds-exa.json" "${creds}"
-          fi
+          ${lib.getExe seed} ''${DRY_RUN_CMD:+--dry-run}
           )
         '';
   };
