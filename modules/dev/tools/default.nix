@@ -23,15 +23,8 @@ in
       pkgs.fd
       pkgs.uutils-coreutils-noprefix
       pkgs.libnotify
-      pkgs.prr # code review
       scripts
     ];
-
-    xdg.configFile."prr/config.toml".text = ''
-      [prr]
-      workdir = "${config.home.homeDirectory}"
-      activate_pr_metadata_experiment = true
-    '';
 
     programs = {
       zoxide.enable = true;
