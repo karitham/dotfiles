@@ -71,7 +71,7 @@ let
   '';
 in
 {
-  config = lib.mkIf config.dev.enable {
+  config = lib.mkIf false {
     home.packages = [
       pkgs.tuicr
       tuicr-wrapper
