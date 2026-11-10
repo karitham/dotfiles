@@ -9,18 +9,24 @@
         path = "~/upf/.gitconfig"
   '';
 
-  # Work's MCP servers, in the shared shape (modules/agents): opencode and
-  # albedo are both generated from these.
-  dev.agents.mcpServers = {
+  # Work's MCP servers, in home-manager's shared shape: opencode imports them
+  # through enableMcpIntegration, albedo through its own module. A server the
+  # environment authenticates names its token twice (../agents/servers.nix says
+  # why): opencode sends the header, albedo reads `bearerTokenEnvVar`.
+  programs.mcp.servers = {
     linear = {
       type = "http";
       url = "https://mcp.linear.app/mcp";
-      bearerEnv = "LINEAR_API_KEY";
+      headers.Authorization = "Bearer {env:LINEAR_API_KEY}";
+      bearerTokenEnvVar = "LINEAR_API_KEY";
     };
+
+    # Sentry's hosted MCP signs in with OAuth, so the endpoint carries no
+    # credential and needs no scope: both clients start their own sign-in, and
+    # whoever has one organization gets it as the default without naming it.
     sentry = {
       type = "http";
-      urlEnv = "SENTRY_MCP_URL";
-      oauth = { };
+      url = "https://mcp.sentry.dev/mcp";
     };
   };
 }

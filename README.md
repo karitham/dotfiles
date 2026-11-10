@@ -35,7 +35,9 @@ nix fmt                         # format (nixfmt, nufmt, biome)
 
 `nh os switch` rebuilds and switches for the current host and assumes the repository at `~/dotfiles`. `nixos-rebuild switch` targets an explicit host. `nix build` produces the `wakuna` image. `nix fmt` formats the repository.
 
-The MCP servers and skills under `modules/agents` are not only for the hosts here: `.#albedo-config` renders them into `/etc/albedo` (`extensions.json` plus the shared skills) and `.#albedo-seed` installs that tree into a home, merging into what albedo already wrote. An install without home-manager — the albedo image built in the infra repository — carries both and runs the seed before the daemon starts.
+The MCP servers under `modules/agents` are declared once, in home-manager's `programs.mcp.servers` shape (`modules/agents/servers.nix`). `programs.mcp` writes them for other clients, opencode imports them with `enableMcpIntegration`, and albedo imports them through its own home-manager module, which merges them into `$ALBEDO_HOME/extensions.json` on activation.
+
+They are not only for the hosts here: `.#albedo-config` renders the same set into `/etc/albedo` (`extensions.json` plus the shared skills) and `.#albedo-seed` installs that tree into a home, merging into what albedo already wrote. An install without home-manager — the albedo image built in the infra repository — carries both and runs the seed before the daemon starts.
 
 ## Repository structure
 

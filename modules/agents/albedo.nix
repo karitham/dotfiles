@@ -1,86 +1,72 @@
-# Albedo's side of the shared agent config: the MCP servers, merged into
-# $ALBEDO_HOME/extensions.json on activation, and a wrapper that puts the agent
-# secrets in the daemon's environment, which is where albedo resolves
-# `{ "env": ... }`.
+# Albedo, through its own home-manager module: the client package, the daemon as
+# a user service, and the MCP servers every agent shares (./servers.nix), which
+# that module merges into $ALBEDO_HOME/extensions.json on activation.
 {
   config,
+  inputs,
   lib,
   pkgs,
-  inputs',
   ...
 }:
 let
-  cfg = config.dev.agents;
   albedo = config.dev.albedo;
-
-  base = inputs'.albedo.packages.default;
-
-  # The wrapper exists because the daemon reads its environment once, at exec:
-  # a shell that has the secrets is not enough, the process albedo starts must
-  # inherit them.
-  package = pkgs.writeShellApplication {
-    name = "albedo";
-    meta = base.meta or { };
-    passthru = base.passthru or { };
-    derivationArgs.version = base.version or "0";
-    text = ''
-      # shellcheck disable=SC1091
-      if [ -f "${cfg.envFile}" ]; then set -a; . "${cfg.envFile}"; set +a; fi
-
-      exec ${lib.getExe base} "$@"
-    '';
-  };
-
-  fragment = pkgs.writeText "albedo-mcp.json" (
-    builtins.toJSON {
-      servers = lib.mapAttrs (_: render.toAlbedo) cfg.mcpServers;
-      enabled.mcp = true;
-    }
-  );
+  cfg = config.dev.agents;
 
   render = import ./lib.nix { inherit lib; };
 
-  # The install itself is shared with the image the infra repo builds, so a
-  # merged extensions.json looks the same on a desktop and in a container.
-  seed = import ./albedo-seed.nix {
-    inherit lib pkgs;
-    inherit fragment;
-  };
+  # A shared server the environment authenticates cannot be imported as written:
+  # albedo sends its bearer token as a variable read from the daemon's
+  # environment, never as a header. The import replaces a declared server of the
+  # same name as a whole, so the restated one is complete (./lib.nix) and only
+  # these servers need restating.
+  restatements = lib.optionalAttrs (cfg.enable && config.programs.mcp.enable) (
+    lib.mapAttrs (_: render.toAlbedo) (lib.filterAttrs (_: server: server ? bearerTokenEnvVar) config.programs.mcp.servers)
+  );
+
+  creds = "${config.home.homeDirectory}/.albedo/creds.json";
+  keyPath = lib.makeBinPath [
+    pkgs.coreutils
+    pkgs.jq
+  ];
 in
 {
-  options.dev.agents.albedo = {
-    package = lib.mkOption {
-      type = lib.types.package;
-      readOnly = true;
-      default = package;
-      description = "The albedo CLI, wrapped to carry the agent secrets.";
-    };
-    writeConfig = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Merge dev.agents.mcpServers into $ALBEDO_HOME/extensions.json on
-        activation. Off leaves albedo's MCP servers to albedo's own /mcp.
-      '';
-    };
-  };
+  imports = [ inputs.albedo.homeModules.default ];
 
-  config = lib.mkIf (albedo.enable && cfg.enable && cfg.albedo.writeConfig) {
-    home.activation.albedoMcp =
-      lib.hm.dag.entryAfter ([ "writeBoundary" ] ++ lib.optional (cfg.envFile != "/dev/null") "sops-nix")
-        ''
-          # A subshell, so sourcing the secrets stays out of every other
-          # activation entry's environment.
-          (
-          # Secrets first: the fragment carries @env:NAME for URLs that are
-          # themselves secret, and the seed resolves them from this
-          # environment. It also copies EXA_API_KEY into creds.json, which is
-          # the only place Exa looks for it.
-          # shellcheck disable=SC1091
-          if [ -f "${cfg.envFile}" ]; then set -a; . "${cfg.envFile}"; set +a; fi
+  options.dev.albedo.enable = lib.mkEnableOption "the Albedo coding agent";
 
-          ${lib.getExe seed} ''${DRY_RUN_CMD:+--dry-run}
-          )
-        '';
+  config = lib.mkIf albedo.enable {
+    programs.albedo.enable = true;
+
+    services.albedo = {
+      enable = true;
+      enableMcpIntegration = true;
+      settings.extensions.mcp.servers = restatements;
+    };
+
+    # The daemon reads its environment once, at exec: a shell that has the
+    # secrets is not enough, so the service gets the decrypted dotenv file
+    # instead of the wrapper that used to source it.
+    systemd.user.services.albedo.Service.EnvironmentFile = lib.mkIf cfg.sops.enable "-${cfg.envFile}";
+
+    # Exa reads its key from creds.json rather than from the environment, and
+    # creds.json is albedo's own file (the module only manages the settings
+    # documents), so the key from the decrypted secrets is copied in. A subshell,
+    # so sourcing the secrets stays out of every other activation entry.
+    home.activation.albedoExaKey = lib.mkIf cfg.sops.enable (
+      lib.hm.dag.entryAfter [ "writeBoundary" "sops-nix" ] ''
+        (
+        export PATH=${keyPath}:$PATH
+        # shellcheck disable=SC1091
+        source ${./albedo-exa-key.sh}
+
+        set -a
+        # shellcheck disable=SC1091
+        if [ -f "${cfg.envFile}" ]; then . "${cfg.envFile}"; fi
+        set +a
+
+        albedo_exa_key ${lib.escapeShellArg creds}
+        )
+      ''
+    );
   };
 }

@@ -1,6 +1,6 @@
-# What albedo needs where home-manager does not run: the MCP servers every
-# agent shares rendered into its extensions.json, the shared skills, and the
-# script that installs both into a home. The flake exposes the pair as
+# What albedo needs where home-manager does not run: the MCP servers every agent
+# shares (./servers.nix) rendered into its extensions.json, the shared skills, and
+# the script that installs both into a home. The flake exposes the pair as
 # .#albedo-config and .#albedo-seed; the image built in the infra repo carries
 # them and seeds its home volume before the daemon starts.
 {
@@ -13,21 +13,15 @@
   without ? [ ],
 }:
 let
-  # The same declarations, and the same defaults, the desktops evaluate
-  # through home-manager: the module needs neither, so it evaluates here too.
-  cfg =
-    (lib.evalModules {
-      modules = [ ./mcp-servers.nix ];
-      specialArgs = { inherit self'; };
-    }).config.dev.agents;
-
   render = import ./lib.nix { inherit lib; };
+
+  servers = removeAttrs (import ./servers.nix { inherit lib pkgs self'; }) without;
 
   skills = import ./agent-skills.nix { inherit pkgs; };
 
   fragment = pkgs.writeText "albedo-extensions.json" (
     builtins.toJSON {
-      servers = lib.mapAttrs (_: render.toAlbedo) (removeAttrs cfg.mcpServers without);
+      servers = lib.mapAttrs (_: render.toAlbedo) servers;
       enabled.mcp = true;
     }
   );

@@ -1,8 +1,8 @@
 # Installs the albedo configuration this flake builds into a home: the MCP
 # servers, the shared skills, and the Exa key when the environment carries one.
-# Home-manager runs it on activation; an image with no home-manager runs it
-# before the daemon starts (./albedo-config.nix), so both install the same
-# things the same way.
+# An image with no home-manager runs it before the daemon starts
+# (./albedo-config.nix); a home home-manager manages needs none of it, because
+# its module (./albedo.nix) merges the same servers on activation.
 {
   lib,
   pkgs,
@@ -61,17 +61,9 @@ pkgs.writeShellApplication {
     trap 'rm -rf "$work"' EXIT
 
     target="$home/.albedo/extensions.json"
-    state="$home/.albedo/nix-mcp.json"
     creds="$home/.albedo/creds.json"
 
     run install -d -m 700 "$home/.albedo"
-
-    # A server the fragment carried last time but does not carry now was
-    # deleted in the flake, so the entry it left behind goes too.
-    before='[]'
-    if [ -r "$state" ]; then
-      before="$(jq -c '.servers // []' "$state" 2>/dev/null || printf '[]')"
-    fi
 
     if [ -r "$target" ]; then
       cp "$target" "$work/extensions.json"
@@ -79,35 +71,24 @@ pkgs.writeShellApplication {
       printf '{}\n' > "$work/extensions.json"
     fi
 
-    jq --slurpfile f "$fragment" --argjson before "$before" \
-      -f ${./albedo-merge.jq} "$work/extensions.json" > "$work/merged.json"
+    # The declared servers and toggles win, and everything else albedo wrote —
+    # the servers it added itself, a server switched off in /mcp, its settings —
+    # stays. A server dropped from the flake keeps its entry, exactly as it does
+    # on a host home-manager merges for.
+    jq --slurpfile f "$fragment" \
+      '.mcp.servers = ((.mcp.servers // {}) * ($f[0].servers // {}))
+       | .enabled = ((.enabled // {}) * ($f[0].enabled // {}))' \
+      "$work/extensions.json" > "$work/merged.json"
     chmod 600 "$work/merged.json"
-    # A server whose @env: reference does not resolve here is left out, so the
-    # summary comes from what the merge produced, not from the fragment.
-    installed="$(jq -r '.mcp.servers | keys | join(", ")' "$work/merged.json")"
+    installed="$(jq -r '(.mcp.servers // {}) | keys | join(", ")' "$work/merged.json")"
     run mv -f "$work/merged.json" "$target"
 
-    jq -c -n --slurpfile f "$fragment" '{ servers: ($f[0].servers | keys) }' > "$work/nix-mcp.json"
-    chmod 600 "$work/nix-mcp.json"
-    run mv -f "$work/nix-mcp.json" "$state"
-
-    # Exa reads its key from creds.json rather than from the environment, so
-    # one in this environment is copied in. Only a changed key rewrites the
-    # file: every other section belongs to albedo, and rewriting an identical
-    # one would race its own writes.
-    if [ -n "''${EXA_API_KEY:-}" ]; then
-      saved="$(jq -r '.exa.apiKey // ""' "$creds" 2>/dev/null || true)"
-      if [ "$saved" != "$EXA_API_KEY" ]; then
-        if [ -r "$creds" ]; then
-          cp "$creds" "$work/creds.json"
-        else
-          printf '{}\n' > "$work/creds.json"
-        fi
-        jq --arg key "$EXA_API_KEY" '.exa.apiKey = $key' "$work/creds.json" > "$work/creds-next.json"
-        chmod 600 "$work/creds-next.json"
-        run mv -f "$work/creds-next.json" "$creds"
-      fi
-    fi
+    # Exa reads its key from creds.json rather than from the environment, so one
+    # in this environment is copied in. The same function backs home-manager's
+    # activation (./albedo-exa-key.sh).
+    # shellcheck disable=SC1091
+    source ${./albedo-exa-key.sh}
+    albedo_exa_key "$creds" run
 
     # One symlink per skill, so a skill added by hand stays and a skill that
     # moved in the flake lands on the next run. A symlinked skills root was put

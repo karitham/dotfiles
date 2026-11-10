@@ -19,6 +19,8 @@ in
 {
   config = lib.mkIf config.dev.enable {
     home.packages = [
+      # The guided-review skill renders its pages with python3.
+      pkgs.python3
       pkgs.sd
       pkgs.fd
       pkgs.uutils-coreutils-noprefix
@@ -42,7 +44,6 @@ in
   };
 
   imports = [
-    ./albedo.nix
     ./direnv.nix
     ./gallant.nix
     ./tuicr.nix

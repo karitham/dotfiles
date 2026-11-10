@@ -1,7 +1,7 @@
 # OpenCode, the agent: the switch that turns it on, the wrapper that carries the
 # agent secrets, the resource-confined shell, and everything else it is given —
-# the agents and commands under ./opencode, the MCP servers from ./mcp.nix, and
-# the settings that shape them.
+# the agents and commands under ./opencode, the MCP servers from
+# `programs.mcp.servers` (./mcp.nix), and the settings that shape them.
 {
   config,
   lib,
@@ -15,9 +15,6 @@ let
   # `[ -f ... ]` to skip if missing, so opencode always starts even on machines
   # where sops can't decrypt.
   opencodeEnvFile = config.dev.agents.envFile;
-
-  # The shared MCP servers, in this agent's own shape.
-  render = import ./lib.nix { inherit lib; };
 
   sliceName = "opencode.slice";
 
@@ -78,7 +75,7 @@ in
     enableMcp = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "MCP server integrations for enhanced language support";
+      description = "Import the shared programs.mcp.servers (./mcp.nix) into this client's own MCP configuration.";
     };
     theme = lib.mkOption {
       type = lib.types.str;
@@ -269,8 +266,6 @@ in
             effect = "allow";
           }
         ];
-        # The servers are declared once, in ./mcp.nix.
-        mcp = lib.mkIf cfg.enableMcp { servers = lib.mapAttrs (_: render.toOpencode) config.dev.agents.mcpServers; };
       }
       // lib.optionalAttrs (cfg.plugins != [ ]) { inherit (cfg) plugins; };
     };

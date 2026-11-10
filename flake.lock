@@ -12,11 +12,11 @@
         "usage-core": "usage-core"
       },
       "locked": {
-        "lastModified": 1794249520,
-        "narHash": "sha256-rHoCC1QBHF9oIQGKSE+DoSgC5epFjI5J6YZVBSUybdA=",
+        "lastModified": 1794305089,
+        "narHash": "sha256-0K0ZmH9WFkB7casbAQblFcb2UOlS4NRSaPrssWxv3tg=",
         "ref": "refs/heads/main",
-        "rev": "7577f15d7fd19b4996cc0d8f0374c97531d8f208",
-        "revCount": 1809,
+        "rev": "edd41aaee630cc73c0d049409a7ede4af9df62b9",
+        "revCount": 1824,
         "type": "git",
         "url": "https://tangled.org/karitham.dev/albedo"
       },
