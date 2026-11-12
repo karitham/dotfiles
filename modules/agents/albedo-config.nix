@@ -17,7 +17,7 @@ let
 
   servers = removeAttrs (import ./servers.nix { inherit lib pkgs self'; }) without;
 
-  skills = import ./agent-skills.nix { inherit pkgs; };
+  skills = import ./agent-skills.nix { inherit pkgs self'; };
 
   fragment = pkgs.writeText "albedo-extensions.json" (
     builtins.toJSON {

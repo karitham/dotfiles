@@ -2,7 +2,7 @@
 # both read the portable ~/.agents/skills, so it is built once here and linked
 # in by whichever install delivers it: home-manager (./skills.nix) or an image
 # (./albedo-config.nix).
-{ pkgs }:
+{ pkgs, self' }:
 # symlinkJoin merges directory contents, so each skill must sit in its own
 # subdirectory; a SKILL.md at the root shadows every other skill.
 pkgs.symlinkJoin {
@@ -13,6 +13,15 @@ pkgs.symlinkJoin {
       {
         name = "tuicr/SKILL.md";
         path = ../dev/tools/tuicr/SKILL.md;
+      }
+    ])
+    # GoogleChrome's Modern Web Guidance is built as a skill directory rather
+    # than vendored (../../pkgs/modern-web-guidance): it carries the guides it
+    # reads and the CLI its SKILL.md runs, so it needs no PATH entry.
+    (pkgs.linkFarm "modern-web-guidance-skill" [
+      {
+        name = "modern-web-guidance";
+        path = self'.packages.modern-web-guidance;
       }
     ])
   ];

@@ -4,12 +4,13 @@
   config,
   lib,
   pkgs,
+  self',
   ...
 }:
 {
   config = lib.mkIf config.dev.agents.enable {
     home.file.".agents/skills" = {
-      source = import ./agent-skills.nix { inherit pkgs; };
+      source = import ./agent-skills.nix { inherit pkgs self'; };
       recursive = true;
     };
   };
