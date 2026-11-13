@@ -17,8 +17,6 @@
     linear = {
       type = "http";
       url = "https://mcp.linear.app/mcp";
-      headers.Authorization = "Bearer {env:LINEAR_API_KEY}";
-      bearerTokenEnvVar = "LINEAR_API_KEY";
     };
 
     # Sentry's hosted MCP signs in with OAuth, so the endpoint carries no
