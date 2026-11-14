@@ -9,5 +9,6 @@
     ./mcp.nix
     ./opencode.nix
     ./skills.nix
+    ./t3code.nix
   ];
 }
