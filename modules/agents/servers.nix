@@ -4,9 +4,9 @@
 # agents' own integrations; ./albedo-config.nix renders the same set into the
 # image that home-manager never configures.
 #
-# Each entry is written so albedo can take it as-is (./lib.nix only drops the two
-# fields it has no use for), which means `type` is spelled out: opencode
-# recomputes it, albedo reads it.
+# Each entry is written so albedo can take it as-is (./lib.nix only drops what it
+# has no use for, and reads a token from the header that carries it), which means
+# `type` is spelled out: opencode recomputes it, albedo reads it.
 #
 # A tag module adds a host's own servers with
 # `programs.mcp.servers.<name> = { ... };` — there is no wrapper option.
@@ -68,22 +68,23 @@ in
 }
 // lib.optionalAttrs secretServers {
   # These need a secret from the environment, so they only appear where the host
-  # has one to give. Each names its token twice because the clients disagree on
-  # the form: opencode sends the header, albedo reads the variable out of the
-  # daemon's environment and cannot put a variable inside a header value at all,
-  # so `bearerTokenEnvVar` is also the mark for the servers ./lib.nix strips.
+  # has one to give. The token is named once, in the header it is sent as:
+  # opencode sends that header, and albedo reads the same header as the variable
+  # to send as its bearer token (its own module for a home-manager home,
+  # ./lib.nix for the image).
   github = {
     type = "http";
     url = "https://api.githubcopilot.com/mcp/";
-    headers.Authorization = "Bearer {env:GITHUB_TOKEN}";
-    bearerTokenEnvVar = "GITHUB_TOKEN";
+    headers = {
+      Authorization = "Bearer {env:GITHUB_TOKEN}";
+      X-MCP-Insiders = "true";
+    };
   };
 
   kagi = {
     type = "http";
     url = "https://mcp.kagi.com/mcp";
     headers.Authorization = "Bearer {env:KAGI_API_KEY}";
-    bearerTokenEnvVar = "KAGI_API_KEY";
     # The key is the credential; an OAuth probe only gets in the way.
     oauth = false;
     enabled = false;

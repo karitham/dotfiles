@@ -11,8 +11,8 @@
 
   # Work's MCP servers, in home-manager's shared shape: opencode imports them
   # through enableMcpIntegration, albedo through its own module. A server the
-  # environment authenticates names its token twice (../agents/servers.nix says
-  # why): opencode sends the header, albedo reads `bearerTokenEnvVar`.
+  # environment authenticates names its token once, in the header it is sent as
+  # (../agents/servers.nix): both clients read that header.
   programs.mcp.servers = {
     linear = {
       type = "http";
