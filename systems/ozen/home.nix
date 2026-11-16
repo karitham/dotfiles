@@ -18,6 +18,8 @@
   dev.t3code.daemon = {
     enable = true;
     expose = true;
-    package = pkgs.callPackage ../../pkgs/t3code-server/package.nix { };
+    package = pkgs.callPackage ../../pkgs/t3code-server/package.nix {
+      t3code = pkgs.callPackage ../../pkgs/t3code-nightly/package.nix { };
+    };
   };
 }

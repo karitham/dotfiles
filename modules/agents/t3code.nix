@@ -13,7 +13,12 @@
 # One server owns a T3 home at a time (`server-owner.sqlite`), so an app whose
 # "local environment" is the same home cannot start; see
 # `appLocalEnvironment`.
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.dev.t3code;
   daemon = cfg.daemon;
@@ -39,8 +44,8 @@ in
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = pkgs.t3code;
-      defaultText = lib.literalExpression "pkgs.t3code";
+      default = pkgs.callPackage ../../pkgs/t3code-nightly/package.nix { };
+      defaultText = lib.literalExpression "pkgs.callPackage ../../pkgs/t3code-nightly/package.nix { }";
       description = "The desktop app and CLI to install for the client.";
     };
 
@@ -118,8 +123,8 @@ in
 
       package = lib.mkOption {
         type = lib.types.package;
-        default = pkgs.t3code;
-        defaultText = lib.literalExpression "pkgs.t3code";
+        default = pkgs.callPackage ../../pkgs/t3code-nightly/package.nix { };
+        defaultText = lib.literalExpression "pkgs.callPackage ../../pkgs/t3code-nightly/package.nix { }";
         description = ''
           What the unit runs when no app is installed. On a machine that only
           serves other devices, point this at `pkgs.t3code-server`
@@ -158,9 +163,7 @@ in
         inherit package;
         # The module merges these over the app's own file as static keys, which
         # is what makes the provider configuration stick.
-        userSettings = lib.recursiveUpdate cfg.userSettings {
-          providerInstances = acpInstances;
-        };
+        userSettings = lib.recursiveUpdate cfg.userSettings { providerInstances = acpInstances; };
       };
     })
 
@@ -171,7 +174,11 @@ in
 
       programs.t3code.server = {
         enable = true;
-        extraArgs = [ "--port" (toString daemon.port) ] ++ lib.optional daemon.expose "--lan";
+        extraArgs = [
+          "--port"
+          (toString daemon.port)
+        ]
+        ++ lib.optional daemon.expose "--lan";
       };
 
       # The module leaves this at systemd's default, which kills in-flight
@@ -185,30 +192,29 @@ in
     # "This T3 home is unavailable" and no way in. Only the copy of the app
     # installed here reads this file, so it is written only where the app is.
     (lib.mkIf (cfg.enable && daemon.enable && !cfg.appLocalEnvironment) {
-      home.activation.t3codeAppLocalEnvironment =
-        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          settings=${lib.escapeShellArg "${config.home.homeDirectory}/.t3/userdata/desktop-settings.json"}
-          jq=${pkgs.jq}/bin/jq
+      home.activation.t3codeAppLocalEnvironment = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        settings=${lib.escapeShellArg "${config.home.homeDirectory}/.t3/userdata/desktop-settings.json"}
+        jq=${pkgs.jq}/bin/jq
 
-          if [ ! -s "$settings" ]; then
-            install -d -m 700 "$(dirname "$settings")"
-            printf '{"localEnvironmentEnabled":false}\n' > "$settings"
-            chmod 600 "$settings"
-          elif ! "$jq" -e . "$settings" > /dev/null 2>&1; then
-            # Activation runs under `set -e`; a half-written or hand-edited file
-            # must not abort the whole switch.
-            warnEcho "t3code: $settings is not valid JSON, leaving it alone."
-          elif [ "$("$jq" -r '.localEnvironmentEnabled // true' "$settings")" != "false" ]; then
-            tmp="$settings.t3code-tmp"
-            if "$jq" '.localEnvironmentEnabled = false' "$settings" > "$tmp"; then
-              chmod --reference="$settings" "$tmp"
-              mv "$tmp" "$settings"
-            else
-              rm -f "$tmp"
-              warnEcho "t3code: could not turn off the app's local environment in $settings."
-            fi
+        if [ ! -s "$settings" ]; then
+          install -d -m 700 "$(dirname "$settings")"
+          printf '{"localEnvironmentEnabled":false}\n' > "$settings"
+          chmod 600 "$settings"
+        elif ! "$jq" -e . "$settings" > /dev/null 2>&1; then
+          # Activation runs under `set -e`; a half-written or hand-edited file
+          # must not abort the whole switch.
+          warnEcho "t3code: $settings is not valid JSON, leaving it alone."
+        elif [ "$("$jq" -r '.localEnvironmentEnabled // true' "$settings")" != "false" ]; then
+          tmp="$settings.t3code-tmp"
+          if "$jq" '.localEnvironmentEnabled = false' "$settings" > "$tmp"; then
+            chmod --reference="$settings" "$tmp"
+            mv "$tmp" "$settings"
+          else
+            rm -f "$tmp"
+            warnEcho "t3code: could not turn off the app's local environment in $settings."
           fi
-        '';
+        fi
+      '';
     })
   ];
 }
