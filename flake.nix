@@ -53,7 +53,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     albedo = {
-      url = "git+https://tangled.org/karitham.dev/albedo";
+      url = "git+https://tangled.org/karitham.dev/albedo?ref=tailnet-auth";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     handy = {

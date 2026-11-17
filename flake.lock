@@ -4,6 +4,7 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
+        "import-tree": "import-tree",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -12,15 +13,16 @@
         "usage-core": "usage-core"
       },
       "locked": {
-        "lastModified": 1794856152,
-        "narHash": "sha256-xL0jDgxICKFdrv9yEi86U1/T9WRPVnZLV1JaSOtCeMw=",
-        "ref": "refs/heads/main",
-        "rev": "4a1f9ad155f5c74457fd4a49fb1d9169aab5e2b0",
-        "revCount": 2507,
+        "lastModified": 1794938013,
+        "narHash": "sha256-CLwVYgyf2D+Lay8GjtSAaan+O3cnQ9NMdcRcCMerEw8=",
+        "ref": "tailnet-auth",
+        "rev": "58a283ff8afe4698376948e9ffc304ccb5488950",
+        "revCount": 2651,
         "type": "git",
         "url": "https://tangled.org/karitham.dev/albedo"
       },
       "original": {
+        "ref": "tailnet-auth",
         "type": "git",
         "url": "https://tangled.org/karitham.dev/albedo"
       }
@@ -28,7 +30,7 @@
     "bun2nix": {
       "inputs": {
         "flake-parts": "flake-parts_3",
-        "import-tree": "import-tree",
+        "import-tree": "import-tree_2",
         "nixpkgs": [
           "handy",
           "nixpkgs"
@@ -293,6 +295,21 @@
       }
     },
     "import-tree": {
+      "locked": {
+        "lastModified": 1788467110,
+        "narHash": "sha256-ljEMTXP/rH0tOvDzc9gzwww6KcHRPRnEHzd9lK48V7s=",
+        "owner": "vic",
+        "repo": "import-tree",
+        "rev": "eb1b52eaecc57f7c136d07ae8a93e724dfecac46",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "import-tree",
+        "type": "github"
+      }
+    },
+    "import-tree_2": {
       "locked": {
         "lastModified": 1763762820,
         "narHash": "sha256-ZvYKbFib3AEwiNMLsejb/CWs/OL/srFQ8AogkebEPF0=",
